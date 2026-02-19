@@ -6,9 +6,11 @@ from app.models.post import Post
 from app.models.tag import Tag
 from app.models.user import User
 from app.models.page import Page
+from app.models.nav_link import NavLink
 from app.schemas.post import PostCreate, PostUpdate, PostOut, PostSummary
 from app.schemas.tag import TagCreate, TagOut
 from app.schemas.page import PageCreate, PageUpdate, PageOut, PageSummary
+from app.schemas.nav_link import NavLinkOut, NavLinkAdd, NavLinkReorder
 from app.auth import get_current_user
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -216,6 +218,69 @@ def admin_delete_page(
         raise HTTPException(status_code=404, detail="Page not found")
     db.delete(page)
     db.commit()
+
+
+# --- Nav Links ---
+
+@router.get("/nav-links", response_model=list[NavLinkOut])
+def admin_list_nav_links(
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    return db.query(NavLink).order_by(NavLink.position.asc()).all()
+
+
+@router.post("/nav-links", response_model=NavLinkOut, status_code=201)
+def admin_add_nav_link(
+    payload: NavLinkAdd,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    page = db.query(Page).filter(Page.id == payload.page_id).first()
+    if not page or not page.published:
+        raise HTTPException(status_code=404, detail="Published page not found")
+    existing = db.query(NavLink).filter(NavLink.page_id == payload.page_id).first()
+    if existing:
+        raise HTTPException(status_code=409, detail="Page is already in the nav")
+    count = db.query(NavLink).count()
+    nav_link = NavLink(page_id=payload.page_id, position=count + 1)
+    db.add(nav_link)
+    db.commit()
+    db.refresh(nav_link)
+    return nav_link
+
+
+@router.delete("/nav-links/{nav_link_id}", status_code=204)
+def admin_delete_nav_link(
+    nav_link_id: int,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    nav_link = db.query(NavLink).filter(NavLink.id == nav_link_id).first()
+    if not nav_link:
+        raise HTTPException(status_code=404, detail="Nav link not found")
+    db.delete(nav_link)
+    db.commit()
+
+
+@router.put("/nav-links/reorder", response_model=list[NavLinkOut])
+def admin_reorder_nav_links(
+    payload: NavLinkReorder,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    all_nav_links = db.query(NavLink).all()
+    existing_ids = {nl.id for nl in all_nav_links}
+    if set(payload.ordered_ids) != existing_ids:
+        raise HTTPException(
+            status_code=400,
+            detail="ordered_ids must contain exactly all current nav link IDs",
+        )
+    id_to_link = {nl.id: nl for nl in all_nav_links}
+    for position, nav_link_id in enumerate(payload.ordered_ids, start=1):
+        id_to_link[nav_link_id].position = position
+    db.commit()
+    return db.query(NavLink).order_by(NavLink.position.asc()).all()
 
 
 # --- Helpers ---

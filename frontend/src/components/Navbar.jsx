@@ -1,8 +1,20 @@
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+
+const publicAxios = axios.create()
 
 export default function Navbar() {
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
+  const [navLinks, setNavLinks] = useState([])
+
+  useEffect(() => {
+    publicAxios
+      .get('/api/nav-links')
+      .then((res) => setNavLinks(res.data))
+      .catch(() => {})
+  }, [])
 
   function handleLogout() {
     localStorage.removeItem('token')
@@ -15,6 +27,19 @@ export default function Navbar() {
         <Link to="/" className="text-xl font-bold tracking-tight text-gray-900 hover:text-gray-700">
           whoisrgj
         </Link>
+        {navLinks.length > 0 && (
+          <div className="flex items-center gap-4 text-sm">
+            {navLinks.map((link) => (
+              <Link
+                key={link.id}
+                to={`/pages/${link.page.slug}`}
+                className="text-gray-600 hover:text-gray-900"
+              >
+                {link.page.title}
+              </Link>
+            ))}
+          </div>
+        )}
         <div className="flex items-center gap-4 text-sm">
           {token ? (
             <>
