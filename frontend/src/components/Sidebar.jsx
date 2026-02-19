@@ -32,8 +32,8 @@ export default function Sidebar() {
   if (links.length === 0) return null
 
   return (
-    <aside className="w-48 shrink-0">
-      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Find me on</h2>
+    <aside className="w-48 shrink-0 bg-gray-800 rounded-xl p-6 shadow-sm self-start">
+      <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">Find me on</h2>
       <ul className="space-y-2">
         {links.map((link) => {
           const icon = ICON_MAP[link.platform] || faGlobe
@@ -43,7 +43,7 @@ export default function Sidebar() {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-gray-700 hover:text-blue-600 transition-colors"
+                className="flex items-center gap-2 text-sm text-gray-100 hover:text-blue-400 transition-colors"
               >
                 <FontAwesomeIcon icon={icon} style={{ width: 20, height: 20 }} />
                 <span className="capitalize">{link.platform}</span>

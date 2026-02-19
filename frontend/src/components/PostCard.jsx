@@ -11,7 +11,7 @@ function formatDate(dateStr) {
 
 export default function PostCard({ post }) {
   return (
-    <article className="border-b border-gray-100 py-6 last:border-0">
+    <article className="bg-white rounded-xl p-6 shadow-sm mb-4 last:mb-0">
       <Link to={`/posts/${post.slug}`} className="group">
         <h2 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors mb-1">
           {post.title}

@@ -15,11 +15,14 @@
     "@fortawesome/react-fontawesome": "^3.2.0",
     "@uiw/react-md-editor": "^4.0.4",
     "axios": "^1.7.9",
+    "github-markdown-css": "^5.9.0",
+    "highlight.js": "^11.11.1",
     "lucide-react": "^0.575.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-markdown": "^9.0.1",
     "react-router-dom": "^6.28.0",
+    "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.0"
   },
   "devDependencies": {

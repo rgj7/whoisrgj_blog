@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import rehypeHighlight from 'rehype-highlight'
+import 'highlight.js/styles/atom-one-light.css'
+import 'github-markdown-css/github-markdown-light.css'
 import client from '../api/client'
 import TagBadge from '../components/TagBadge'
 
@@ -37,7 +40,7 @@ export default function Post() {
   if (error) return <p className="text-red-500">{error}</p>
 
   return (
-    <article className="max-w-none">
+    <article className="max-w-none bg-white rounded-xl p-8 shadow-sm">
       <Link to="/" className="text-sm text-blue-600 hover:underline mb-6 inline-block">
         &larr; Back to posts
       </Link>
@@ -50,8 +53,10 @@ export default function Post() {
           ))}
         </div>
       )}
-      <div className="prose prose-gray max-w-none">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
+      <div className="markdown-body">
+        <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+          {post.content}
+        </ReactMarkdown>
       </div>
     </article>
   )
