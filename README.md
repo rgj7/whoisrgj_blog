@@ -60,6 +60,48 @@ npm install
 npm run dev   # http://localhost:5173
 ```
 
+## Docker (Full Stack)
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) and Docker Compose
+
+### 1. Configure environment
+
+```bash
+cp .env.example .env
+```
+
+Open `.env` and set `SECRET_KEY` to a random value:
+
+```bash
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+`DATABASE_URL` is already configured inside `docker-compose.yml` — no changes needed.
+
+### 2. Build and start
+
+```bash
+docker compose up --build
+```
+
+- Frontend: http://localhost
+- API docs: http://localhost:8000/docs
+
+### 3. Create admin user
+
+```bash
+docker compose exec backend python scripts/create_admin.py
+```
+
+### 4. Teardown
+
+```bash
+docker compose down        # stop and remove containers
+docker compose down -v     # also delete the database volume
+```
+
 ## API Overview
 
 | Method | Path | Auth | Description |
