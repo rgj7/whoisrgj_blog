@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import posts, admin, auth
+from app.routers import posts, admin, auth, pages
 
 app = FastAPI(title="whoisrgj Blog API", version="1.0.0")
 
@@ -13,6 +13,7 @@ app.add_middleware(
 )
 
 app.include_router(posts.router, prefix="/api")
+app.include_router(pages.router, prefix="/api")
 app.include_router(admin.router, prefix="/api")
 app.include_router(auth.router, prefix="/api")
 

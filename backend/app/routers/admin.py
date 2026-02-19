@@ -5,8 +5,10 @@ from app.database import get_db
 from app.models.post import Post
 from app.models.tag import Tag
 from app.models.user import User
+from app.models.page import Page
 from app.schemas.post import PostCreate, PostUpdate, PostOut, PostSummary
 from app.schemas.tag import TagCreate, TagOut
+from app.schemas.page import PageCreate, PageUpdate, PageOut, PageSummary
 from app.auth import get_current_user
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -129,6 +131,90 @@ def admin_delete_tag(
     if not tag:
         raise HTTPException(status_code=404, detail="Tag not found")
     db.delete(tag)
+    db.commit()
+
+
+# --- Pages ---
+
+@router.get("/pages", response_model=list[PageSummary])
+def admin_list_pages(
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    return db.query(Page).order_by(Page.created_at.desc()).all()
+
+
+@router.get("/pages/{page_id}", response_model=PageOut)
+def admin_get_page(
+    page_id: int,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    page = db.query(Page).filter(Page.id == page_id).first()
+    if not page:
+        raise HTTPException(status_code=404, detail="Page not found")
+    return page
+
+
+@router.post("/pages", response_model=PageOut, status_code=201)
+def admin_create_page(
+    payload: PageCreate,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    existing = db.query(Page).filter(Page.slug == payload.slug).first()
+    if existing:
+        raise HTTPException(status_code=409, detail="A page with this slug already exists")
+    page = Page(
+        title=payload.title,
+        slug=payload.slug,
+        content=payload.content,
+        published=payload.published,
+    )
+    db.add(page)
+    db.commit()
+    db.refresh(page)
+    return page
+
+
+@router.put("/pages/{page_id}", response_model=PageOut)
+def admin_update_page(
+    page_id: int,
+    payload: PageUpdate,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    page = db.query(Page).filter(Page.id == page_id).first()
+    if not page:
+        raise HTTPException(status_code=404, detail="Page not found")
+
+    if payload.slug is not None and payload.slug != page.slug:
+        conflict = db.query(Page).filter(Page.slug == payload.slug).first()
+        if conflict:
+            raise HTTPException(status_code=409, detail="A page with this slug already exists")
+        page.slug = payload.slug
+    if payload.title is not None:
+        page.title = payload.title
+    if payload.content is not None:
+        page.content = payload.content
+    if payload.published is not None:
+        page.published = payload.published
+
+    db.commit()
+    db.refresh(page)
+    return page
+
+
+@router.delete("/pages/{page_id}", status_code=204)
+def admin_delete_page(
+    page_id: int,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    page = db.query(Page).filter(Page.id == page_id).first()
+    if not page:
+        raise HTTPException(status_code=404, detail="Page not found")
+    db.delete(page)
     db.commit()
 
 
