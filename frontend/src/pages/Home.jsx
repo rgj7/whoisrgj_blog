@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import client from '../api/client'
 import PostCard from '../components/PostCard'
+import Sidebar from '../components/Sidebar'
 
 export default function Home() {
   const [data, setData] = useState(null)
@@ -23,34 +24,37 @@ export default function Home() {
   if (error) return <p className="text-red-500">{error}</p>
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-8">Posts</h1>
-      {data.items.length === 0 ? (
-        <p className="text-gray-500">No posts yet.</p>
-      ) : (
-        data.items.map((post) => <PostCard key={post.id} post={post} />)
-      )}
-      {data.pages > 1 && (
-        <div className="flex justify-between mt-8 text-sm">
-          <button
-            disabled={page <= 1}
-            onClick={() => setSearchParams({ page: page - 1 })}
-            className="px-3 py-1 rounded border disabled:opacity-40 hover:bg-gray-100"
-          >
-            Previous
-          </button>
-          <span className="text-gray-500">
-            Page {data.page} of {data.pages}
-          </span>
-          <button
-            disabled={page >= data.pages}
-            onClick={() => setSearchParams({ page: page + 1 })}
-            className="px-3 py-1 rounded border disabled:opacity-40 hover:bg-gray-100"
-          >
-            Next
-          </button>
-        </div>
-      )}
+    <div className="flex gap-8">
+      <div className="flex-1 min-w-0">
+        <h1 className="text-3xl font-bold mb-8">Posts</h1>
+        {data.items.length === 0 ? (
+          <p className="text-gray-500">No posts yet.</p>
+        ) : (
+          data.items.map((post) => <PostCard key={post.id} post={post} />)
+        )}
+        {data.pages > 1 && (
+          <div className="flex justify-between mt-8 text-sm">
+            <button
+              disabled={page <= 1}
+              onClick={() => setSearchParams({ page: page - 1 })}
+              className="px-3 py-1 rounded border disabled:opacity-40 hover:bg-gray-100"
+            >
+              Previous
+            </button>
+            <span className="text-gray-500">
+              Page {data.page} of {data.pages}
+            </span>
+            <button
+              disabled={page >= data.pages}
+              onClick={() => setSearchParams({ page: page + 1 })}
+              className="px-3 py-1 rounded border disabled:opacity-40 hover:bg-gray-100"
+            >
+              Next
+            </button>
+          </div>
+        )}
+      </div>
+      <Sidebar />
     </div>
   )
 }

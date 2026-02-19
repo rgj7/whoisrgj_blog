@@ -7,10 +7,12 @@ from app.models.tag import Tag
 from app.models.user import User
 from app.models.page import Page
 from app.models.nav_link import NavLink
+from app.models.social_link import SocialLink
 from app.schemas.post import PostCreate, PostUpdate, PostOut, PostSummary
 from app.schemas.tag import TagCreate, TagOut
 from app.schemas.page import PageCreate, PageUpdate, PageOut, PageSummary
 from app.schemas.nav_link import NavLinkOut, NavLinkAdd, NavLinkReorder
+from app.schemas.social_link import SocialLinkOut, SocialLinkCreate, SocialLinkReorder
 from app.auth import get_current_user
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -281,6 +283,63 @@ def admin_reorder_nav_links(
         id_to_link[nav_link_id].position = position
     db.commit()
     return db.query(NavLink).order_by(NavLink.position.asc()).all()
+
+
+# --- Social Links ---
+
+@router.get("/social-links", response_model=list[SocialLinkOut])
+def admin_list_social_links(
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    return db.query(SocialLink).order_by(SocialLink.position.asc()).all()
+
+
+@router.post("/social-links", response_model=SocialLinkOut, status_code=201)
+def admin_add_social_link(
+    payload: SocialLinkCreate,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    count = db.query(SocialLink).count()
+    social_link = SocialLink(platform=payload.platform, url=payload.url, position=count + 1)
+    db.add(social_link)
+    db.commit()
+    db.refresh(social_link)
+    return social_link
+
+
+@router.delete("/social-links/{social_link_id}", status_code=204)
+def admin_delete_social_link(
+    social_link_id: int,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    social_link = db.query(SocialLink).filter(SocialLink.id == social_link_id).first()
+    if not social_link:
+        raise HTTPException(status_code=404, detail="Social link not found")
+    db.delete(social_link)
+    db.commit()
+
+
+@router.put("/social-links/reorder", response_model=list[SocialLinkOut])
+def admin_reorder_social_links(
+    payload: SocialLinkReorder,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    all_links = db.query(SocialLink).all()
+    existing_ids = {sl.id for sl in all_links}
+    if set(payload.ordered_ids) != existing_ids:
+        raise HTTPException(
+            status_code=400,
+            detail="ordered_ids must contain exactly all current social link IDs",
+        )
+    id_to_link = {sl.id: sl for sl in all_links}
+    for position, social_link_id in enumerate(payload.ordered_ids, start=1):
+        id_to_link[social_link_id].position = position
+    db.commit()
+    return db.query(SocialLink).order_by(SocialLink.position.asc()).all()
 
 
 # --- Helpers ---

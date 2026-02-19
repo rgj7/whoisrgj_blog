@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import client from '../../api/client'
 import NavSettings from './NavSettings'
+import SocialSettings from './SocialSettings'
 
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -276,6 +277,9 @@ export default function Dashboard() {
         <div>
           <h2 className="text-lg font-semibold mb-4">Navigation</h2>
           <NavSettings />
+          <hr className="my-8 border-gray-200" />
+          <h2 className="text-lg font-semibold mb-4">Social Links</h2>
+          <SocialSettings />
         </div>
       )}
     </div>
