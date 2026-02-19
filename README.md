@@ -109,6 +109,9 @@ docker compose down -v     # also delete the database volume
 | GET | `/api/posts` | No | List published posts (paginated, `?tag=slug`) |
 | GET | `/api/posts/{slug}` | No | Single published post |
 | GET | `/api/tags` | No | All tags |
+| GET | `/api/pages` | No | List published pages |
+| GET | `/api/pages/{slug}` | No | Single published page |
+| GET | `/api/nav-links` | No | Ordered nav links (published pages only) |
 | POST | `/api/auth/login` | No | Get JWT token |
 | GET | `/api/admin/posts` | Yes | All posts (incl. drafts) |
 | POST | `/api/admin/posts` | Yes | Create post |
@@ -116,6 +119,14 @@ docker compose down -v     # also delete the database volume
 | DELETE | `/api/admin/posts/{id}` | Yes | Delete post |
 | POST | `/api/admin/tags` | Yes | Create tag |
 | DELETE | `/api/admin/tags/{id}` | Yes | Delete tag |
+| GET | `/api/admin/pages` | Yes | All pages (incl. drafts) |
+| POST | `/api/admin/pages` | Yes | Create page |
+| PUT | `/api/admin/pages/{id}` | Yes | Update page |
+| DELETE | `/api/admin/pages/{id}` | Yes | Delete page |
+| GET | `/api/admin/nav-links` | Yes | All nav links ordered by position |
+| POST | `/api/admin/nav-links` | Yes | Add a published page to the nav |
+| DELETE | `/api/admin/nav-links/{id}` | Yes | Remove a nav link |
+| PUT | `/api/admin/nav-links/reorder` | Yes | Reorder nav links (`{ ordered_ids: [...] }`) |
 
 ## Frontend Routes
 
@@ -124,7 +135,10 @@ docker compose down -v     # also delete the database volume
 | `/` | Post list |
 | `/posts/:slug` | Single post |
 | `/tags/:slug` | Posts by tag |
+| `/pages/:slug` | Single page |
 | `/login` | Admin login |
-| `/admin` | Admin dashboard (protected) |
+| `/admin` | Admin dashboard — Posts, Pages, Settings tabs (protected) |
 | `/admin/posts/new` | Create post (protected) |
 | `/admin/posts/:id/edit` | Edit post (protected) |
+| `/admin/pages/new` | Create page (protected) |
+| `/admin/pages/:id/edit` | Edit page (protected) |

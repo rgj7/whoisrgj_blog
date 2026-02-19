@@ -50,11 +50,13 @@ docker compose up
 - `config.py` — Settings via pydantic-settings (reads `.env`)
 - `database.py` — SQLAlchemy async session setup
 - `auth.py` — JWT creation/validation, bcrypt password check, `get_current_user` dependency
-- `models/` — SQLAlchemy ORM: `User`, `Post`, `Tag` with `post_tags` many-to-many junction
-- `schemas/` — Pydantic input/output schemas for posts, tags, auth
+- `models/` — SQLAlchemy ORM: `User`, `Post`, `Tag` (with `post_tags` many-to-many junction), `Page`, `NavLink`
+- `schemas/` — Pydantic input/output schemas for posts, tags, auth, pages, nav_link
 - `routers/posts.py` — Public endpoints (list/view posts, list tags)
+- `routers/pages.py` — Public endpoints (list/view published pages)
+- `routers/nav.py` — Public `GET /api/nav-links` (published pages only, ordered by position)
 - `routers/auth.py` — `POST /api/auth/login` returns JWT
-- `routers/admin.py` — Protected CRUD (requires `get_current_user` dependency)
+- `routers/admin.py` — Protected CRUD for posts, tags, pages, and nav links (requires `get_current_user` dependency)
 
 Route protection pattern: admin routes use `Depends(get_current_user)` from `auth.py`.
 
@@ -62,7 +64,10 @@ Route protection pattern: admin routes use `Depends(get_current_user)` from `aut
 - `api/client.js` — Axios instance: request interceptor adds `Authorization: Bearer <token>`, response interceptor redirects to `/login` on 401
 - `App.jsx` — React Router v6 routes; admin routes wrapped in `<ProtectedRoute>`
 - `pages/admin/PostEditor.jsx` — Uses `@uiw/react-md-editor` for markdown editing
+- `pages/admin/PageEditor.jsx` — Markdown editor for Pages (same pattern as PostEditor)
+- `pages/admin/NavSettings.jsx` — Self-contained component for managing navbar links (add, remove, reorder)
 - `pages/Post.jsx` — Renders markdown with `react-markdown` + `remark-gfm`
+- `components/Navbar.jsx` — Fetches `/api/nav-links` on mount and renders center nav links between logo and auth section
 
 ### Database Migrations
 Add a new migration:
@@ -74,6 +79,10 @@ alembic upgrade head
 
 ## Key Conventions
 - Post slugs are auto-generated from titles via `python-slugify`
-- Unpublished posts are hidden from public routes; admin can toggle publish status
+- Page slugs are set manually and validated as lowercase alphanumeric + hyphens
+- Unpublished posts/pages are hidden from public routes; admin can toggle publish status
+- Nav links reference published Pages; unpublished pages are hidden from the public nav endpoint but remain in the admin list with a "Draft — hidden from nav" badge
+- `NavLink.position` determines navbar order; `PUT /api/admin/nav-links/reorder` accepts the full ordered list of IDs
+- Deleting a Page cascades to remove its `NavLink` row automatically (`ondelete="CASCADE"`)
 - JWT tokens expire in 480 minutes; token stored as `token` key in localStorage
 - CORS origins: `localhost`, `localhost:5173`, `whoisrgj.com`
