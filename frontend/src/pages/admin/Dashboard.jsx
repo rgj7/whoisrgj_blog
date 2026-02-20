@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import client from '../../api/client'
 import NavSettings from './NavSettings'
 import SocialSettings from './SocialSettings'
+import TravelSettings from './TravelSettings'
 
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -140,6 +141,16 @@ export default function Dashboard() {
           }`}
         >
           Pages
+        </button>
+        <button
+          onClick={() => handleTabSwitch('travels')}
+          className={`px-4 py-2 text-sm font-medium -mb-px border-b-2 transition-colors ${
+            activeTab === 'travels'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Travels
         </button>
         <button
           onClick={() => handleTabSwitch('settings')}
@@ -280,6 +291,11 @@ export default function Dashboard() {
           <hr className="my-8 border-gray-200" />
           <h2 className="text-lg font-semibold mb-4">Social Links</h2>
           <SocialSettings />
+        </div>
+      )}
+      {activeTab === 'travels' && (
+        <div>
+          <TravelSettings />
         </div>
       )}
     </div>
