@@ -10,6 +10,7 @@ import PostEditor from './pages/admin/PostEditor'
 import PageEditor from './pages/admin/PageEditor'
 import ProtectedRoute from './components/ProtectedRoute'
 import Footer from './components/Footer'
+import Travels from './pages/Travels'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
             <Route path="/posts/:slug" element={<Post />} />
             <Route path="/pages/:slug" element={<Page />} />
             <Route path="/tags/:slug" element={<TagFeed />} />
+            <Route path="/travels" element={<Travels />} />
             <Route path="/login" element={<Login />} />
             <Route
               path="/admin"
