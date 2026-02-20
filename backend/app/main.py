@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import posts, admin, auth, pages, nav, social, letterboxd
+from app.routers import posts, admin, auth, pages, nav, social, letterboxd, travels
 
 app = FastAPI(title="whoisrgj Blog API", version="1.0.0")
 
@@ -17,6 +17,7 @@ app.include_router(pages.router, prefix="/api")
 app.include_router(nav.router, prefix="/api")
 app.include_router(social.router, prefix="/api")
 app.include_router(letterboxd.router, prefix="/api")
+app.include_router(travels.router, prefix="/api")
 app.include_router(admin.router, prefix="/api")
 app.include_router(auth.router, prefix="/api")
 

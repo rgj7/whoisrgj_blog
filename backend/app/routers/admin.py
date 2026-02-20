@@ -8,11 +8,13 @@ from app.models.user import User
 from app.models.page import Page
 from app.models.nav_link import NavLink
 from app.models.social_link import SocialLink
+from app.models.visited_country import VisitedCountry
 from app.schemas.post import PostCreate, PostUpdate, PostOut, PostSummary
 from app.schemas.tag import TagCreate, TagOut
 from app.schemas.page import PageCreate, PageUpdate, PageOut, PageSummary
 from app.schemas.nav_link import NavLinkOut, NavLinkAdd, NavLinkReorder
 from app.schemas.social_link import SocialLinkOut, SocialLinkCreate, SocialLinkReorder
+from app.schemas.visited_country import VisitedCountryOut, VisitedCountryCreate
 from app.auth import get_current_user
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -340,6 +342,45 @@ def admin_reorder_social_links(
         id_to_link[social_link_id].position = position
     db.commit()
     return db.query(SocialLink).order_by(SocialLink.position.asc()).all()
+
+
+# --- Travels ---
+
+@router.get("/travels", response_model=list[VisitedCountryOut])
+def admin_list_visited_countries(
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    return db.query(VisitedCountry).order_by(VisitedCountry.name.asc()).all()
+
+
+@router.post("/travels", response_model=VisitedCountryOut, status_code=201)
+def admin_add_visited_country(
+    payload: VisitedCountryCreate,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    existing = db.query(VisitedCountry).filter(VisitedCountry.iso_numeric == payload.iso_numeric).first()
+    if existing:
+        raise HTTPException(status_code=409, detail="Country already added")
+    country = VisitedCountry(name=payload.name, iso_numeric=payload.iso_numeric)
+    db.add(country)
+    db.commit()
+    db.refresh(country)
+    return country
+
+
+@router.delete("/travels/{country_id}", status_code=204)
+def admin_delete_visited_country(
+    country_id: int,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    country = db.query(VisitedCountry).filter(VisitedCountry.id == country_id).first()
+    if not country:
+        raise HTTPException(status_code=404, detail="Country not found")
+    db.delete(country)
+    db.commit()
 
 
 # --- Helpers ---
