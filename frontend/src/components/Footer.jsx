@@ -30,7 +30,7 @@ export default function Footer() {
   }, [])
 
   return (
-    <footer className="bg-black border-t border-gray-800 text-gray-400 text-sm py-6">
+    <footer className="sticky bottom-0 bg-black border-t border-gray-800 text-gray-400 text-sm py-6">
       <div className="container mx-auto px-4 max-w-4xl grid grid-cols-3 items-center gap-4">
         <div className="flex items-center gap-3">
           {links.map((link) => {

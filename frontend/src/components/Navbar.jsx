@@ -31,7 +31,7 @@ export default function Navbar() {
         </div>
         <div className="justify-self-center flex items-center gap-6 text-sm">
           {navLinks.map((link) => {
-            const className = "font-bold text-gray-600 hover:text-gray-900"
+            const className = "font-bold text-gray-600 hover:text-gray-900 uppercase"
             if (link.page) {
               return (
                 <Link key={link.id} to={`/pages/${link.page.slug}`} className={className}>
