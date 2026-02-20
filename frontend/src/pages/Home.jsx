@@ -27,8 +27,7 @@ export default function Home() {
   return (
     <div className="flex gap-8">
       <div className="flex-1 min-w-0">
-        <h1 className="text-3xl font-bold mb-8">Posts</h1>
-        {data.items.length === 0 ? (
+{data.items.length === 0 ? (
           <p className="text-gray-500">No posts yet.</p>
         ) : (
           data.items.map((post) => <PostCard key={post.id} post={post} />)
