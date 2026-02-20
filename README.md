@@ -5,7 +5,7 @@ A personal blog built with FastAPI + React. Posts are written in Markdown.
 ## Stack
 
 - **Backend**: FastAPI, SQLAlchemy, Alembic, PostgreSQL, JWT auth
-- **Frontend**: React 18 + Vite, Tailwind CSS, react-markdown, @uiw/react-md-editor
+- **Frontend**: React 18 + Vite, Tailwind CSS, react-markdown, @uiw/react-md-editor, react-simple-maps
 
 ## Local Development
 
@@ -127,6 +127,16 @@ docker compose down -v     # also delete the database volume
 | POST | `/api/admin/nav-links` | Yes | Add a published page to the nav |
 | DELETE | `/api/admin/nav-links/{id}` | Yes | Remove a nav link |
 | PUT | `/api/admin/nav-links/reorder` | Yes | Reorder nav links (`{ ordered_ids: [...] }`) |
+| GET | `/api/social-links` | No | Ordered social links for footer |
+| GET | `/api/letterboxd` | No | Last 5 rated Letterboxd films (cached 1 hr) |
+| GET | `/api/admin/social-links` | Yes | All social links ordered by position |
+| POST | `/api/admin/social-links` | Yes | Add a social link |
+| DELETE | `/api/admin/social-links/{id}` | Yes | Remove a social link |
+| PUT | `/api/admin/social-links/reorder` | Yes | Reorder social links (`{ ordered_ids: [...] }`) |
+| GET | `/api/travels` | No | All visited countries sorted by name |
+| GET | `/api/admin/travels` | Yes | All visited countries (admin) |
+| POST | `/api/admin/travels` | Yes | Add a visited country (409 on duplicate) |
+| DELETE | `/api/admin/travels/{country_id}` | Yes | Remove a visited country |
 
 ## Frontend Routes
 
@@ -137,8 +147,9 @@ docker compose down -v     # also delete the database volume
 | `/tags/:slug` | Posts by tag |
 | `/pages/:slug` | Single page |
 | `/login` | Admin login |
-| `/admin` | Admin dashboard — Posts, Pages, Settings tabs (protected) |
+| `/admin` | Admin dashboard — Posts, Pages, Travels, Settings tabs (protected) |
 | `/admin/posts/new` | Create post (protected) |
 | `/admin/posts/:id/edit` | Edit post (protected) |
 | `/admin/pages/new` | Create page (protected) |
 | `/admin/pages/:id/edit` | Edit page (protected) |
+| `/travels` | Interactive visited-countries map |
