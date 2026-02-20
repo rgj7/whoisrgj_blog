@@ -32,7 +32,7 @@ export default function Sidebar() {
   if (links.length === 0) return null
 
   return (
-    <aside className="w-48 shrink-0 bg-gray-800 rounded-xl p-6 shadow-sm self-start">
+    <aside className="w-60 shrink-0 bg-gray-800 rounded-xl p-6 shadow-sm self-start">
       <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">Find me on</h2>
       <ul className="space-y-2">
         {links.map((link) => {
