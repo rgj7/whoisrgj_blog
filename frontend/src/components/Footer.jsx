@@ -49,7 +49,7 @@ export default function Footer() {
             )
           })}
         </div>
-        <p className="text-center">&copy; {new Date().getFullYear()} whoisrgj.com</p>
+        <p className="text-center">Built by RGJ.<br />Occasional writer, chronic puzzle seeker.</p>
         <div className="flex justify-end">
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}

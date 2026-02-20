@@ -130,9 +130,15 @@ export default function Travels() {
   return (
     <div className="content-card">
       <h1 className="text-2xl font-bold mb-1">Travels</h1>
-      <p className="text-gray-500 text-sm mb-6">
+      <p className="text-gray-500 text-sm mb-4">
         {loading ? 'Loading...' : `${count} ${count === 1 ? 'country' : 'countries'} visited`}
       </p>
+      <div className="flex gap-3 items-start bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 mb-6 text-sm text-amber-800">
+        <span className="mt-0.5 text-base leading-none">🚧</span>
+        <p>
+          This page is still under construction. I'm planning to add a photo gallery of my travels here soon.
+        </p>
+      </div>
       <div ref={containerRef} className="bg-white rounded-lg overflow-hidden relative">
         <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
           <button
