@@ -1,6 +1,20 @@
 import { useState, useEffect, useRef } from 'react'
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps'
 import axios from 'axios'
+import { COUNTRY_META } from '../data/countryMeta'
+
+const CONTINENT_ORDER = ['Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America']
+
+const FlagImg = ({ alpha2, name }) => (
+  <img
+    src={`https://flagcdn.com/16x12/${alpha2.toLowerCase()}.png`}
+    srcSet={`https://flagcdn.com/32x24/${alpha2.toLowerCase()}.png 2x`}
+    width="16"
+    height="12"
+    alt={name}
+    className="inline-block align-middle mr-1.5 rounded-sm"
+  />
+)
 
 const GEO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
 const MIN_ZOOM = 1
@@ -10,6 +24,7 @@ export default function Travels() {
   const [visitedCodes, setVisitedCodes] = useState(new Set())
   const [visitedNames, setVisitedNames] = useState({})
   const [count, setCount] = useState(0)
+  const [grouped, setGrouped] = useState({})
   const [loading, setLoading] = useState(true)
   const [position, setPosition] = useState({ coordinates: [0, 0], zoom: 1 })
   const [tooltip, setTooltip] = useState(null)
@@ -23,6 +38,19 @@ export default function Travels() {
         setVisitedCodes(new Set(res.data.map((c) => topoId(c.iso_numeric))))
         setVisitedNames(Object.fromEntries(res.data.map((c) => [topoId(c.iso_numeric), c.name])))
         setCount(res.data.length)
+
+        const groups = {}
+        for (const c of res.data) {
+          const meta = COUNTRY_META[c.iso_numeric]
+          if (!meta) continue
+          const { alpha2, continent } = meta
+          if (!groups[continent]) groups[continent] = []
+          groups[continent].push({ name: c.name, alpha2 })
+        }
+        for (const continent of Object.keys(groups)) {
+          groups[continent].sort((a, b) => a.name.localeCompare(b.name))
+        }
+        setGrouped(groups)
       })
       .finally(() => setLoading(false))
   }, [])
@@ -84,6 +112,7 @@ export default function Travels() {
         </div>
         <ComposableMap
           projectionConfig={{ scale: 140 }}
+          height={400}
           style={{ width: '100%', height: 'auto', cursor: position.zoom > 1 ? 'grab' : 'default' }}
         >
           <ZoomableGroup
@@ -125,6 +154,32 @@ export default function Travels() {
           </div>
         )}
       </div>
+
+      {count > 0 && (
+        <div className="mt-8">
+          <h2 className="text-lg font-bold mb-4">Visited Countries</h2>
+          <div className="space-y-5">
+            {CONTINENT_ORDER.filter((c) => grouped[c]).map((continent) => (
+              <div key={continent}>
+                <h3 className="font-bold text-sm uppercase tracking-wide text-gray-500 mb-2">
+                  {continent}
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {grouped[continent].map(({ name, alpha2 }) => (
+                    <span
+                      key={name}
+                      className="flex items-center gap-1.5 bg-gray-100 rounded-full px-3 py-1 text-sm"
+                    >
+                      <FlagImg alpha2={alpha2} name={name} />
+                      {name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
