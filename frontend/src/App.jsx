@@ -9,6 +9,7 @@ import Dashboard from './pages/admin/Dashboard'
 import PostEditor from './pages/admin/PostEditor'
 import PageEditor from './pages/admin/PageEditor'
 import ProtectedRoute from './components/ProtectedRoute'
+import Footer from './components/Footer'
 
 export default function App() {
   return (
@@ -64,6 +65,7 @@ export default function App() {
             />
           </Routes>
         </main>
+        <Footer />
       </div>
     </BrowserRouter>
   )
