@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Stack
 
-- **Backend**: FastAPI + SQLAlchemy + PostgreSQL (Python 3.12+)
+- **Backend**: FastAPI + SQLAlchemy + PostgreSQL (Python 3.14+)
 - **Frontend**: React 18 + Vite + Tailwind CSS
 - **Auth**: JWT tokens (stored in localStorage), bcrypt for password hashing
 - **Migrations**: Alembic
@@ -15,12 +15,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Backend
 ```bash
 cd backend
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+uv sync                      # creates .venv and installs from uv.lock
+source .venv/bin/activate    # or prefix commands with: uv run
 cp .env.example .env  # set DATABASE_URL and SECRET_KEY
 alembic upgrade head  # run migrations
 uvicorn app.main:app --reload --port 8000
 # Swagger UI: http://localhost:8000/docs
+```
+
+Adding a new dependency:
+```bash
+uv add <package>   # updates pyproject.toml and uv.lock together
 ```
 
 Create admin user:
@@ -80,7 +85,7 @@ Route protection pattern: admin routes use `Depends(get_current_user)` from `aut
 ### Database Migrations
 Add a new migration:
 ```bash
-cd backend && source .venv/bin/activate
+cd backend && source .venv/bin/activate  # or use `uv run` prefix
 alembic revision --autogenerate -m "description"
 alembic upgrade head
 ```
