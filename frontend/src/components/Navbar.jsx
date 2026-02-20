@@ -22,25 +22,25 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-white border-b border-gray-200">
-      <div className="container mx-auto px-4 max-w-4xl flex items-center justify-between h-14">
-        <Link to="/" className="text-xl font-bold tracking-tight text-gray-900 hover:text-gray-700">
-          whoisrgj
-        </Link>
-        {navLinks.length > 0 && (
-          <div className="flex items-center gap-4 text-sm">
-            {navLinks.map((link) => (
-              <Link
-                key={link.id}
-                to={`/pages/${link.page.slug}`}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                {link.page.title}
-              </Link>
-            ))}
-          </div>
-        )}
-        <div className="flex items-center gap-4 text-sm">
+    <nav className="bg-gray-50">
+      <div className="container mx-auto px-4 max-w-4xl grid grid-cols-3 items-center h-28">
+        <div className="justify-self-start">
+          <Link to="/">
+            <img src="/whoisrgj_logo_invert.png" alt="whoisrgj" className="h-12 w-auto" />
+          </Link>
+        </div>
+        <div className="justify-self-center flex items-center gap-6 text-sm">
+          {navLinks.map((link) => (
+            <Link
+              key={link.id}
+              to={`/pages/${link.page.slug}`}
+              className="font-bold text-gray-600 hover:text-gray-900"
+            >
+              {link.page.title}
+            </Link>
+          ))}
+        </div>
+        <div className="justify-self-end flex items-center gap-4 text-sm">
           {token ? (
             <>
               <Link to="/admin" className="text-gray-600 hover:text-gray-900">
