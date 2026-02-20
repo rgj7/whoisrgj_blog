@@ -200,10 +200,7 @@ const COUNTRIES = [
   { name: 'Zimbabwe', iso_numeric: 716 },
 ]
 
-export default function TravelSettings() {
-  const [countries, setCountries] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+function CountryCombobox({ countries, onAdd, onRemove, endpoint, addLabel }) {
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
   const [open, setOpen] = useState(false)
@@ -223,15 +220,82 @@ export default function TravelSettings() {
     ? COUNTRIES
     : COUNTRIES.filter(c => c.name.toLowerCase().includes(query.toLowerCase()))
 
+  async function handleAdd() {
+    if (!selected) return
+    const country = selected
+    try {
+      const res = await client.post(endpoint, {
+        name: country.name,
+        iso_numeric: country.iso_numeric,
+      })
+      onAdd(res.data)
+      setSelected(null)
+      setQuery('')
+    } catch (err) {
+      if (err.response?.status === 409) {
+        alert(err.response.data?.detail ?? 'That country is already added.')
+      } else {
+        alert('Failed to add country.')
+      }
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-3">
+      <div ref={comboRef} className="relative flex-1">
+        <input
+          type="text"
+          value={query}
+          placeholder="Search countries…"
+          className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+          onChange={e => { setQuery(e.target.value); setSelected(null); setOpen(true) }}
+          onFocus={() => setOpen(true)}
+        />
+        {open && filtered.length > 0 && (
+          <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded shadow-md max-h-60 overflow-y-auto text-sm">
+            {filtered.map(c => (
+              <li
+                key={c.iso_numeric}
+                className="px-3 py-2 cursor-pointer hover:bg-blue-50"
+                onMouseDown={() => { setSelected(c); setQuery(c.name); setOpen(false) }}
+              >
+                {c.name}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <button
+        onClick={handleAdd}
+        disabled={!selected}
+        className="text-blue-600 hover:text-blue-800 font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        {addLabel}
+      </button>
+    </div>
+  )
+}
+
+export default function TravelSettings() {
+  const [countries, setCountries] = useState([])
+  const [wishlist, setWishlist] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
   useEffect(() => {
-    client
-      .get('/admin/travels')
-      .then((res) => setCountries(res.data))
-      .catch(() => setError('Failed to load visited countries.'))
+    Promise.all([
+      client.get('/admin/travels'),
+      client.get('/admin/travels/wishlist'),
+    ])
+      .then(([visitedRes, wishlistRes]) => {
+        setCountries(visitedRes.data)
+        setWishlist(wishlistRes.data)
+      })
+      .catch(() => setError('Failed to load travel data.'))
       .finally(() => setLoading(false))
   }, [])
 
-  async function handleRemove(id) {
+  async function handleRemoveVisited(id) {
     if (!confirm('Remove this country?')) return
     try {
       await client.delete(`/admin/travels/${id}`)
@@ -241,21 +305,13 @@ export default function TravelSettings() {
     }
   }
 
-  async function handleAdd() {
-    if (!selected) return
-    const country = selected
+  async function handleRemoveWishlist(id) {
+    if (!confirm('Remove this country from wishlist?')) return
     try {
-      const res = await client.post('/admin/travels', {
-        name: country.name,
-        iso_numeric: country.iso_numeric,
-      })
-      setCountries((prev) => [...prev, res.data].sort((a, b) => a.name.localeCompare(b.name)))
-    } catch (err) {
-      if (err.response?.status === 409) {
-        alert('That country is already added.')
-      } else {
-        alert('Failed to add country.')
-      }
+      await client.delete(`/admin/travels/wishlist/${id}`)
+      setWishlist((prev) => prev.filter((c) => c.id !== id))
+    } catch {
+      alert('Failed to remove country.')
     }
   }
 
@@ -276,7 +332,7 @@ export default function TravelSettings() {
               <span key={c.id} className="flex items-center gap-1.5 bg-gray-100 rounded-full pl-3 pr-2 py-1 text-sm">
                 {c.name}
                 <button
-                  onClick={() => handleRemove(c.id)}
+                  onClick={() => handleRemoveVisited(c.id)}
                   className="text-gray-400 hover:text-red-500 leading-none"
                   aria-label={`Remove ${c.name}`}
                 >
@@ -290,40 +346,52 @@ export default function TravelSettings() {
 
       <div>
         <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
-          Add a Country
+          Add a Visited Country
         </h3>
-        <div className="flex items-center gap-3">
-          <div ref={comboRef} className="relative flex-1">
-            <input
-              type="text"
-              value={query}
-              placeholder="Search countries…"
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
-              onChange={e => { setQuery(e.target.value); setSelected(null); setOpen(true) }}
-              onFocus={() => setOpen(true)}
-            />
-            {open && filtered.length > 0 && (
-              <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded shadow-md max-h-60 overflow-y-auto text-sm">
-                {filtered.map(c => (
-                  <li
-                    key={c.iso_numeric}
-                    className="px-3 py-2 cursor-pointer hover:bg-blue-50"
-                    onMouseDown={() => { setSelected(c); setQuery(c.name); setOpen(false) }}
-                  >
-                    {c.name}
-                  </li>
-                ))}
-              </ul>
-            )}
+        <CountryCombobox
+          countries={countries}
+          endpoint="/admin/travels"
+          addLabel="Add"
+          onAdd={(c) => setCountries((prev) => [...prev, c].sort((a, b) => a.name.localeCompare(b.name)))}
+          onRemove={handleRemoveVisited}
+        />
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+          Wishlist
+        </h3>
+        {wishlist.length === 0 ? (
+          <p className="text-gray-500 text-sm">No countries in wishlist yet.</p>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {wishlist.map((c) => (
+              <span key={c.id} className="flex items-center gap-1.5 bg-gray-100 rounded-full pl-3 pr-2 py-1 text-sm">
+                {c.name}
+                <button
+                  onClick={() => handleRemoveWishlist(c.id)}
+                  className="text-gray-400 hover:text-red-500 leading-none"
+                  aria-label={`Remove ${c.name} from wishlist`}
+                >
+                  ×
+                </button>
+              </span>
+            ))}
           </div>
-          <button
-            onClick={handleAdd}
-            disabled={!selected}
-            className="text-blue-600 hover:text-blue-800 font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            Add
-          </button>
-        </div>
+        )}
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+          Add to Wishlist
+        </h3>
+        <CountryCombobox
+          countries={wishlist}
+          endpoint="/admin/travels/wishlist"
+          addLabel="Add"
+          onAdd={(c) => setWishlist((prev) => [...prev, c].sort((a, b) => a.name.localeCompare(b.name)))}
+          onRemove={handleRemoveWishlist}
+        />
       </div>
     </div>
   )

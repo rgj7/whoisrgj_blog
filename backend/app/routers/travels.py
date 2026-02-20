@@ -2,7 +2,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.visited_country import VisitedCountry
+from app.models.wanted_country import WantedCountry
 from app.schemas.visited_country import VisitedCountryOut
+from app.schemas.wanted_country import WantedCountryOut
 
 router = APIRouter(tags=["public"])
 
@@ -10,3 +12,8 @@ router = APIRouter(tags=["public"])
 @router.get("/travels", response_model=list[VisitedCountryOut])
 def list_visited_countries(db: Session = Depends(get_db)):
     return db.query(VisitedCountry).order_by(VisitedCountry.name.asc()).all()
+
+
+@router.get("/travels/wishlist", response_model=list[WantedCountryOut])
+def list_wanted_countries(db: Session = Depends(get_db)):
+    return db.query(WantedCountry).order_by(WantedCountry.name.asc()).all()

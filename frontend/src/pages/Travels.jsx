@@ -23,24 +23,31 @@ const MAX_ZOOM = 8
 export default function Travels() {
   const [visitedCodes, setVisitedCodes] = useState(new Set())
   const [visitedNames, setVisitedNames] = useState({})
+  const [wishlistCodes, setWishlistCodes] = useState(new Set())
+  const [wishlistNames, setWishlistNames] = useState({})
   const [count, setCount] = useState(0)
   const [grouped, setGrouped] = useState({})
+  const [wishlistGrouped, setWishlistGrouped] = useState({})
   const [loading, setLoading] = useState(true)
   const [position, setPosition] = useState({ coordinates: [0, 0], zoom: 1 })
   const [tooltip, setTooltip] = useState(null)
   const containerRef = useRef(null)
 
   useEffect(() => {
-    axios
-      .get('/api/travels')
-      .then((res) => {
-        const topoId = (n) => String(n).padStart(3, '0')
-        setVisitedCodes(new Set(res.data.map((c) => topoId(c.iso_numeric))))
-        setVisitedNames(Object.fromEntries(res.data.map((c) => [topoId(c.iso_numeric), c.name])))
-        setCount(res.data.length)
+    const topoId = (n) => String(n).padStart(3, '0')
+
+    Promise.all([
+      axios.get('/api/travels'),
+      axios.get('/api/travels/wishlist'),
+    ])
+      .then(([visitedRes, wishlistRes]) => {
+        // Visited
+        setVisitedCodes(new Set(visitedRes.data.map((c) => topoId(c.iso_numeric))))
+        setVisitedNames(Object.fromEntries(visitedRes.data.map((c) => [topoId(c.iso_numeric), c.name])))
+        setCount(visitedRes.data.length)
 
         const groups = {}
-        for (const c of res.data) {
+        for (const c of visitedRes.data) {
           const meta = COUNTRY_META[c.iso_numeric]
           if (!meta) continue
           const { alpha2, continent } = meta
@@ -51,18 +58,53 @@ export default function Travels() {
           groups[continent].sort((a, b) => a.name.localeCompare(b.name))
         }
         setGrouped(groups)
+
+        // Wishlist
+        setWishlistCodes(new Set(wishlistRes.data.map((c) => topoId(c.iso_numeric))))
+        setWishlistNames(Object.fromEntries(wishlistRes.data.map((c) => [topoId(c.iso_numeric), c.name])))
+
+        const wGroups = {}
+        for (const c of wishlistRes.data) {
+          const meta = COUNTRY_META[c.iso_numeric]
+          if (!meta) continue
+          const { alpha2, continent } = meta
+          if (!wGroups[continent]) wGroups[continent] = []
+          wGroups[continent].push({ name: c.name, alpha2 })
+        }
+        for (const continent of Object.keys(wGroups)) {
+          wGroups[continent].sort((a, b) => a.name.localeCompare(b.name))
+        }
+        setWishlistGrouped(wGroups)
       })
       .finally(() => setLoading(false))
   }, [])
 
+  function getGeoFill(geoId) {
+    if (visitedCodes.has(geoId)) return '#3b82f6'
+    if (wishlistCodes.has(geoId)) return '#22c55e'
+    return '#e5e7eb'
+  }
+
+  function getGeoHoverFill(geoId) {
+    if (visitedCodes.has(geoId)) return '#2563eb'
+    if (wishlistCodes.has(geoId)) return '#16a34a'
+    return '#d1d5db'
+  }
+
   function handleGeoMouseEnter(geo, evt) {
-    if (!visitedCodes.has(geo.id)) return
+    const isVisited = visitedCodes.has(geo.id)
+    const isWishlist = wishlistCodes.has(geo.id)
+    if (!isVisited && !isWishlist) return
     const rect = containerRef.current.getBoundingClientRect()
-    setTooltip({ name: visitedNames[geo.id], x: evt.clientX - rect.left, y: evt.clientY - rect.top })
+    const name = isVisited ? visitedNames[geo.id] : wishlistNames[geo.id]
+    const label = isVisited ? '(visited)' : '(wishlist)'
+    setTooltip({ name, label, x: evt.clientX - rect.left, y: evt.clientY - rect.top })
   }
 
   function handleGeoMouseMove(geo, evt) {
-    if (!visitedCodes.has(geo.id)) return
+    const isVisited = visitedCodes.has(geo.id)
+    const isWishlist = wishlistCodes.has(geo.id)
+    if (!isVisited && !isWishlist) return
     const rect = containerRef.current.getBoundingClientRect()
     setTooltip((prev) => prev ? { ...prev, x: evt.clientX - rect.left, y: evt.clientY - rect.top } : prev)
   }
@@ -82,6 +124,8 @@ export default function Travels() {
   function handleReset() {
     setPosition({ coordinates: [0, 0], zoom: 1 })
   }
+
+  const wishlistCount = wishlistCodes.size
 
   return (
     <div className="content-card">
@@ -128,12 +172,12 @@ export default function Travels() {
                   <Geography
                     key={geo.rsmKey}
                     geography={geo}
-                    fill={visitedCodes.has(geo.id) ? '#3b82f6' : '#e5e7eb'}
+                    fill={getGeoFill(geo.id)}
                     stroke="#fff"
                     strokeWidth={0.5}
                     style={{
                       default: { outline: 'none' },
-                      hover: { outline: 'none', fill: visitedCodes.has(geo.id) ? '#2563eb' : '#d1d5db' },
+                      hover: { outline: 'none', fill: getGeoHoverFill(geo.id) },
                       pressed: { outline: 'none' },
                     }}
                     onMouseEnter={(evt) => handleGeoMouseEnter(geo, evt)}
@@ -150,7 +194,8 @@ export default function Travels() {
             className="absolute pointer-events-none bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap"
             style={{ left: tooltip.x + 12, top: tooltip.y - 28 }}
           >
-            {tooltip.name}
+            {tooltip.name}{' '}
+            <span className="opacity-70">{tooltip.label}</span>
           </div>
         )}
       </div>
@@ -166,6 +211,32 @@ export default function Travels() {
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {grouped[continent].map(({ name, alpha2 }) => (
+                    <span
+                      key={name}
+                      className="flex items-center gap-1.5 bg-gray-100 rounded-full px-3 py-1 text-sm"
+                    >
+                      <FlagImg alpha2={alpha2} name={name} />
+                      {name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {wishlistCount > 0 && (
+        <div className="mt-8">
+          <h2 className="text-lg font-bold mb-4">Wishlist</h2>
+          <div className="space-y-5">
+            {CONTINENT_ORDER.filter((c) => wishlistGrouped[c]).map((continent) => (
+              <div key={continent}>
+                <h3 className="font-bold text-sm uppercase tracking-wide text-gray-500 mb-2">
+                  {continent}
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {wishlistGrouped[continent].map(({ name, alpha2 }) => (
                     <span
                       key={name}
                       className="flex items-center gap-1.5 bg-gray-100 rounded-full px-3 py-1 text-sm"
