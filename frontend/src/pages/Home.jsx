@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import client from '../api/client'
 import PostCard from '../components/PostCard'
 import Sidebar from '../components/Sidebar'
+import LetterboxdWidget from '../components/LetterboxdWidget'
 
 export default function Home() {
   const [data, setData] = useState(null)
@@ -54,7 +55,10 @@ export default function Home() {
           </div>
         )}
       </div>
-      <Sidebar />
+      <div className="flex flex-col gap-6 shrink-0 self-start">
+        <Sidebar />
+        <LetterboxdWidget />
+      </div>
     </div>
   )
 }
