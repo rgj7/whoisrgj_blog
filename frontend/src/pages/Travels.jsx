@@ -84,7 +84,7 @@ export default function Travels() {
   }
 
   return (
-    <div>
+    <div className="content-card">
       <h1 className="text-2xl font-bold mb-1">Travels</h1>
       <p className="text-gray-500 text-sm mb-6">
         {loading ? 'Loading...' : `${count} ${count === 1 ? 'country' : 'countries'} visited`}

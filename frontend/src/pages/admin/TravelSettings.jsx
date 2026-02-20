@@ -271,23 +271,20 @@ export default function TravelSettings() {
         {countries.length === 0 ? (
           <p className="text-gray-500 text-sm">No countries added yet.</p>
         ) : (
-          <ul className="space-y-2">
+          <div className="flex flex-wrap gap-2">
             {countries.map((c) => (
-              <li
-                key={c.id}
-                className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded px-3 py-2 text-sm"
-              >
-                <span className="flex-1 font-medium">{c.name}</span>
-                <span className="text-gray-400 text-xs">ISO {c.iso_numeric}</span>
+              <span key={c.id} className="flex items-center gap-1.5 bg-gray-100 rounded-full pl-3 pr-2 py-1 text-sm">
+                {c.name}
                 <button
                   onClick={() => handleRemove(c.id)}
-                  className="text-red-400 hover:text-red-600 ml-1"
+                  className="text-gray-400 hover:text-red-500 leading-none"
+                  aria-label={`Remove ${c.name}`}
                 >
-                  Remove
+                  ×
                 </button>
-              </li>
+              </span>
             ))}
-          </ul>
+          </div>
         )}
       </div>
 
