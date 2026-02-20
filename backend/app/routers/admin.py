@@ -242,14 +242,22 @@ def admin_add_nav_link(
     db: Session = Depends(get_db),
     _: User = Depends(require_auth),
 ):
-    page = db.query(Page).filter(Page.id == payload.page_id).first()
-    if not page or not page.published:
-        raise HTTPException(status_code=404, detail="Published page not found")
-    existing = db.query(NavLink).filter(NavLink.page_id == payload.page_id).first()
-    if existing:
-        raise HTTPException(status_code=409, detail="Page is already in the nav")
     count = db.query(NavLink).count()
-    nav_link = NavLink(page_id=payload.page_id, position=count + 1)
+    if payload.page_id is not None:
+        page = db.query(Page).filter(Page.id == payload.page_id).first()
+        if not page or not page.published:
+            raise HTTPException(status_code=404, detail="Published page not found")
+        existing = db.query(NavLink).filter(NavLink.page_id == payload.page_id).first()
+        if existing:
+            raise HTTPException(status_code=409, detail="Page is already in the nav")
+        nav_link = NavLink(page_id=payload.page_id, position=count + 1)
+    else:
+        nav_link = NavLink(
+            page_id=None,
+            custom_label=payload.custom_label,
+            custom_url=payload.custom_url,
+            position=count + 1,
+        )
     db.add(nav_link)
     db.commit()
     db.refresh(nav_link)

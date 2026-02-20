@@ -7,6 +7,8 @@ export default function NavSettings() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [saving, setSaving] = useState(false)
+  const [customLabel, setCustomLabel] = useState('')
+  const [customUrl, setCustomUrl] = useState('')
 
   useEffect(() => {
     Promise.all([
@@ -57,6 +59,23 @@ export default function NavSettings() {
     }
   }
 
+  async function handleAddCustom() {
+    const label = customLabel.trim()
+    const url = customUrl.trim()
+    if (!label || !url) {
+      alert('Both label and URL are required.')
+      return
+    }
+    try {
+      const res = await client.post('/admin/nav-links', { custom_label: label, custom_url: url })
+      setNavLinks((prev) => [...prev, res.data])
+      setCustomLabel('')
+      setCustomUrl('')
+    } catch {
+      alert('Failed to add custom link.')
+    }
+  }
+
   if (loading) return <p className="text-gray-400">Loading...</p>
   if (error) return <p className="text-red-500">{error}</p>
 
@@ -79,11 +98,20 @@ export default function NavSettings() {
                 className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded px-3 py-2 text-sm"
               >
                 <span className="flex-1 font-medium">
-                  {nl.page.title}
-                  {!nl.page.published && (
-                    <span className="ml-2 px-1.5 py-0.5 bg-yellow-100 text-yellow-700 rounded text-xs font-normal">
-                      Draft — hidden from nav
-                    </span>
+                  {nl.page ? (
+                    <>
+                      {nl.page.title}
+                      {!nl.page.published && (
+                        <span className="ml-2 px-1.5 py-0.5 bg-yellow-100 text-yellow-700 rounded text-xs font-normal">
+                          Draft — hidden from nav
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {nl.custom_label}
+                      <span className="ml-2 text-xs text-gray-400 font-normal">{nl.custom_url}</span>
+                    </>
                   )}
                 </span>
                 <button
@@ -138,6 +166,34 @@ export default function NavSettings() {
             ))}
           </ul>
         )}
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+          Add a Custom Link
+        </h3>
+        <div className="flex gap-2 items-center">
+          <input
+            type="text"
+            placeholder="Label"
+            value={customLabel}
+            onChange={(e) => setCustomLabel(e.target.value)}
+            className="border border-gray-300 rounded px-3 py-2 text-sm w-36 focus:outline-none focus:ring-1 focus:ring-blue-400"
+          />
+          <input
+            type="text"
+            placeholder="URL (e.g. /travels)"
+            value={customUrl}
+            onChange={(e) => setCustomUrl(e.target.value)}
+            className="border border-gray-300 rounded px-3 py-2 text-sm flex-1 focus:outline-none focus:ring-1 focus:ring-blue-400"
+          />
+          <button
+            onClick={handleAddCustom}
+            className="text-blue-600 hover:text-blue-800 font-medium text-sm whitespace-nowrap"
+          >
+            Add
+          </button>
+        </div>
       </div>
     </div>
   )

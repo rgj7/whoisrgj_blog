@@ -12,8 +12,8 @@ router = APIRouter(tags=["public"])
 def list_nav_links(db: Session = Depends(get_db)):
     return (
         db.query(NavLink)
-        .join(NavLink.page)
-        .filter(Page.published == True)
+        .outerjoin(NavLink.page)
+        .filter((Page.published == True) | (NavLink.page_id == None))
         .order_by(NavLink.position.asc())
         .all()
     )

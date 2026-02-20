@@ -30,15 +30,28 @@ export default function Navbar() {
           </Link>
         </div>
         <div className="justify-self-center flex items-center gap-6 text-sm">
-          {navLinks.map((link) => (
-            <Link
-              key={link.id}
-              to={`/pages/${link.page.slug}`}
-              className="font-bold text-gray-600 hover:text-gray-900"
-            >
-              {link.page.title}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const className = "font-bold text-gray-600 hover:text-gray-900"
+            if (link.page) {
+              return (
+                <Link key={link.id} to={`/pages/${link.page.slug}`} className={className}>
+                  {link.page.title}
+                </Link>
+              )
+            }
+            if (link.custom_url && link.custom_url.startsWith('/')) {
+              return (
+                <Link key={link.id} to={link.custom_url} className={className}>
+                  {link.custom_label}
+                </Link>
+              )
+            }
+            return (
+              <a key={link.id} href={link.custom_url} target="_blank" rel="noopener noreferrer" className={className}>
+                {link.custom_label}
+              </a>
+            )
+          })}
         </div>
         <div className="justify-self-end flex items-center gap-4 text-sm">
           {token ? (
