@@ -28,7 +28,7 @@ export default function Page() {
   if (error) return <p className="text-red-500">{error}</p>
 
   return (
-    <article className="max-w-none bg-white rounded-xl p-8 shadow-sm">
+    <article className="max-w-none content-card">
       <h1 className="text-3xl font-bold mb-6">{page.title}</h1>
       <div className="prose prose-gray max-w-none">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{page.content}</ReactMarkdown>

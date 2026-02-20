@@ -29,7 +29,7 @@ export default function Login() {
       <h1 className="text-2xl font-bold mb-6 text-center">Admin Login</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">
+          <p className="error-alert">
             {error}
           </p>
         )}
@@ -40,7 +40,7 @@ export default function Login() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
-            className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="form-input"
           />
         </div>
         <div>
@@ -50,7 +50,7 @@ export default function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="form-input"
           />
         </div>
         <button

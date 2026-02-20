@@ -114,7 +114,7 @@ export default function PostEditor() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="text-sm bg-blue-600 text-white px-4 py-1.5 rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            className="btn-primary disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save'}
           </button>
@@ -122,7 +122,7 @@ export default function PostEditor() {
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">
+        <p className="error-alert">
           {error}
         </p>
       )}
@@ -134,7 +134,7 @@ export default function PostEditor() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Post title"
-          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="form-input"
         />
       </div>
 
@@ -147,7 +147,7 @@ export default function PostEditor() {
           value={excerpt}
           onChange={(e) => setExcerpt(e.target.value)}
           placeholder="Short summary shown in post list"
-          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="form-input"
         />
       </div>
 

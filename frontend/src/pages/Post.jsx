@@ -40,7 +40,7 @@ export default function Post() {
   if (error) return <p className="text-red-500">{error}</p>
 
   return (
-    <article className="max-w-none bg-white rounded-xl p-8 shadow-sm">
+    <article className="max-w-none content-card">
       <Link to="/" className="text-sm text-blue-600 hover:underline mb-6 inline-block">
         &larr; Back to posts
       </Link>

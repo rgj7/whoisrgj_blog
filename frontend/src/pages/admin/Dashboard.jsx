@@ -105,7 +105,7 @@ export default function Dashboard() {
         {activeTab === 'posts' && (
           <Link
             to="/admin/posts/new"
-            className="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+            className="btn-primary"
           >
             New Post
           </Link>
@@ -113,7 +113,7 @@ export default function Dashboard() {
         {activeTab === 'pages' && (
           <Link
             to="/admin/pages/new"
-            className="bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+            className="btn-primary"
           >
             New Page
           </Link>
