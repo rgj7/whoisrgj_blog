@@ -194,6 +194,7 @@ export default function PostEditor() {
             onChange={(val) => setContent(val || '')}
             height={500}
             preview="live"
+            textareaProps={{ spellCheck: true }}
           />
         </div>
       </div>
