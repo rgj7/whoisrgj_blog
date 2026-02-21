@@ -42,11 +42,27 @@ npm run dev    # http://localhost:5173
 npm run build  # output to dist/
 ```
 
+### Frontend linting / formatting
+```bash
+cd frontend
+npx prettier --write src/   # format all source files
+npx eslint src/ --fix       # lint and auto-fix
+```
+
 ### Docker (full stack)
 ```bash
 cp .env.example .env  # set SECRET_KEY
 docker compose up
 ```
+
+### Code quality (pre-commit)
+```bash
+pip install pre-commit
+pre-commit install           # install git hooks
+pre-commit run --all-files   # run all hooks manually
+```
+
+Hooks: `check-yaml`, `check-toml`, `end-of-file-fixer`, `trailing-whitespace`, `ruff` (lint + fix), `ruff-format`, `mypy`, `prettier`, `eslint`.
 
 ## Architecture
 
@@ -96,6 +112,8 @@ alembic upgrade head
 ```
 
 ## Key Conventions
+- **Backend type annotations**: all functions have return type annotations; `disallow_untyped_defs = true` is enforced by mypy. FastAPI route functions that return ORM objects directly use `# type: ignore[return-value]` on the return line — FastAPI handles ORM→Pydantic coercion via `from_attributes = True`; mypy cannot see this.
+- **Frontend code style**: Prettier enforces single quotes, no semicolons, `printWidth: 100`, ES5 trailing commas. ESLint uses `eslint-plugin-react` + `eslint-plugin-react-hooks` recommended rules, with `react/react-in-jsx-scope`, `react/prop-types`, and `react-hooks/set-state-in-effect` disabled.
 - **Async SQLAlchemy**: all DB calls use `select()` + `await db.execute()`; `SessionLocal` uses `expire_on_commit=False`; the Post↔Tag M2M relationship uses `lazy="selectin"` on both sides to avoid lazy-load errors in async context
 - `DATABASE_URL` must use the `postgresql+asyncpg://` driver prefix (not `postgresql://`)
 - Post slugs are auto-generated from titles via `python-slugify`

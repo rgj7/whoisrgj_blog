@@ -59,6 +59,23 @@ npm install
 npm run dev   # http://localhost:5173
 ```
 
+## Code Quality
+
+Pre-commit hooks run automatically on each commit. To install and run manually:
+
+```bash
+pip install pre-commit
+pre-commit install
+pre-commit run --all-files
+```
+
+| Tool | Scope | What it does |
+|------|-------|--------------|
+| ruff | backend | Lint + format Python |
+| mypy | backend | Static type checking (`disallow_untyped_defs`) |
+| prettier | frontend | Format JS/JSX/CSS |
+| eslint | frontend | React + hooks rules |
+
 ## Docker (Full Stack)
 
 ### Prerequisites
