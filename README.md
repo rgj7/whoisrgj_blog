@@ -101,18 +101,3 @@ docker compose down        # stop and remove containers
 docker compose down -v     # also delete the database volume
 ```
 
-## Frontend Routes
-
-| Path | Page |
-|------|------|
-| `/` | Post list |
-| `/posts/:slug` | Single post |
-| `/tags/:slug` | Posts by tag |
-| `/pages/:slug` | Single page |
-| `/login` | Admin login |
-| `/admin` | Admin dashboard — Posts, Pages, Travels, Settings tabs (protected) |
-| `/admin/posts/new` | Create post (protected) |
-| `/admin/posts/:id/edit` | Edit post (protected) |
-| `/admin/pages/new` | Create page (protected) |
-| `/admin/pages/:id/edit` | Edit page (protected) |
-| `/travels` | Interactive visited-countries map |
