@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from pathlib import Path
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from slugify import slugify
 from app.database import get_db
+from app.config import settings
 from app.models.post import Post
 from app.models.tag import Tag
 from app.models.user import User
@@ -10,6 +12,7 @@ from app.models.nav_link import NavLink
 from app.models.social_link import SocialLink
 from app.models.visited_country import VisitedCountry
 from app.models.wanted_country import WantedCountry
+from app.models.site_profile import SiteProfile
 from app.schemas.post import PostCreate, PostUpdate, PostOut, PostSummary
 from app.schemas.tag import TagCreate, TagOut
 from app.schemas.page import PageCreate, PageUpdate, PageOut, PageSummary
@@ -17,6 +20,7 @@ from app.schemas.nav_link import NavLinkOut, NavLinkAdd, NavLinkReorder
 from app.schemas.social_link import SocialLinkOut, SocialLinkCreate, SocialLinkReorder
 from app.schemas.visited_country import VisitedCountryOut, VisitedCountryCreate
 from app.schemas.wanted_country import WantedCountryOut, WantedCountryCreate
+from app.schemas.site_profile import SiteProfileOut, SiteProfileUpdate
 from app.auth import get_current_user
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -434,6 +438,63 @@ def admin_delete_wanted_country(
         raise HTTPException(status_code=404, detail="Country not found")
     db.delete(country)
     db.commit()
+
+
+# --- Profile ---
+
+@router.get("/profile", response_model=SiteProfileOut)
+def admin_get_profile(
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    profile = db.query(SiteProfile).filter(SiteProfile.id == 1).first()
+    if not profile:
+        return SiteProfileOut()
+    return profile
+
+
+@router.put("/profile", response_model=SiteProfileOut)
+def admin_update_profile(
+    payload: SiteProfileUpdate,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    profile = SiteProfile(id=1, photo_url=payload.photo_url, bio=payload.bio)
+    profile = db.merge(profile)
+    db.commit()
+    db.refresh(profile)
+    return profile
+
+
+@router.post("/profile/photo", response_model=SiteProfileOut)
+async def admin_upload_profile_photo(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    _: User = Depends(require_auth),
+):
+    if file.content_type not in ("image/jpeg", "image/png", "image/gif", "image/webp"):
+        raise HTTPException(status_code=400, detail="Only image files are allowed")
+
+    ext = "jpg" if file.content_type == "image/jpeg" else file.content_type.split("/")[1]
+
+    upload_dir = Path(settings.UPLOAD_DIR)
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    for old in upload_dir.glob("profile.*"):
+        old.unlink(missing_ok=True)
+
+    dest = upload_dir / f"profile.{ext}"
+    dest.write_bytes(await file.read())
+
+    photo_url = f"/api/uploads/profile.{ext}"
+    profile = db.query(SiteProfile).filter(SiteProfile.id == 1).first()
+    if profile is None:
+        profile = SiteProfile(id=1, photo_url=photo_url)
+        db.add(profile)
+    else:
+        profile.photo_url = photo_url
+    db.commit()
+    db.refresh(profile)
+    return profile
 
 
 # --- Helpers ---

@@ -4,6 +4,7 @@ import client from '../api/client'
 import PostCard from '../components/PostCard'
 import Sidebar from '../components/Sidebar'
 import LetterboxdWidget from '../components/LetterboxdWidget'
+import BioWidget from '../components/BioWidget'
 
 export default function Home() {
   const [data, setData] = useState(null)
@@ -55,6 +56,7 @@ export default function Home() {
         )}
       </div>
       <div className="flex flex-col gap-6 shrink-0 self-start">
+        <BioWidget />
         <Sidebar />
         <LetterboxdWidget />
       </div>

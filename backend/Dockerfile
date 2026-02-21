@@ -9,7 +9,7 @@ RUN uv sync --frozen --no-dev
 
 COPY . .
 
-RUN chmod +x entrypoint.sh
+RUN mkdir -p /app/uploads && chmod +x entrypoint.sh
 
 ENV PATH="/app/.venv/bin:$PATH"
 

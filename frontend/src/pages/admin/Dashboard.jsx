@@ -4,6 +4,7 @@ import client from '../../api/client'
 import NavSettings from './NavSettings'
 import SocialSettings from './SocialSettings'
 import TravelSettings from './TravelSettings'
+import BioSettings from './BioSettings'
 
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -286,6 +287,9 @@ export default function Dashboard() {
       )}
       {activeTab === 'settings' && (
         <div>
+          <h2 className="text-lg font-semibold mb-4">Bio</h2>
+          <BioSettings />
+          <hr className="my-8 border-gray-200" />
           <h2 className="text-lg font-semibold mb-4">Navigation</h2>
           <NavSettings />
           <hr className="my-8 border-gray-200" />
