@@ -10,8 +10,8 @@ router = APIRouter(tags=["public"])
 
 
 @router.get("/profile", response_model=SiteProfileOut)
-async def get_profile(db: AsyncSession = Depends(get_db)):
+async def get_profile(db: AsyncSession = Depends(get_db)) -> SiteProfileOut:
     profile = (await db.execute(select(SiteProfile).where(SiteProfile.id == 1))).scalar_one_or_none()
     if not profile:
         return SiteProfileOut()
-    return profile
+    return profile  # type: ignore[return-value]

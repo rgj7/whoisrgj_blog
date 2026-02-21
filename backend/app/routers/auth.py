@@ -11,7 +11,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/login", response_model=Token)
-async def login(credentials: LoginRequest, db: AsyncSession = Depends(get_db)):
+async def login(credentials: LoginRequest, db: AsyncSession = Depends(get_db)) -> Token:
     user = (await db.execute(select(User).where(User.username == credentials.username))).scalar_one_or_none()
     if not user or not verify_password(credentials.password, user.hashed_password):
         raise HTTPException(
@@ -20,4 +20,4 @@ async def login(credentials: LoginRequest, db: AsyncSession = Depends(get_db)):
             headers={"WWW-Authenticate": "Bearer"},
         )
     token = create_access_token(data={"sub": user.username})
-    return {"access_token": token, "token_type": "bearer"}
+    return Token(access_token=token, token_type="bearer")

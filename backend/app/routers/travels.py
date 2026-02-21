@@ -12,10 +12,10 @@ router = APIRouter(tags=["public"])
 
 
 @router.get("/travels", response_model=list[VisitedCountryOut])
-async def list_visited_countries(db: AsyncSession = Depends(get_db)):
-    return (await db.execute(select(VisitedCountry).order_by(VisitedCountry.name.asc()))).scalars().all()
+async def list_visited_countries(db: AsyncSession = Depends(get_db)) -> list[VisitedCountryOut]:
+    return (await db.execute(select(VisitedCountry).order_by(VisitedCountry.name.asc()))).scalars().all()  # type: ignore[return-value]
 
 
 @router.get("/travels/wishlist", response_model=list[WantedCountryOut])
-async def list_wanted_countries(db: AsyncSession = Depends(get_db)):
-    return (await db.execute(select(WantedCountry).order_by(WantedCountry.name.asc()))).scalars().all()
+async def list_wanted_countries(db: AsyncSession = Depends(get_db)) -> list[WantedCountryOut]:
+    return (await db.execute(select(WantedCountry).order_by(WantedCountry.name.asc()))).scalars().all()  # type: ignore[return-value]

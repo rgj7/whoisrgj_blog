@@ -10,5 +10,5 @@ router = APIRouter(tags=["public"])
 
 
 @router.get("/social-links", response_model=list[SocialLinkOut])
-async def list_social_links(db: AsyncSession = Depends(get_db)):
-    return (await db.execute(select(SocialLink).order_by(SocialLink.position.asc()))).scalars().all()
+async def list_social_links(db: AsyncSession = Depends(get_db)) -> list[SocialLinkOut]:
+    return (await db.execute(select(SocialLink).order_by(SocialLink.position.asc()))).scalars().all()  # type: ignore[return-value]

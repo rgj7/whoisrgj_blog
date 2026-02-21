@@ -40,8 +40,8 @@ def require_auth(current_user: User = Depends(get_current_user)) -> User:
 async def admin_list_posts(
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
-    return (await db.execute(select(Post).order_by(Post.created_at.desc()))).scalars().all()
+) -> list[PostSummary]:
+    return (await db.execute(select(Post).order_by(Post.created_at.desc()))).scalars().all()  # type: ignore[return-value]
 
 
 @router.get("/posts/{post_id}", response_model=PostOut)
@@ -49,11 +49,11 @@ async def admin_get_post(
     post_id: int,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> PostOut:
     post = (await db.execute(select(Post).where(Post.id == post_id))).scalar_one_or_none()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
-    return post
+    return post  # type: ignore[return-value]
 
 
 @router.post("/posts", response_model=PostOut, status_code=201)
@@ -61,7 +61,7 @@ async def admin_create_post(
     payload: PostCreate,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> PostOut:
     slug = await _unique_slug(db, payload.title)
     tags = await _resolve_tags(db, payload.tag_ids)
     post = Post(
@@ -75,7 +75,7 @@ async def admin_create_post(
     db.add(post)
     await db.commit()
     await db.refresh(post)
-    return post
+    return post  # type: ignore[return-value]
 
 
 @router.put("/posts/{post_id}", response_model=PostOut)
@@ -84,7 +84,7 @@ async def admin_update_post(
     payload: PostUpdate,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> PostOut:
     post = (await db.execute(select(Post).where(Post.id == post_id))).scalar_one_or_none()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
@@ -102,7 +102,7 @@ async def admin_update_post(
 
     await db.commit()
     await db.refresh(post)
-    return post
+    return post  # type: ignore[return-value]
 
 
 @router.delete("/posts/{post_id}", status_code=204)
@@ -110,7 +110,7 @@ async def admin_delete_post(
     post_id: int,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> None:
     post = (await db.execute(select(Post).where(Post.id == post_id))).scalar_one_or_none()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
@@ -126,7 +126,7 @@ async def admin_create_tag(
     payload: TagCreate,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> TagOut:
     slug = slugify(payload.name)
     existing = (await db.execute(select(Tag).where(Tag.slug == slug))).scalar_one_or_none()
     if existing:
@@ -135,7 +135,7 @@ async def admin_create_tag(
     db.add(tag)
     await db.commit()
     await db.refresh(tag)
-    return tag
+    return tag  # type: ignore[return-value]
 
 
 @router.delete("/tags/{tag_id}", status_code=204)
@@ -143,7 +143,7 @@ async def admin_delete_tag(
     tag_id: int,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> None:
     tag = (await db.execute(select(Tag).where(Tag.id == tag_id))).scalar_one_or_none()
     if not tag:
         raise HTTPException(status_code=404, detail="Tag not found")
@@ -158,8 +158,8 @@ async def admin_delete_tag(
 async def admin_list_pages(
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
-    return (await db.execute(select(Page).order_by(Page.created_at.desc()))).scalars().all()
+) -> list[PageSummary]:
+    return (await db.execute(select(Page).order_by(Page.created_at.desc()))).scalars().all()  # type: ignore[return-value]
 
 
 @router.get("/pages/{page_id}", response_model=PageOut)
@@ -167,11 +167,11 @@ async def admin_get_page(
     page_id: int,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> PageOut:
     page = (await db.execute(select(Page).where(Page.id == page_id))).scalar_one_or_none()
     if not page:
         raise HTTPException(status_code=404, detail="Page not found")
-    return page
+    return page  # type: ignore[return-value]
 
 
 @router.post("/pages", response_model=PageOut, status_code=201)
@@ -179,7 +179,7 @@ async def admin_create_page(
     payload: PageCreate,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> PageOut:
     existing = (await db.execute(select(Page).where(Page.slug == payload.slug))).scalar_one_or_none()
     if existing:
         raise HTTPException(status_code=409, detail="A page with this slug already exists")
@@ -192,7 +192,7 @@ async def admin_create_page(
     db.add(page)
     await db.commit()
     await db.refresh(page)
-    return page
+    return page  # type: ignore[return-value]
 
 
 @router.put("/pages/{page_id}", response_model=PageOut)
@@ -201,7 +201,7 @@ async def admin_update_page(
     payload: PageUpdate,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> PageOut:
     page = (await db.execute(select(Page).where(Page.id == page_id))).scalar_one_or_none()
     if not page:
         raise HTTPException(status_code=404, detail="Page not found")
@@ -220,7 +220,7 @@ async def admin_update_page(
 
     await db.commit()
     await db.refresh(page)
-    return page
+    return page  # type: ignore[return-value]
 
 
 @router.delete("/pages/{page_id}", status_code=204)
@@ -228,7 +228,7 @@ async def admin_delete_page(
     page_id: int,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> None:
     page = (await db.execute(select(Page).where(Page.id == page_id))).scalar_one_or_none()
     if not page:
         raise HTTPException(status_code=404, detail="Page not found")
@@ -243,8 +243,8 @@ async def admin_delete_page(
 async def admin_list_nav_links(
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
-    return (await db.execute(select(NavLink).order_by(NavLink.position.asc()))).scalars().all()
+) -> list[NavLinkOut]:
+    return (await db.execute(select(NavLink).order_by(NavLink.position.asc()))).scalars().all()  # type: ignore[return-value]
 
 
 @router.post("/nav-links", response_model=NavLinkOut, status_code=201)
@@ -252,7 +252,7 @@ async def admin_add_nav_link(
     payload: NavLinkAdd,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> NavLinkOut:
     count = (await db.execute(select(func.count()).select_from(NavLink))).scalar()
     if payload.page_id is not None:
         page = (await db.execute(select(Page).where(Page.id == payload.page_id))).scalar_one_or_none()
@@ -272,7 +272,7 @@ async def admin_add_nav_link(
     db.add(nav_link)
     await db.commit()
     await db.refresh(nav_link)
-    return nav_link
+    return nav_link  # type: ignore[return-value]
 
 
 @router.delete("/nav-links/{nav_link_id}", status_code=204)
@@ -280,7 +280,7 @@ async def admin_delete_nav_link(
     nav_link_id: int,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> None:
     nav_link = (await db.execute(select(NavLink).where(NavLink.id == nav_link_id))).scalar_one_or_none()
     if not nav_link:
         raise HTTPException(status_code=404, detail="Nav link not found")
@@ -293,7 +293,7 @@ async def admin_reorder_nav_links(
     payload: NavLinkReorder,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> list[NavLinkOut]:
     all_nav_links = (await db.execute(select(NavLink))).scalars().all()
     existing_ids = {nl.id for nl in all_nav_links}
     if set(payload.ordered_ids) != existing_ids:
@@ -305,7 +305,7 @@ async def admin_reorder_nav_links(
     for position, nav_link_id in enumerate(payload.ordered_ids, start=1):
         id_to_link[nav_link_id].position = position
     await db.commit()
-    return (await db.execute(select(NavLink).order_by(NavLink.position.asc()))).scalars().all()
+    return (await db.execute(select(NavLink).order_by(NavLink.position.asc()))).scalars().all()  # type: ignore[return-value]
 
 
 # --- Social Links ---
@@ -315,8 +315,8 @@ async def admin_reorder_nav_links(
 async def admin_list_social_links(
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
-    return (await db.execute(select(SocialLink).order_by(SocialLink.position.asc()))).scalars().all()
+) -> list[SocialLinkOut]:
+    return (await db.execute(select(SocialLink).order_by(SocialLink.position.asc()))).scalars().all()  # type: ignore[return-value]
 
 
 @router.post("/social-links", response_model=SocialLinkOut, status_code=201)
@@ -324,13 +324,13 @@ async def admin_add_social_link(
     payload: SocialLinkCreate,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> SocialLinkOut:
     count = (await db.execute(select(func.count()).select_from(SocialLink))).scalar()
     social_link = SocialLink(platform=payload.platform, url=payload.url, position=(count or 0) + 1)
     db.add(social_link)
     await db.commit()
     await db.refresh(social_link)
-    return social_link
+    return social_link  # type: ignore[return-value]
 
 
 @router.delete("/social-links/{social_link_id}", status_code=204)
@@ -338,7 +338,7 @@ async def admin_delete_social_link(
     social_link_id: int,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> None:
     social_link = (await db.execute(select(SocialLink).where(SocialLink.id == social_link_id))).scalar_one_or_none()
     if not social_link:
         raise HTTPException(status_code=404, detail="Social link not found")
@@ -351,7 +351,7 @@ async def admin_reorder_social_links(
     payload: SocialLinkReorder,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> list[SocialLinkOut]:
     all_links = (await db.execute(select(SocialLink))).scalars().all()
     existing_ids = {sl.id for sl in all_links}
     if set(payload.ordered_ids) != existing_ids:
@@ -363,7 +363,7 @@ async def admin_reorder_social_links(
     for position, social_link_id in enumerate(payload.ordered_ids, start=1):
         id_to_link[social_link_id].position = position
     await db.commit()
-    return (await db.execute(select(SocialLink).order_by(SocialLink.position.asc()))).scalars().all()
+    return (await db.execute(select(SocialLink).order_by(SocialLink.position.asc()))).scalars().all()  # type: ignore[return-value]
 
 
 # --- Travels ---
@@ -373,8 +373,8 @@ async def admin_reorder_social_links(
 async def admin_list_visited_countries(
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
-    return (await db.execute(select(VisitedCountry).order_by(VisitedCountry.name.asc()))).scalars().all()
+) -> list[VisitedCountryOut]:
+    return (await db.execute(select(VisitedCountry).order_by(VisitedCountry.name.asc()))).scalars().all()  # type: ignore[return-value]
 
 
 @router.post("/travels", response_model=VisitedCountryOut, status_code=201)
@@ -382,7 +382,7 @@ async def admin_add_visited_country(
     payload: VisitedCountryCreate,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> VisitedCountryOut:
     existing = (
         await db.execute(select(VisitedCountry).where(VisitedCountry.iso_numeric == payload.iso_numeric))
     ).scalar_one_or_none()
@@ -396,7 +396,7 @@ async def admin_add_visited_country(
     db.add(country)
     await db.commit()
     await db.refresh(country)
-    return country
+    return country  # type: ignore[return-value]
 
 
 @router.delete("/travels/{country_id}", status_code=204)
@@ -404,7 +404,7 @@ async def admin_delete_visited_country(
     country_id: int,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> None:
     country = (await db.execute(select(VisitedCountry).where(VisitedCountry.id == country_id))).scalar_one_or_none()
     if not country:
         raise HTTPException(status_code=404, detail="Country not found")
@@ -419,8 +419,8 @@ async def admin_delete_visited_country(
 async def admin_list_wanted_countries(
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
-    return (await db.execute(select(WantedCountry).order_by(WantedCountry.name.asc()))).scalars().all()
+) -> list[WantedCountryOut]:
+    return (await db.execute(select(WantedCountry).order_by(WantedCountry.name.asc()))).scalars().all()  # type: ignore[return-value]
 
 
 @router.post("/travels/wishlist", response_model=WantedCountryOut, status_code=201)
@@ -428,7 +428,7 @@ async def admin_add_wanted_country(
     payload: WantedCountryCreate,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> WantedCountryOut:
     existing = (
         await db.execute(select(WantedCountry).where(WantedCountry.iso_numeric == payload.iso_numeric))
     ).scalar_one_or_none()
@@ -442,7 +442,7 @@ async def admin_add_wanted_country(
     db.add(country)
     await db.commit()
     await db.refresh(country)
-    return country
+    return country  # type: ignore[return-value]
 
 
 @router.delete("/travels/wishlist/{country_id}", status_code=204)
@@ -450,7 +450,7 @@ async def admin_delete_wanted_country(
     country_id: int,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> None:
     country = (await db.execute(select(WantedCountry).where(WantedCountry.id == country_id))).scalar_one_or_none()
     if not country:
         raise HTTPException(status_code=404, detail="Country not found")
@@ -465,11 +465,11 @@ async def admin_delete_wanted_country(
 async def admin_get_profile(
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> SiteProfileOut:
     profile = (await db.execute(select(SiteProfile).where(SiteProfile.id == 1))).scalar_one_or_none()
     if not profile:
         return SiteProfileOut()
-    return profile
+    return profile  # type: ignore[return-value]
 
 
 @router.put("/profile", response_model=SiteProfileOut)
@@ -477,12 +477,12 @@ async def admin_update_profile(
     payload: SiteProfileUpdate,
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> SiteProfileOut:
     profile = SiteProfile(id=1, photo_url=payload.photo_url, bio=payload.bio)
     profile = await db.merge(profile)
     await db.commit()
     await db.refresh(profile)
-    return profile
+    return profile  # type: ignore[return-value]
 
 
 @router.post("/profile/photo", response_model=SiteProfileOut)
@@ -490,7 +490,7 @@ async def admin_upload_profile_photo(
     file: UploadFile = File(...),
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
-):
+) -> SiteProfileOut:
     if file.content_type not in ("image/jpeg", "image/png", "image/gif", "image/webp"):
         raise HTTPException(status_code=400, detail="Only image files are allowed")
 
@@ -513,7 +513,7 @@ async def admin_upload_profile_photo(
         profile.photo_url = photo_url
     await db.commit()
     await db.refresh(profile)
-    return profile
+    return profile  # type: ignore[return-value]
 
 
 # --- Helpers ---

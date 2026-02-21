@@ -47,7 +47,7 @@ def _parse_feed(xml_text: str) -> list[dict]:
 
 
 @router.get("/letterboxd")
-async def get_recently_watched():
+async def get_recently_watched() -> list[dict]:
     now = time.time()
     if _cache.get("expires", 0) > now:
         return _cache["data"]

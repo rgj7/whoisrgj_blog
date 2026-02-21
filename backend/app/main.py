@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.database import get_db
@@ -44,8 +45,8 @@ app.include_router(admin.router, prefix="/api")
 app.include_router(auth.router, prefix="/api")
 
 
-@app.get("/api/health")
-async def health(db=Depends(get_db)):
+@app.get("/api/health", response_model=None)
+async def health(db: AsyncSession = Depends(get_db)) -> dict[str, str] | JSONResponse:
     try:
         await db.execute(text("SELECT 1"))
         return {"status": "ok"}
@@ -54,5 +55,5 @@ async def health(db=Depends(get_db)):
 
 
 @app.get("/")
-def root():
+def root() -> dict[str, str]:
     return {"message": "whoisrgj Blog API"}

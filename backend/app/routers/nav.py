@@ -11,11 +11,11 @@ router = APIRouter(tags=["public"])
 
 
 @router.get("/nav-links", response_model=list[NavLinkOut])
-async def list_nav_links(db: AsyncSession = Depends(get_db)):
+async def list_nav_links(db: AsyncSession = Depends(get_db)) -> list[NavLinkOut]:
     stmt = (
         select(NavLink)
         .outerjoin(NavLink.page)
         .where(or_(Page.published == True, NavLink.page_id == None))  # noqa: E711,E712
         .order_by(NavLink.position.asc())
     )
-    return (await db.execute(stmt)).scalars().all()
+    return (await db.execute(stmt)).scalars().all()  # type: ignore[return-value]

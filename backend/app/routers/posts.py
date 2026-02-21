@@ -19,7 +19,7 @@ async def list_posts(
     size: int = Query(10, ge=1, le=100),
     tag: str | None = Query(None),
     db: AsyncSession = Depends(get_db),
-):
+) -> PaginatedPosts:
     stmt = select(Post).where(Post.published == True)  # noqa: E712
     if tag:
         stmt = stmt.join(Post.tags).where(Tag.slug == tag)
@@ -37,15 +37,15 @@ async def list_posts(
 
 
 @router.get("/posts/{slug}", response_model=PostOut)
-async def get_post(slug: str, db: AsyncSession = Depends(get_db)):
+async def get_post(slug: str, db: AsyncSession = Depends(get_db)) -> PostOut:
     post = (
         await db.execute(select(Post).where(Post.slug == slug, Post.published == True))  # noqa: E712
     ).scalar_one_or_none()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
-    return post
+    return post  # type: ignore[return-value]
 
 
 @router.get("/tags", response_model=list[TagOut])
-async def list_tags(db: AsyncSession = Depends(get_db)):
-    return (await db.execute(select(Tag).order_by(Tag.name))).scalars().all()
+async def list_tags(db: AsyncSession = Depends(get_db)) -> list[TagOut]:
+    return (await db.execute(select(Tag).order_by(Tag.name))).scalars().all()  # type: ignore[return-value]

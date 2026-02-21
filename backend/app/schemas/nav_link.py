@@ -20,7 +20,7 @@ class NavLinkAdd(BaseModel):
     custom_url: str | None = None
 
     @model_validator(mode="after")
-    def check_link_type(self):
+    def check_link_type(self) -> NavLinkAdd:
         has_page = self.page_id is not None
         has_custom = self.custom_label is not None and self.custom_url is not None
         if not has_page and not has_custom:
