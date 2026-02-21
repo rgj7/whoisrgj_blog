@@ -62,7 +62,7 @@ pre-commit install           # install git hooks
 pre-commit run --all-files   # run all hooks manually
 ```
 
-Hooks: `check-yaml`, `check-toml`, `end-of-file-fixer`, `trailing-whitespace`, `ruff` (lint + fix), `ruff-format`, `mypy`, `prettier`, `eslint`.
+Hooks: `check-yaml`, `check-toml`, `check-json`, `detect-private-key`, `end-of-file-fixer`, `trailing-whitespace`, `ruff` (lint + fix), `ruff-format`, `mypy`, `prettier`, `eslint`.
 
 ## Architecture
 
