@@ -101,50 +101,6 @@ docker compose down        # stop and remove containers
 docker compose down -v     # also delete the database volume
 ```
 
-## API Overview
-
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `/api/posts` | No | List published posts (paginated, `?tag=slug`) |
-| GET | `/api/posts/{slug}` | No | Single published post |
-| GET | `/api/tags` | No | All tags |
-| GET | `/api/pages` | No | List published pages |
-| GET | `/api/pages/{slug}` | No | Single published page |
-| GET | `/api/nav-links` | No | Ordered nav links (published pages only) |
-| POST | `/api/auth/login` | No | Get JWT token |
-| GET | `/api/admin/posts` | Yes | All posts (incl. drafts) |
-| POST | `/api/admin/posts` | Yes | Create post |
-| PUT | `/api/admin/posts/{id}` | Yes | Update post |
-| DELETE | `/api/admin/posts/{id}` | Yes | Delete post |
-| POST | `/api/admin/tags` | Yes | Create tag |
-| DELETE | `/api/admin/tags/{id}` | Yes | Delete tag |
-| GET | `/api/admin/pages` | Yes | All pages (incl. drafts) |
-| POST | `/api/admin/pages` | Yes | Create page |
-| PUT | `/api/admin/pages/{id}` | Yes | Update page |
-| DELETE | `/api/admin/pages/{id}` | Yes | Delete page |
-| GET | `/api/admin/nav-links` | Yes | All nav links ordered by position |
-| POST | `/api/admin/nav-links` | Yes | Add a published page to the nav |
-| DELETE | `/api/admin/nav-links/{id}` | Yes | Remove a nav link |
-| PUT | `/api/admin/nav-links/reorder` | Yes | Reorder nav links (`{ ordered_ids: [...] }`) |
-| GET | `/api/social-links` | No | Ordered social links for footer |
-| GET | `/api/letterboxd` | No | Last 5 rated Letterboxd films (cached 1 hr) |
-| GET | `/api/admin/social-links` | Yes | All social links ordered by position |
-| POST | `/api/admin/social-links` | Yes | Add a social link |
-| DELETE | `/api/admin/social-links/{id}` | Yes | Remove a social link |
-| PUT | `/api/admin/social-links/reorder` | Yes | Reorder social links (`{ ordered_ids: [...] }`) |
-| GET | `/api/travels` | No | All visited countries sorted by name |
-| GET | `/api/travels/wishlist` | No | Wishlist countries sorted by name |
-| GET | `/api/admin/travels` | Yes | All visited countries (admin) |
-| POST | `/api/admin/travels` | Yes | Add a visited country (409 on duplicate) |
-| DELETE | `/api/admin/travels/{country_id}` | Yes | Remove a visited country |
-| GET | `/api/admin/travels/wishlist` | Yes | All wishlist countries (admin) |
-| POST | `/api/admin/travels/wishlist` | Yes | Add a wishlist country (409 on duplicate) |
-| DELETE | `/api/admin/travels/wishlist/{country_id}` | Yes | Remove a wishlist country |
-| GET | `/api/profile` | No | Site profile (bio + photo URL) |
-| GET | `/api/admin/profile` | Yes | Get site profile (admin) |
-| PUT | `/api/admin/profile` | Yes | Update bio and/or photo URL |
-| POST | `/api/admin/profile/photo` | Yes | Upload profile photo (multipart) |
-
 ## Frontend Routes
 
 | Path | Page |
