@@ -5,7 +5,7 @@ from sqlalchemy import select, func
 from app.database import get_db
 from app.models.post import Post
 from app.models.tag import Tag
-from app.schemas.post import PostOut, PostSummary, PaginatedPosts
+from app.schemas.post import PostOut, PaginatedPosts
 from app.schemas.tag import TagOut
 
 router = APIRouter(tags=["public"])
