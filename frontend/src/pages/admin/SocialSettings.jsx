@@ -100,13 +100,17 @@ export default function SocialSettings() {
                   disabled={index === 0 || saving}
                   className="text-navy-200 hover:text-navy-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   title="Move up"
-                >↑</button>
+                >
+                  ↑
+                </button>
                 <button
                   onClick={() => handleMove(index, 1)}
                   disabled={index === socialLinks.length - 1 || saving}
                   className="text-navy-200 hover:text-navy-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   title="Move down"
-                >↓</button>
+                >
+                  ↓
+                </button>
                 <button
                   onClick={() => handleRemove(sl.id)}
                   className="text-red-400 hover:text-red-300 ml-1 transition-colors"

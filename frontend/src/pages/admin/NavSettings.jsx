@@ -11,10 +11,7 @@ export default function NavSettings() {
   const [customUrl, setCustomUrl] = useState('')
 
   useEffect(() => {
-    Promise.all([
-      client.get('/admin/nav-links'),
-      client.get('/admin/pages'),
-    ])
+    Promise.all([client.get('/admin/nav-links'), client.get('/admin/pages')])
       .then(([navRes, pagesRes]) => {
         setNavLinks(navRes.data)
         setAllPages(pagesRes.data)
@@ -110,7 +107,9 @@ export default function NavSettings() {
                   ) : (
                     <>
                       {nl.custom_label}
-                      <span className="ml-2 text-xs text-navy-200 font-normal">{nl.custom_url}</span>
+                      <span className="ml-2 text-xs text-navy-200 font-normal">
+                        {nl.custom_url}
+                      </span>
                     </>
                   )}
                 </span>
@@ -119,13 +118,17 @@ export default function NavSettings() {
                   disabled={index === 0 || saving}
                   className="text-navy-200 hover:text-navy-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   title="Move up"
-                >↑</button>
+                >
+                  ↑
+                </button>
                 <button
                   onClick={() => handleMove(index, 1)}
                   disabled={index === navLinks.length - 1 || saving}
                   className="text-navy-200 hover:text-navy-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   title="Move down"
-                >↓</button>
+                >
+                  ↓
+                </button>
                 <button
                   onClick={() => handleRemove(nl.id)}
                   className="text-red-400 hover:text-red-300 ml-1 transition-colors"

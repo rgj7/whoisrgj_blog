@@ -16,7 +16,10 @@ export default function LetterboxdWidget() {
   const [films, setFilms] = useState([])
 
   useEffect(() => {
-    client.get('/letterboxd').then((res) => setFilms(res.data)).catch(() => {})
+    client
+      .get('/letterboxd')
+      .then((res) => setFilms(res.data))
+      .catch(() => {})
   }, [])
 
   if (films.length === 0) return null
@@ -44,7 +47,9 @@ export default function LetterboxdWidget() {
             )}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300" />
             <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black via-black/70 to-black/10">
-              <p className="text-xs font-bold text-white leading-tight line-clamp-2">{film.title}</p>
+              <p className="text-xs font-bold text-white leading-tight line-clamp-2">
+                {film.title}
+              </p>
               <div className="flex items-center gap-1 mt-1 text-xs text-gray-300">
                 {film.year && <span>{film.year}</span>}
                 {film.year && <span>/</span>}

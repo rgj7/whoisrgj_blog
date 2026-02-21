@@ -23,7 +23,10 @@ export default function TagFeed() {
 
   return (
     <div>
-      <Link to="/" className="text-sm text-navy-300 hover:text-navy-400 hover:underline mb-6 inline-block transition-colors">
+      <Link
+        to="/"
+        className="text-sm text-navy-300 hover:text-navy-400 hover:underline mb-6 inline-block transition-colors"
+      >
         &larr; All posts
       </Link>
       <h1 className="text-2xl font-bold mb-8">

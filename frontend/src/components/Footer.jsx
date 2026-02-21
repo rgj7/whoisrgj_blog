@@ -1,32 +1,43 @@
 import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faGithub, faXTwitter, faLinkedin, faInstagram, faYoutube,
-  faTwitch, faSteam, faLetterboxd, faMastodon, faBluesky,
+  faGithub,
+  faXTwitter,
+  faLinkedin,
+  faInstagram,
+  faYoutube,
+  faTwitch,
+  faSteam,
+  faLetterboxd,
+  faMastodon,
+  faBluesky,
 } from '@fortawesome/free-brands-svg-icons'
 import { faGlobe, faRss, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import client from '../api/client'
 
 const ICON_MAP = {
-  github:     faGithub,
-  twitter:    faXTwitter,
-  linkedin:   faLinkedin,
-  instagram:  faInstagram,
-  youtube:    faYoutube,
-  twitch:     faTwitch,
-  steam:      faSteam,
+  github: faGithub,
+  twitter: faXTwitter,
+  linkedin: faLinkedin,
+  instagram: faInstagram,
+  youtube: faYoutube,
+  twitch: faTwitch,
+  steam: faSteam,
   letterboxd: faLetterboxd,
-  mastodon:   faMastodon,
-  bluesky:    faBluesky,
-  rss:        faRss,
-  email:      faEnvelope,
+  mastodon: faMastodon,
+  bluesky: faBluesky,
+  rss: faRss,
+  email: faEnvelope,
 }
 
 export default function Footer() {
   const [links, setLinks] = useState([])
 
   useEffect(() => {
-    client.get('/social-links').then((res) => setLinks(res.data)).catch(() => {})
+    client
+      .get('/social-links')
+      .then((res) => setLinks(res.data))
+      .catch(() => {})
   }, [])
 
   return (

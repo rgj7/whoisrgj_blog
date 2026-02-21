@@ -30,7 +30,7 @@ export default function BioSettings() {
     try {
       const res = await client.post('/admin/profile/photo', formData)
       setPhotoUrl(res.data.photo_url || '')
-      setPhotoKey(k => k + 1)
+      setPhotoKey((k) => k + 1)
       setMessage({ type: 'success', text: 'Photo uploaded.' })
     } catch {
       setMessage({ type: 'error', text: 'Failed to upload photo.' })
@@ -83,7 +83,13 @@ export default function BioSettings() {
           <div className="flex items-center gap-2 mt-1">
             <label className="text-sm text-navy-300 hover:text-navy-400 cursor-pointer font-medium transition-colors">
               {uploading ? 'Uploading…' : 'Upload a photo'}
-              <input type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} disabled={uploading} />
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handlePhotoUpload}
+                disabled={uploading}
+              />
             </label>
           </div>
         </div>
@@ -121,7 +127,9 @@ export default function BioSettings() {
           Save
         </button>
         {message && (
-          <span className={`text-sm ${message.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+          <span
+            className={`text-sm ${message.type === 'success' ? 'text-green-400' : 'text-red-400'}`}
+          >
             {message.text}
           </span>
         )}

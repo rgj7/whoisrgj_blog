@@ -200,7 +200,7 @@ const COUNTRIES = [
   { name: 'Zimbabwe', iso_numeric: 716 },
 ]
 
-function CountryCombobox({ countries, onAdd, onRemove, endpoint, addLabel }) {
+function CountryCombobox({ onAdd, endpoint, addLabel }) {
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
   const [open, setOpen] = useState(false)
@@ -216,9 +216,10 @@ function CountryCombobox({ countries, onAdd, onRemove, endpoint, addLabel }) {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const filtered = query.trim() === ''
-    ? COUNTRIES
-    : COUNTRIES.filter(c => c.name.toLowerCase().includes(query.toLowerCase()))
+  const filtered =
+    query.trim() === ''
+      ? COUNTRIES
+      : COUNTRIES.filter((c) => c.name.toLowerCase().includes(query.toLowerCase()))
 
   async function handleAdd() {
     if (!selected) return
@@ -248,16 +249,24 @@ function CountryCombobox({ countries, onAdd, onRemove, endpoint, addLabel }) {
           value={query}
           placeholder="Search countries…"
           className="w-full bg-navy-800 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 placeholder-navy-200"
-          onChange={e => { setQuery(e.target.value); setSelected(null); setOpen(true) }}
+          onChange={(e) => {
+            setQuery(e.target.value)
+            setSelected(null)
+            setOpen(true)
+          }}
           onFocus={() => setOpen(true)}
         />
         {open && filtered.length > 0 && (
           <ul className="absolute z-10 mt-1 w-full bg-navy-800 border border-navy-600 rounded shadow-md max-h-60 overflow-y-auto text-sm">
-            {filtered.map(c => (
+            {filtered.map((c) => (
               <li
                 key={c.iso_numeric}
                 className="px-3 py-2 cursor-pointer text-navy-50 hover:bg-navy-700 transition-colors"
-                onMouseDown={() => { setSelected(c); setQuery(c.name); setOpen(false) }}
+                onMouseDown={() => {
+                  setSelected(c)
+                  setQuery(c.name)
+                  setOpen(false)
+                }}
               >
                 {c.name}
               </li>
@@ -283,10 +292,7 @@ export default function TravelSettings() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    Promise.all([
-      client.get('/admin/travels'),
-      client.get('/admin/travels/wishlist'),
-    ])
+    Promise.all([client.get('/admin/travels'), client.get('/admin/travels/wishlist')])
       .then(([visitedRes, wishlistRes]) => {
         setCountries(visitedRes.data)
         setWishlist(wishlistRes.data)
@@ -329,7 +335,10 @@ export default function TravelSettings() {
         ) : (
           <div className="flex flex-wrap gap-2">
             {countries.map((c) => (
-              <span key={c.id} className="flex items-center gap-1.5 bg-navy-700 text-navy-50 border border-navy-600 rounded-full pl-3 pr-2 py-1 text-sm">
+              <span
+                key={c.id}
+                className="flex items-center gap-1.5 bg-navy-700 text-navy-50 border border-navy-600 rounded-full pl-3 pr-2 py-1 text-sm"
+              >
                 {c.name}
                 <button
                   onClick={() => handleRemoveVisited(c.id)}
@@ -352,7 +361,9 @@ export default function TravelSettings() {
           countries={countries}
           endpoint="/admin/travels"
           addLabel="Add"
-          onAdd={(c) => setCountries((prev) => [...prev, c].sort((a, b) => a.name.localeCompare(b.name)))}
+          onAdd={(c) =>
+            setCountries((prev) => [...prev, c].sort((a, b) => a.name.localeCompare(b.name)))
+          }
           onRemove={handleRemoveVisited}
         />
       </div>
@@ -366,7 +377,10 @@ export default function TravelSettings() {
         ) : (
           <div className="flex flex-wrap gap-2">
             {wishlist.map((c) => (
-              <span key={c.id} className="flex items-center gap-1.5 bg-navy-700 text-navy-50 border border-navy-600 rounded-full pl-3 pr-2 py-1 text-sm">
+              <span
+                key={c.id}
+                className="flex items-center gap-1.5 bg-navy-700 text-navy-50 border border-navy-600 rounded-full pl-3 pr-2 py-1 text-sm"
+              >
                 {c.name}
                 <button
                   onClick={() => handleRemoveWishlist(c.id)}
@@ -389,7 +403,9 @@ export default function TravelSettings() {
           countries={wishlist}
           endpoint="/admin/travels/wishlist"
           addLabel="Add"
-          onAdd={(c) => setWishlist((prev) => [...prev, c].sort((a, b) => a.name.localeCompare(b.name)))}
+          onAdd={(c) =>
+            setWishlist((prev) => [...prev, c].sort((a, b) => a.name.localeCompare(b.name)))
+          }
           onRemove={handleRemoveWishlist}
         />
       </div>

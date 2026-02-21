@@ -26,10 +26,6 @@ export default function Dashboard() {
   const [pagesError, setPagesError] = useState(null)
   const [pagesFetched, setPagesFetched] = useState(false)
 
-  useEffect(() => {
-    fetchPosts()
-  }, [])
-
   function fetchPosts() {
     setPostsLoading(true)
     client
@@ -38,6 +34,10 @@ export default function Dashboard() {
       .catch(() => setPostsError('Failed to load posts.'))
       .finally(() => setPostsLoading(false))
   }
+
+  useEffect(() => {
+    fetchPosts()
+  }, [])
 
   function fetchPages() {
     setPagesLoading(true)
@@ -107,10 +107,14 @@ export default function Dashboard() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Admin</h1>
         {activeTab === 'posts' && (
-          <Link to="/admin/posts/new" className="btn-primary">New Post</Link>
+          <Link to="/admin/posts/new" className="btn-primary">
+            New Post
+          </Link>
         )}
         {activeTab === 'pages' && (
-          <Link to="/admin/pages/new" className="btn-primary">New Page</Link>
+          <Link to="/admin/pages/new" className="btn-primary">
+            New Page
+          </Link>
         )}
       </div>
 
@@ -134,8 +138,9 @@ export default function Dashboard() {
         <>
           {postsLoading && <p className="text-navy-200">Loading...</p>}
           {postsError && <p className="text-red-400">{postsError}</p>}
-          {!postsLoading && !postsError && (
-            posts.length === 0 ? (
+          {!postsLoading &&
+            !postsError &&
+            (posts.length === 0 ? (
               <p className="text-navy-200">No posts yet. Create one!</p>
             ) : (
               <div className="overflow-x-auto">
@@ -166,10 +171,16 @@ export default function Dashboard() {
                         </td>
                         <td className="py-3 pr-4 text-navy-200">{formatDate(post.created_at)}</td>
                         <td className="py-3 flex gap-3">
-                          <Link to={`/admin/posts/${post.id}/edit`} className="text-navy-300 hover:text-navy-400 hover:underline">
+                          <Link
+                            to={`/admin/posts/${post.id}/edit`}
+                            className="text-navy-300 hover:text-navy-400 hover:underline"
+                          >
                             Edit
                           </Link>
-                          <button onClick={() => handleDeletePost(post.id)} className="text-red-400 hover:text-red-300 hover:underline">
+                          <button
+                            onClick={() => handleDeletePost(post.id)}
+                            className="text-red-400 hover:text-red-300 hover:underline"
+                          >
                             Delete
                           </button>
                         </td>
@@ -178,8 +189,7 @@ export default function Dashboard() {
                   </tbody>
                 </table>
               </div>
-            )
-          )}
+            ))}
         </>
       )}
 
@@ -187,8 +197,9 @@ export default function Dashboard() {
         <>
           {pagesLoading && <p className="text-navy-200">Loading...</p>}
           {pagesError && <p className="text-red-400">{pagesError}</p>}
-          {!pagesLoading && !pagesError && (
-            pages.length === 0 ? (
+          {!pagesLoading &&
+            !pagesError &&
+            (pages.length === 0 ? (
               <p className="text-navy-200">No pages yet. Create one!</p>
             ) : (
               <div className="overflow-x-auto">
@@ -222,10 +233,16 @@ export default function Dashboard() {
                         </td>
                         <td className="py-3 pr-4 text-navy-200">{formatDate(page.created_at)}</td>
                         <td className="py-3 flex gap-3">
-                          <Link to={`/admin/pages/${page.id}/edit`} className="text-navy-300 hover:text-navy-400 hover:underline">
+                          <Link
+                            to={`/admin/pages/${page.id}/edit`}
+                            className="text-navy-300 hover:text-navy-400 hover:underline"
+                          >
                             Edit
                           </Link>
-                          <button onClick={() => handleDeletePage(page.id)} className="text-red-400 hover:text-red-300 hover:underline">
+                          <button
+                            onClick={() => handleDeletePage(page.id)}
+                            className="text-red-400 hover:text-red-300 hover:underline"
+                          >
                             Delete
                           </button>
                         </td>
@@ -234,8 +251,7 @@ export default function Dashboard() {
                   </tbody>
                 </table>
               </div>
-            )
-          )}
+            ))}
         </>
       )}
 

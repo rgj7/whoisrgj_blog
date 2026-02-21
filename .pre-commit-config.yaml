@@ -24,3 +24,17 @@ repos:
         language: system
         files: ^backend/app/.*\.py$
         pass_filenames: false
+
+      - id: prettier
+        name: prettier
+        entry: npx --prefix frontend prettier --write
+        language: system
+        files: ^frontend/src/.*\.(js|jsx|css)$
+        pass_filenames: true
+
+      - id: eslint
+        name: eslint
+        entry: bash -c 'cd frontend && npx eslint src --fix'
+        language: system
+        files: ^frontend/src/.*\.(js|jsx)$
+        pass_filenames: false

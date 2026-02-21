@@ -28,11 +28,7 @@ export default function Login() {
     <div className="max-w-sm mx-auto mt-16">
       <h1 className="text-2xl font-bold mb-6 text-center">Admin Login</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {error && (
-          <p className="error-alert">
-            {error}
-          </p>
-        )}
+        {error && <p className="error-alert">{error}</p>}
         <div>
           <label className="block text-sm font-medium text-navy-100 mb-1">Username</label>
           <input

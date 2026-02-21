@@ -41,7 +41,10 @@ export default function Post() {
 
   return (
     <article className="max-w-none content-card">
-      <Link to="/" className="text-sm text-navy-300 hover:text-navy-400 hover:underline mb-6 inline-block transition-colors">
+      <Link
+        to="/"
+        className="text-sm text-navy-300 hover:text-navy-400 hover:underline mb-6 inline-block transition-colors"
+      >
         &larr; Back to posts
       </Link>
       <h1 className="text-3xl font-bold mb-2">{post.title}</h1>

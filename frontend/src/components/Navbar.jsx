@@ -54,7 +54,13 @@ export default function Navbar() {
               )
             }
             return (
-              <a key={link.id} href={link.custom_url} target="_blank" rel="noopener noreferrer" className="nav-link">
+              <a
+                key={link.id}
+                href={link.custom_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nav-link"
+              >
                 {link.custom_label}
               </a>
             )

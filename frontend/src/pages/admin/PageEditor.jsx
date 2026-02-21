@@ -38,7 +38,9 @@ export default function PageEditor() {
     const val = e.target.value
     setSlug(val)
     if (val && !SLUG_RE.test(val)) {
-      setSlugError('Slug must be lowercase letters, numbers, and hyphens only, with no leading or trailing hyphens.')
+      setSlugError(
+        'Slug must be lowercase letters, numbers, and hyphens only, with no leading or trailing hyphens.'
+      )
     } else {
       setSlugError(null)
     }
@@ -140,9 +142,7 @@ export default function PageEditor() {
             slugError ? 'border-red-500' : 'border-navy-600'
           }`}
         />
-        {slugError && (
-          <p className="mt-1 text-xs text-red-400">{slugError}</p>
-        )}
+        {slugError && <p className="mt-1 text-xs text-red-400">{slugError}</p>}
       </div>
 
       <div>

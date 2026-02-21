@@ -45,7 +45,9 @@
     width: 2px;
     border-radius: 1px;
     background-color: #1a2f44; /* navy-700 */
-    transition: background-color 0.25s ease, box-shadow 0.25s ease;
+    transition:
+      background-color 0.25s ease,
+      box-shadow 0.25s ease;
   }
   .post-card:hover::before {
     background-color: #78aed6; /* navy-400 */

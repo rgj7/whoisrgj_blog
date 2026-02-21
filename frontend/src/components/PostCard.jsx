@@ -29,9 +29,7 @@ export default function PostCard({ post }) {
           {post.title}
         </h2>
       </Link>
-      {post.excerpt && (
-        <p className="text-navy-100 text-base leading-relaxed">{post.excerpt}</p>
-      )}
+      {post.excerpt && <p className="text-navy-100 text-base leading-relaxed">{post.excerpt}</p>}
     </article>
   )
 }

@@ -36,14 +36,13 @@ export default function Travels() {
   useEffect(() => {
     const topoId = (n) => String(n).padStart(3, '0')
 
-    Promise.all([
-      axios.get('/api/travels'),
-      axios.get('/api/travels/wishlist'),
-    ])
+    Promise.all([axios.get('/api/travels'), axios.get('/api/travels/wishlist')])
       .then(([visitedRes, wishlistRes]) => {
         // Visited
         setVisitedCodes(new Set(visitedRes.data.map((c) => topoId(c.iso_numeric))))
-        setVisitedNames(Object.fromEntries(visitedRes.data.map((c) => [topoId(c.iso_numeric), c.name])))
+        setVisitedNames(
+          Object.fromEntries(visitedRes.data.map((c) => [topoId(c.iso_numeric), c.name]))
+        )
         setCount(visitedRes.data.length)
 
         const groups = {}
@@ -61,7 +60,9 @@ export default function Travels() {
 
         // Wishlist
         setWishlistCodes(new Set(wishlistRes.data.map((c) => topoId(c.iso_numeric))))
-        setWishlistNames(Object.fromEntries(wishlistRes.data.map((c) => [topoId(c.iso_numeric), c.name])))
+        setWishlistNames(
+          Object.fromEntries(wishlistRes.data.map((c) => [topoId(c.iso_numeric), c.name]))
+        )
 
         const wGroups = {}
         for (const c of wishlistRes.data) {
@@ -106,7 +107,9 @@ export default function Travels() {
     const isWishlist = wishlistCodes.has(geo.id)
     if (!isVisited && !isWishlist) return
     const rect = containerRef.current.getBoundingClientRect()
-    setTooltip((prev) => prev ? { ...prev, x: evt.clientX - rect.left, y: evt.clientY - rect.top } : prev)
+    setTooltip((prev) =>
+      prev ? { ...prev, x: evt.clientX - rect.left, y: evt.clientY - rect.top } : prev
+    )
   }
 
   function handleGeoMouseLeave() {
@@ -136,7 +139,8 @@ export default function Travels() {
       <div className="flex gap-3 items-start bg-navy-700 border border-navy-500 rounded-lg px-4 py-3 mb-6 text-sm text-navy-100">
         <span className="mt-0.5 text-base leading-none">🚧</span>
         <p>
-          This page is still under construction. I'm planning to add a photo gallery of my travels here soon.
+          This page is still under construction. I&apos;m planning to add a photo gallery of my
+          travels here soon.
         </p>
       </div>
       <div ref={containerRef} className="bg-navy-900 rounded-lg overflow-hidden relative">
@@ -146,19 +150,27 @@ export default function Travels() {
             disabled={position.zoom >= MAX_ZOOM}
             className="w-7 h-7 bg-navy-700 border border-navy-500 rounded shadow text-navy-100 hover:bg-navy-600 disabled:opacity-40 disabled:cursor-not-allowed text-lg leading-none transition-colors"
             aria-label="Zoom in"
-          >+</button>
+          >
+            +
+          </button>
           <button
             onClick={handleZoomOut}
             disabled={position.zoom <= MIN_ZOOM}
             className="w-7 h-7 bg-navy-700 border border-navy-500 rounded shadow text-navy-100 hover:bg-navy-600 disabled:opacity-40 disabled:cursor-not-allowed text-lg leading-none transition-colors"
             aria-label="Zoom out"
-          >−</button>
+          >
+            −
+          </button>
           <button
             onClick={handleReset}
-            disabled={position.zoom === 1 && position.coordinates[0] === 0 && position.coordinates[1] === 0}
+            disabled={
+              position.zoom === 1 && position.coordinates[0] === 0 && position.coordinates[1] === 0
+            }
             className="w-7 h-7 bg-navy-700 border border-navy-500 rounded shadow text-navy-200 hover:bg-navy-600 disabled:opacity-40 disabled:cursor-not-allowed text-xs leading-none transition-colors"
             aria-label="Reset view"
-          >⊙</button>
+          >
+            ⊙
+          </button>
         </div>
         <ComposableMap
           projectionConfig={{ scale: 140 }}
@@ -200,8 +212,7 @@ export default function Travels() {
             className="absolute pointer-events-none bg-navy-600 text-navy-50 text-xs rounded px-2 py-1 whitespace-nowrap border border-navy-500"
             style={{ left: tooltip.x + 12, top: tooltip.y - 28 }}
           >
-            {tooltip.name}{' '}
-            <span className="opacity-70">{tooltip.label}</span>
+            {tooltip.name} <span className="opacity-70">{tooltip.label}</span>
           </div>
         )}
       </div>
