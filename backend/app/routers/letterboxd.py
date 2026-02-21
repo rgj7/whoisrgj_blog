@@ -35,8 +35,8 @@ def _parse_feed(xml_text: str) -> list[dict]:
         results.append(
             {
                 "title": title_el.text if title_el is not None else "",
-                "year": int(year_el.text) if year_el is not None else None,
-                "rating": float(rating_el.text),
+                "year": int(year_el.text) if year_el is not None and year_el.text is not None else None,
+                "rating": float(rating_el.text) if rating_el.text is not None else 0.0,
                 "url": link_el.text if link_el is not None else "",
                 "poster_url": poster_url,
             }

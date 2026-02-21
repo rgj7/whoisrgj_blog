@@ -18,6 +18,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "mypy>=1.19.1",
     "ruff>=0.15.2",
 ]
 
@@ -30,3 +31,9 @@ select = ["E", "F", "I", "UP"]  # pycodestyle, pyflakes, isort, pyupgrade
 
 [tool.ruff.lint.isort]
 known-first-party = ["app"]
+
+[tool.mypy]
+python_version = "3.14"
+plugins = ["sqlalchemy.ext.mypy.plugin"]
+ignore_missing_imports = true
+warn_unused_ignores = true

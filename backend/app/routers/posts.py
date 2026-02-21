@@ -23,12 +23,12 @@ async def list_posts(
     stmt = select(Post).where(Post.published == True)  # noqa: E712
     if tag:
         stmt = stmt.join(Post.tags).where(Tag.slug == tag)
-    total = (await db.execute(select(func.count()).select_from(stmt.subquery()))).scalar()
+    total = (await db.execute(select(func.count()).select_from(stmt.subquery()))).scalar() or 0
     posts = (
         (await db.execute(stmt.order_by(Post.created_at.desc()).offset((page - 1) * size).limit(size))).scalars().all()
     )
     return PaginatedPosts(
-        items=posts,
+        items=posts,  # type: ignore[arg-type]
         total=total,
         page=page,
         size=size,

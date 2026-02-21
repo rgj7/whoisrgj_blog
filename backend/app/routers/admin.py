@@ -261,13 +261,13 @@ async def admin_add_nav_link(
         existing = (await db.execute(select(NavLink).where(NavLink.page_id == payload.page_id))).scalar_one_or_none()
         if existing:
             raise HTTPException(status_code=409, detail="Page is already in the nav")
-        nav_link = NavLink(page_id=payload.page_id, position=count + 1)
+        nav_link = NavLink(page_id=payload.page_id, position=(count or 0) + 1)
     else:
         nav_link = NavLink(
             page_id=None,
             custom_label=payload.custom_label,
             custom_url=payload.custom_url,
-            position=count + 1,
+            position=(count or 0) + 1,
         )
     db.add(nav_link)
     await db.commit()
@@ -326,7 +326,7 @@ async def admin_add_social_link(
     _: User = Depends(require_auth),
 ):
     count = (await db.execute(select(func.count()).select_from(SocialLink))).scalar()
-    social_link = SocialLink(platform=payload.platform, url=payload.url, position=count + 1)
+    social_link = SocialLink(platform=payload.platform, url=payload.url, position=(count or 0) + 1)
     db.add(social_link)
     await db.commit()
     await db.refresh(social_link)
@@ -532,7 +532,7 @@ async def _unique_slug(db: AsyncSession, title: str) -> str:
 async def _resolve_tags(db: AsyncSession, tag_ids: list[int]) -> list[Tag]:
     if not tag_ids:
         return []
-    tags = (await db.execute(select(Tag).where(Tag.id.in_(tag_ids)))).scalars().all()
+    tags = list((await db.execute(select(Tag).where(Tag.id.in_(tag_ids)))).scalars().all())
     if len(tags) != len(tag_ids):
         raise HTTPException(status_code=400, detail="One or more tag IDs are invalid")
     return tags

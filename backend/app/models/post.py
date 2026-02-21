@@ -1,9 +1,15 @@
+from __future__ import annotations
+
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String, Table, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
+
+if TYPE_CHECKING:
+    from app.models.tag import Tag
 
 post_tags = Table(
     "post_tags",
@@ -29,6 +35,4 @@ class Post(Base):
         onupdate=lambda: datetime.now(UTC),
     )
 
-    tags: Mapped[list[Tag]] = relationship(  # noqa: F821
-        "Tag", secondary=post_tags, back_populates="posts", lazy="selectin"
-    )
+    tags: Mapped[list[Tag]] = relationship("Tag", secondary=post_tags, back_populates="posts", lazy="selectin")

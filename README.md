@@ -100,4 +100,3 @@ docker compose exec backend python scripts/create_admin.py
 docker compose down        # stop and remove containers
 docker compose down -v     # also delete the database volume
 ```
-
