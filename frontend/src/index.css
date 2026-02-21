@@ -63,7 +63,7 @@
   .nav-link {
     @apply relative font-bold text-navy-200 hover:text-navy-50 uppercase transition-colors duration-200;
     letter-spacing: 0.13em;
-    font-size: 0.7rem;
+    font-size: 0.85rem;
   }
   .nav-link::after {
     content: '';

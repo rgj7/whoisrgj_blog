@@ -67,14 +67,14 @@ export default function Navbar() {
               <Link
                 to="/admin"
                 className="text-navy-200 hover:text-navy-50 transition-colors duration-200"
-                style={{ fontSize: '0.7rem', letterSpacing: '0.13em', textTransform: 'uppercase' }}
+                style={{ fontSize: '0.85rem', letterSpacing: '0.13em', textTransform: 'uppercase' }}
               >
                 Admin
               </Link>
               <button
                 onClick={handleLogout}
                 className="text-navy-300 hover:text-navy-100 transition-colors duration-200"
-                style={{ fontSize: '0.7rem', letterSpacing: '0.13em', textTransform: 'uppercase' }}
+                style={{ fontSize: '0.85rem', letterSpacing: '0.13em', textTransform: 'uppercase' }}
               >
                 Logout
               </button>
@@ -83,7 +83,7 @@ export default function Navbar() {
             <Link
               to="/login"
               className="border border-navy-600 text-navy-200 hover:border-navy-400 hover:text-navy-50 rounded px-3 py-1.5 transition-colors duration-200"
-              style={{ fontSize: '0.7rem', letterSpacing: '0.13em', textTransform: 'uppercase' }}
+              style={{ fontSize: '0.85rem', letterSpacing: '0.13em', textTransform: 'uppercase' }}
             >
               Login
             </Link>

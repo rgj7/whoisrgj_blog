@@ -1,3 +1,4 @@
+import re
 import time
 import xml.etree.ElementTree as ET
 
@@ -25,11 +26,18 @@ def _parse_feed(xml_text: str) -> list[dict]:
         title_el = item.find(f"{{{LB_NS}}}filmTitle")
         year_el = item.find(f"{{{LB_NS}}}filmYear")
         link_el = item.find("link")
+        desc_el = item.find("description")
+        poster_url = None
+        if desc_el is not None and desc_el.text:
+            m = re.search(r'<img src="([^"]+)"', desc_el.text)
+            if m:
+                poster_url = m.group(1)
         results.append({
             "title": title_el.text if title_el is not None else "",
             "year": int(year_el.text) if year_el is not None else None,
             "rating": float(rating_el.text),
             "url": link_el.text if link_el is not None else "",
+            "poster_url": poster_url,
         })
         if len(results) == 5:
             break

@@ -28,6 +28,10 @@ export default function Home() {
   return (
     <div className="flex gap-8">
       <div className="flex-1 min-w-0">
+        <div className="bg-navy-950 rounded-xl p-4 border border-navy-800 mb-6">
+          <LetterboxdWidget />
+        </div>
+        <h2 className="text-lg font-semibold text-navy-50 mb-4 pl-3 border-l-4 border-green-500">Recent Posts</h2>
 {data.items.length === 0 ? (
           <p className="text-navy-200">No posts yet.</p>
         ) : (
@@ -58,7 +62,6 @@ export default function Home() {
       <div className="flex flex-col gap-6 shrink-0 self-start">
         <BioWidget />
         <Sidebar />
-        <LetterboxdWidget />
       </div>
     </div>
   )
