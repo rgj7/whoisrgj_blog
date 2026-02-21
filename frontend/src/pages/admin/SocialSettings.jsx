@@ -75,45 +75,41 @@ export default function SocialSettings() {
     }
   }
 
-  if (loading) return <p className="text-gray-400">Loading...</p>
-  if (error) return <p className="text-red-500">{error}</p>
+  if (loading) return <p className="text-navy-200">Loading...</p>
+  if (error) return <p className="text-red-400">{error}</p>
 
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+        <h3 className="text-sm font-semibold text-navy-200 uppercase tracking-wide mb-3">
           Current Social Links
         </h3>
         {socialLinks.length === 0 ? (
-          <p className="text-gray-500 text-sm">No social links yet.</p>
+          <p className="text-navy-200 text-sm">No social links yet.</p>
         ) : (
           <ul className="space-y-2">
             {socialLinks.map((sl, index) => (
               <li
                 key={sl.id}
-                className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded px-3 py-2 text-sm"
+                className="flex items-center gap-3 bg-navy-700 border border-navy-600 rounded px-3 py-2 text-sm"
               >
                 <span className="capitalize font-medium w-24 shrink-0">{sl.platform}</span>
-                <span className="flex-1 text-gray-500 truncate">{sl.url}</span>
+                <span className="flex-1 text-navy-200 truncate">{sl.url}</span>
                 <button
                   onClick={() => handleMove(index, -1)}
                   disabled={index === 0 || saving}
-                  className="text-gray-400 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="text-navy-200 hover:text-navy-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   title="Move up"
-                >
-                  ↑
-                </button>
+                >↑</button>
                 <button
                   onClick={() => handleMove(index, 1)}
                   disabled={index === socialLinks.length - 1 || saving}
-                  className="text-gray-400 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="text-navy-200 hover:text-navy-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   title="Move down"
-                >
-                  ↓
-                </button>
+                >↓</button>
                 <button
                   onClick={() => handleRemove(sl.id)}
-                  className="text-red-400 hover:text-red-600 ml-1"
+                  className="text-red-400 hover:text-red-300 ml-1 transition-colors"
                 >
                   Remove
                 </button>
@@ -124,17 +120,17 @@ export default function SocialSettings() {
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+        <h3 className="text-sm font-semibold text-navy-200 uppercase tracking-wide mb-3">
           Add a Social Link
         </h3>
         <div className="flex items-center gap-3">
           <select
             value={adding.platform}
             onChange={(e) => setAdding((prev) => ({ ...prev, platform: e.target.value }))}
-            className="border border-gray-200 rounded px-2 py-1.5 text-sm capitalize"
+            className="bg-navy-800 border border-navy-600 text-navy-50 rounded px-2 py-1.5 text-sm capitalize focus:outline-none focus:ring-2 focus:ring-navy-300"
           >
             {PLATFORMS.map((p) => (
-              <option key={p} value={p} className="capitalize">
+              <option key={p} value={p} className="capitalize bg-navy-800">
                 {p}
               </option>
             ))}
@@ -144,11 +140,11 @@ export default function SocialSettings() {
             placeholder="https://..."
             value={adding.url}
             onChange={(e) => setAdding((prev) => ({ ...prev, url: e.target.value }))}
-            className="flex-1 border border-gray-200 rounded px-2 py-1.5 text-sm"
+            className="form-input flex-1"
           />
           <button
             onClick={handleAdd}
-            className="text-blue-600 hover:text-blue-800 font-medium text-sm"
+            className="text-navy-300 hover:text-navy-400 font-medium text-sm transition-colors"
           >
             Add
           </button>

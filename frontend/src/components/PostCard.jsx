@@ -11,9 +11,11 @@ function formatDate(dateStr) {
 
 export default function PostCard({ post }) {
   return (
-    <article className="bg-white rounded-xl p-6 shadow-sm mb-4 last:mb-0">
-      <div className="flex items-center gap-3 mb-2">
-        <span className="text-sm text-gray-400">{formatDate(post.created_at)}</span>
+    <article className="post-card">
+      <div className="flex items-center gap-3 mb-2.5">
+        <span className="text-xs text-navy-200" style={{ letterSpacing: '0.08em' }}>
+          {formatDate(post.created_at)}
+        </span>
         {post.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {post.tags.map((tag) => (
@@ -22,13 +24,13 @@ export default function PostCard({ post }) {
           </div>
         )}
       </div>
-      <Link to={`/posts/${post.slug}`} className="group">
-        <h2 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-2">
+      <Link to={`/posts/${post.slug}`} className="group block">
+        <h2 className="text-xl font-bold text-navy-50 group-hover:text-navy-400 group-hover:translate-x-1 transition-all duration-200 mb-2">
           {post.title}
         </h2>
       </Link>
       {post.excerpt && (
-        <p className="text-gray-600 text-sm leading-relaxed">{post.excerpt}</p>
+        <p className="text-navy-100 text-base leading-relaxed">{post.excerpt}</p>
       )}
     </article>
   )

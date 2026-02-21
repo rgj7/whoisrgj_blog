@@ -24,8 +24,8 @@ export default function Page() {
       .finally(() => setLoading(false))
   }, [slug])
 
-  if (loading) return <p className="text-gray-400">Loading...</p>
-  if (error) return <p className="text-red-500">{error}</p>
+  if (loading) return <p className="text-navy-200">Loading...</p>
+  if (error) return <p className="text-red-400">{error}</p>
 
   return (
     <article className="max-w-none content-card">

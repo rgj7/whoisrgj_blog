@@ -65,23 +65,23 @@ export default function BioSettings() {
 
   const isUploaded = photoUrl.startsWith('/api/uploads/')
 
-  if (loading) return <p className="text-gray-400">Loading...</p>
+  if (loading) return <p className="text-navy-200">Loading...</p>
 
   return (
     <div className="space-y-4 max-w-lg">
       <div className="flex gap-4 items-start">
         <div className="flex-1">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Photo URL</label>
+          <label className="block text-sm font-medium text-navy-100 mb-1">Photo URL</label>
           <input
             type="url"
             value={photoUrl}
             onChange={(e) => setPhotoUrl(e.target.value)}
             placeholder="https://example.com/photo.jpg"
             disabled={isUploaded}
-            className="w-full border border-gray-200 rounded px-3 py-2 text-sm disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+            className="w-full bg-navy-800 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 disabled:opacity-40 disabled:cursor-not-allowed"
           />
           <div className="flex items-center gap-2 mt-1">
-            <label className="text-sm text-blue-600 hover:text-blue-800 cursor-pointer font-medium">
+            <label className="text-sm text-navy-300 hover:text-navy-400 cursor-pointer font-medium transition-colors">
               {uploading ? 'Uploading…' : 'Upload a photo'}
               <input type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} disabled={uploading} />
             </label>
@@ -92,11 +92,11 @@ export default function BioSettings() {
             <img
               src={photoKey ? `${photoUrl}?t=${photoKey}` : photoUrl}
               alt="Profile preview"
-              className="w-20 h-20 rounded-full object-cover border border-gray-200"
+              className="w-20 h-20 rounded-full object-cover border border-navy-600"
             />
             <button
               onClick={handleRemovePhoto}
-              className="text-xs text-red-500 hover:text-red-700"
+              className="text-xs text-red-400 hover:text-red-300 transition-colors"
             >
               Remove
             </button>
@@ -104,24 +104,24 @@ export default function BioSettings() {
         )}
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+        <label className="block text-sm font-medium text-navy-100 mb-1">Bio</label>
         <textarea
           value={bio}
           onChange={(e) => setBio(e.target.value)}
           rows={4}
           placeholder="A short bio..."
-          className="w-full border border-gray-200 rounded px-3 py-2 text-sm resize-y"
+          className="w-full bg-navy-800 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm resize-y focus:outline-none focus:ring-2 focus:ring-navy-300 placeholder-navy-200"
         />
       </div>
       <div className="flex items-center gap-4">
         <button
           onClick={handleSave}
-          className="text-blue-600 hover:text-blue-800 font-medium text-sm"
+          className="text-navy-300 hover:text-navy-400 font-medium text-sm transition-colors"
         >
           Save
         </button>
         {message && (
-          <span className={`text-sm ${message.type === 'success' ? 'text-green-600' : 'text-red-500'}`}>
+          <span className={`text-sm ${message.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
             {message.text}
           </span>
         )}

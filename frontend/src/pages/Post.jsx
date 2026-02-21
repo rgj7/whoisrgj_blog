@@ -3,8 +3,8 @@ import { useParams, Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
-import 'highlight.js/styles/atom-one-light.css'
-import 'github-markdown-css/github-markdown-light.css'
+import 'highlight.js/styles/atom-one-dark.css'
+import 'github-markdown-css/github-markdown-dark.css'
 import client from '../api/client'
 import TagBadge from '../components/TagBadge'
 
@@ -36,16 +36,16 @@ export default function Post() {
       .finally(() => setLoading(false))
   }, [slug])
 
-  if (loading) return <p className="text-gray-400">Loading...</p>
-  if (error) return <p className="text-red-500">{error}</p>
+  if (loading) return <p className="text-navy-200">Loading...</p>
+  if (error) return <p className="text-red-400">{error}</p>
 
   return (
     <article className="max-w-none content-card">
-      <Link to="/" className="text-sm text-blue-600 hover:underline mb-6 inline-block">
+      <Link to="/" className="text-sm text-navy-300 hover:text-navy-400 hover:underline mb-6 inline-block transition-colors">
         &larr; Back to posts
       </Link>
       <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
-      <p className="text-sm text-gray-400 mb-3">{formatDate(post.created_at)}</p>
+      <p className="text-sm text-navy-200 mb-3">{formatDate(post.created_at)}</p>
       {post.tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-8">
           {post.tags.map((tag) => (

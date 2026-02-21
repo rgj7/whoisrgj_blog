@@ -80,15 +80,15 @@ export default function Travels() {
   }, [])
 
   function getGeoFill(geoId) {
-    if (visitedCodes.has(geoId)) return '#3b82f6'
-    if (wishlistCodes.has(geoId)) return '#22c55e'
-    return '#e5e7eb'
+    if (visitedCodes.has(geoId)) return '#4a82b5'
+    if (wishlistCodes.has(geoId)) return '#3d9c65'
+    return '#1a2f44'
   }
 
   function getGeoHoverFill(geoId) {
-    if (visitedCodes.has(geoId)) return '#2563eb'
-    if (wishlistCodes.has(geoId)) return '#16a34a'
-    return '#d1d5db'
+    if (visitedCodes.has(geoId)) return '#5a9ad0'
+    if (wishlistCodes.has(geoId)) return '#4db57a'
+    return '#1e384f'
   }
 
   function handleGeoMouseEnter(geo, evt) {
@@ -130,33 +130,33 @@ export default function Travels() {
   return (
     <div className="content-card">
       <h1 className="text-2xl font-bold mb-1">Travels</h1>
-      <p className="text-gray-500 text-sm mb-4">
+      <p className="text-navy-200 text-sm mb-4">
         {loading ? 'Loading...' : `${count} ${count === 1 ? 'country' : 'countries'} visited`}
       </p>
-      <div className="flex gap-3 items-start bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 mb-6 text-sm text-amber-800">
+      <div className="flex gap-3 items-start bg-navy-700 border border-navy-500 rounded-lg px-4 py-3 mb-6 text-sm text-navy-100">
         <span className="mt-0.5 text-base leading-none">🚧</span>
         <p>
           This page is still under construction. I'm planning to add a photo gallery of my travels here soon.
         </p>
       </div>
-      <div ref={containerRef} className="bg-white rounded-lg overflow-hidden relative">
+      <div ref={containerRef} className="bg-navy-900 rounded-lg overflow-hidden relative">
         <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
           <button
             onClick={handleZoomIn}
             disabled={position.zoom >= MAX_ZOOM}
-            className="w-7 h-7 bg-white border border-gray-300 rounded shadow text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed text-lg leading-none"
+            className="w-7 h-7 bg-navy-700 border border-navy-500 rounded shadow text-navy-100 hover:bg-navy-600 disabled:opacity-40 disabled:cursor-not-allowed text-lg leading-none transition-colors"
             aria-label="Zoom in"
           >+</button>
           <button
             onClick={handleZoomOut}
             disabled={position.zoom <= MIN_ZOOM}
-            className="w-7 h-7 bg-white border border-gray-300 rounded shadow text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed text-lg leading-none"
+            className="w-7 h-7 bg-navy-700 border border-navy-500 rounded shadow text-navy-100 hover:bg-navy-600 disabled:opacity-40 disabled:cursor-not-allowed text-lg leading-none transition-colors"
             aria-label="Zoom out"
           >−</button>
           <button
             onClick={handleReset}
             disabled={position.zoom === 1 && position.coordinates[0] === 0 && position.coordinates[1] === 0}
-            className="w-7 h-7 bg-white border border-gray-300 rounded shadow text-gray-500 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed text-xs leading-none"
+            className="w-7 h-7 bg-navy-700 border border-navy-500 rounded shadow text-navy-200 hover:bg-navy-600 disabled:opacity-40 disabled:cursor-not-allowed text-xs leading-none transition-colors"
             aria-label="Reset view"
           >⊙</button>
         </div>
@@ -179,7 +179,7 @@ export default function Travels() {
                     key={geo.rsmKey}
                     geography={geo}
                     fill={getGeoFill(geo.id)}
-                    stroke="#fff"
+                    stroke="#0d1b2a"
                     strokeWidth={0.5}
                     style={{
                       default: { outline: 'none' },
@@ -197,7 +197,7 @@ export default function Travels() {
         </ComposableMap>
         {tooltip && (
           <div
-            className="absolute pointer-events-none bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap"
+            className="absolute pointer-events-none bg-navy-600 text-navy-50 text-xs rounded px-2 py-1 whitespace-nowrap border border-navy-500"
             style={{ left: tooltip.x + 12, top: tooltip.y - 28 }}
           >
             {tooltip.name}{' '}
@@ -212,14 +212,14 @@ export default function Travels() {
           <div className="space-y-5">
             {CONTINENT_ORDER.filter((c) => grouped[c]).map((continent) => (
               <div key={continent}>
-                <h3 className="font-bold text-sm uppercase tracking-wide text-gray-500 mb-2">
+                <h3 className="font-bold text-sm uppercase tracking-wide text-navy-200 mb-2">
                   {continent}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {grouped[continent].map(({ name, alpha2 }) => (
                     <span
                       key={name}
-                      className="flex items-center gap-1.5 bg-gray-100 rounded-full px-3 py-1 text-sm"
+                      className="flex items-center gap-1.5 bg-navy-700 text-navy-50 rounded-full px-3 py-1 text-sm border border-navy-600"
                     >
                       <FlagImg alpha2={alpha2} name={name} />
                       {name}
@@ -238,14 +238,14 @@ export default function Travels() {
           <div className="space-y-5">
             {CONTINENT_ORDER.filter((c) => wishlistGrouped[c]).map((continent) => (
               <div key={continent}>
-                <h3 className="font-bold text-sm uppercase tracking-wide text-gray-500 mb-2">
+                <h3 className="font-bold text-sm uppercase tracking-wide text-navy-200 mb-2">
                   {continent}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {wishlistGrouped[continent].map(({ name, alpha2 }) => (
                     <span
                       key={name}
-                      className="flex items-center gap-1.5 bg-gray-100 rounded-full px-3 py-1 text-sm"
+                      className="flex items-center gap-1.5 bg-navy-700 text-navy-50 rounded-full px-3 py-1 text-sm border border-navy-600"
                     >
                       <FlagImg alpha2={alpha2} name={name} />
                       {name}

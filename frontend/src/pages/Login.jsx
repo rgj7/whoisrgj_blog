@@ -34,7 +34,7 @@ export default function Login() {
           </p>
         )}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+          <label className="block text-sm font-medium text-navy-100 mb-1">Username</label>
           <input
             type="text"
             value={username}
@@ -44,7 +44,7 @@ export default function Login() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <label className="block text-sm font-medium text-navy-100 mb-1">Password</label>
           <input
             type="password"
             value={password}
@@ -56,7 +56,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 text-white rounded py-2 text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          className="w-full bg-navy-300 text-white rounded py-2 text-sm font-medium hover:bg-navy-400 disabled:opacity-50 transition-colors"
         >
           {loading ? 'Signing in...' : 'Sign in'}
         </button>

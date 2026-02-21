@@ -247,16 +247,16 @@ function CountryCombobox({ countries, onAdd, onRemove, endpoint, addLabel }) {
           type="text"
           value={query}
           placeholder="Search countries…"
-          className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+          className="w-full bg-navy-800 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 placeholder-navy-200"
           onChange={e => { setQuery(e.target.value); setSelected(null); setOpen(true) }}
           onFocus={() => setOpen(true)}
         />
         {open && filtered.length > 0 && (
-          <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded shadow-md max-h-60 overflow-y-auto text-sm">
+          <ul className="absolute z-10 mt-1 w-full bg-navy-800 border border-navy-600 rounded shadow-md max-h-60 overflow-y-auto text-sm">
             {filtered.map(c => (
               <li
                 key={c.iso_numeric}
-                className="px-3 py-2 cursor-pointer hover:bg-blue-50"
+                className="px-3 py-2 cursor-pointer text-navy-50 hover:bg-navy-700 transition-colors"
                 onMouseDown={() => { setSelected(c); setQuery(c.name); setOpen(false) }}
               >
                 {c.name}
@@ -268,7 +268,7 @@ function CountryCombobox({ countries, onAdd, onRemove, endpoint, addLabel }) {
       <button
         onClick={handleAdd}
         disabled={!selected}
-        className="text-blue-600 hover:text-blue-800 font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+        className="text-navy-300 hover:text-navy-400 font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         {addLabel}
       </button>
@@ -315,25 +315,25 @@ export default function TravelSettings() {
     }
   }
 
-  if (loading) return <p className="text-gray-400">Loading...</p>
-  if (error) return <p className="text-red-500">{error}</p>
+  if (loading) return <p className="text-navy-200">Loading...</p>
+  if (error) return <p className="text-red-400">{error}</p>
 
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+        <h3 className="text-sm font-semibold text-navy-200 uppercase tracking-wide mb-3">
           Visited Countries
         </h3>
         {countries.length === 0 ? (
-          <p className="text-gray-500 text-sm">No countries added yet.</p>
+          <p className="text-navy-200 text-sm">No countries added yet.</p>
         ) : (
           <div className="flex flex-wrap gap-2">
             {countries.map((c) => (
-              <span key={c.id} className="flex items-center gap-1.5 bg-gray-100 rounded-full pl-3 pr-2 py-1 text-sm">
+              <span key={c.id} className="flex items-center gap-1.5 bg-navy-700 text-navy-50 border border-navy-600 rounded-full pl-3 pr-2 py-1 text-sm">
                 {c.name}
                 <button
                   onClick={() => handleRemoveVisited(c.id)}
-                  className="text-gray-400 hover:text-red-500 leading-none"
+                  className="text-navy-200 hover:text-red-400 leading-none transition-colors"
                   aria-label={`Remove ${c.name}`}
                 >
                   ×
@@ -345,7 +345,7 @@ export default function TravelSettings() {
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+        <h3 className="text-sm font-semibold text-navy-200 uppercase tracking-wide mb-3">
           Add a Visited Country
         </h3>
         <CountryCombobox
@@ -358,19 +358,19 @@ export default function TravelSettings() {
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+        <h3 className="text-sm font-semibold text-navy-200 uppercase tracking-wide mb-3">
           Wishlist
         </h3>
         {wishlist.length === 0 ? (
-          <p className="text-gray-500 text-sm">No countries in wishlist yet.</p>
+          <p className="text-navy-200 text-sm">No countries in wishlist yet.</p>
         ) : (
           <div className="flex flex-wrap gap-2">
             {wishlist.map((c) => (
-              <span key={c.id} className="flex items-center gap-1.5 bg-gray-100 rounded-full pl-3 pr-2 py-1 text-sm">
+              <span key={c.id} className="flex items-center gap-1.5 bg-navy-700 text-navy-50 border border-navy-600 rounded-full pl-3 pr-2 py-1 text-sm">
                 {c.name}
                 <button
                   onClick={() => handleRemoveWishlist(c.id)}
-                  className="text-gray-400 hover:text-red-500 leading-none"
+                  className="text-navy-200 hover:text-red-400 leading-none transition-colors"
                   aria-label={`Remove ${c.name} from wishlist`}
                 >
                   ×
@@ -382,7 +382,7 @@ export default function TravelSettings() {
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+        <h3 className="text-sm font-semibold text-navy-200 uppercase tracking-wide mb-3">
           Add to Wishlist
         </h3>
         <CountryCombobox

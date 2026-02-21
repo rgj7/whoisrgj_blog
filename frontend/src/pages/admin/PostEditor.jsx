@@ -89,14 +89,14 @@ export default function PostEditor() {
     }
   }
 
-  if (loading) return <p className="text-gray-400">Loading...</p>
+  if (loading) return <p className="text-navy-200">Loading...</p>
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">{isEdit ? 'Edit Post' : 'New Post'}</h1>
         <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+          <label className="flex items-center gap-2 text-sm text-navy-100 cursor-pointer">
             <input
               type="checkbox"
               checked={published}
@@ -107,7 +107,7 @@ export default function PostEditor() {
           </label>
           <button
             onClick={() => navigate('/admin')}
-            className="text-sm text-gray-500 hover:text-gray-900 px-3 py-1.5 border rounded"
+            className="text-sm text-navy-200 hover:text-navy-50 px-3 py-1.5 border border-navy-600 rounded transition-colors"
           >
             Cancel
           </button>
@@ -121,14 +121,10 @@ export default function PostEditor() {
         </div>
       </div>
 
-      {error && (
-        <p className="error-alert">
-          {error}
-        </p>
-      )}
+      {error && <p className="error-alert">{error}</p>}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+        <label className="block text-sm font-medium text-navy-100 mb-1">Title</label>
         <input
           type="text"
           value={title}
@@ -139,8 +135,8 @@ export default function PostEditor() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Excerpt <span className="text-gray-400">(optional)</span>
+        <label className="block text-sm font-medium text-navy-100 mb-1">
+          Excerpt <span className="text-navy-200">(optional)</span>
         </label>
         <input
           type="text"
@@ -152,7 +148,7 @@ export default function PostEditor() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
+        <label className="block text-sm font-medium text-navy-100 mb-2">Tags</label>
         <div className="flex flex-wrap gap-2 mb-3">
           {allTags.map((tag) => (
             <button
@@ -160,8 +156,8 @@ export default function PostEditor() {
               onClick={() => toggleTag(tag.id)}
               className={`px-2.5 py-0.5 rounded text-xs font-medium border transition-colors ${
                 selectedTagIds.includes(tag.id)
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400'
+                  ? 'bg-navy-300 text-white border-navy-300'
+                  : 'bg-navy-800 text-navy-100 border-navy-600 hover:border-navy-400'
               }`}
             >
               {tag.name}
@@ -175,11 +171,11 @@ export default function PostEditor() {
             onChange={(e) => setNewTagName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleAddTag()}
             placeholder="New tag name"
-            className="border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="form-input"
           />
           <button
             onClick={handleAddTag}
-            className="text-sm px-3 py-1.5 border border-gray-300 rounded hover:bg-gray-50"
+            className="text-sm px-3 py-1.5 border border-navy-600 rounded hover:bg-navy-700 text-navy-100 transition-colors"
           >
             Add Tag
           </button>
@@ -187,8 +183,8 @@ export default function PostEditor() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Content (Markdown)</label>
-        <div data-color-mode="light">
+        <label className="block text-sm font-medium text-navy-100 mb-2">Content (Markdown)</label>
+        <div data-color-mode="dark">
           <MDEditor
             value={content}
             onChange={(val) => setContent(val || '')}

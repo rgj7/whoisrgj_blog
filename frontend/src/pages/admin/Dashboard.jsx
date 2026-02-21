@@ -100,83 +100,48 @@ export default function Dashboard() {
     }
   }
 
+  const TABS = ['posts', 'pages', 'travels', 'settings']
+
   return (
     <div className="content-card">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Admin</h1>
         {activeTab === 'posts' && (
-          <Link
-            to="/admin/posts/new"
-            className="btn-primary"
-          >
-            New Post
-          </Link>
+          <Link to="/admin/posts/new" className="btn-primary">New Post</Link>
         )}
         {activeTab === 'pages' && (
-          <Link
-            to="/admin/pages/new"
-            className="btn-primary"
-          >
-            New Page
-          </Link>
+          <Link to="/admin/pages/new" className="btn-primary">New Page</Link>
         )}
       </div>
 
-      <div className="flex border-b mb-6">
-        <button
-          onClick={() => handleTabSwitch('posts')}
-          className={`px-4 py-2 text-sm font-medium -mb-px border-b-2 transition-colors ${
-            activeTab === 'posts'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          Posts
-        </button>
-        <button
-          onClick={() => handleTabSwitch('pages')}
-          className={`px-4 py-2 text-sm font-medium -mb-px border-b-2 transition-colors ${
-            activeTab === 'pages'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          Pages
-        </button>
-        <button
-          onClick={() => handleTabSwitch('travels')}
-          className={`px-4 py-2 text-sm font-medium -mb-px border-b-2 transition-colors ${
-            activeTab === 'travels'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          Travels
-        </button>
-        <button
-          onClick={() => handleTabSwitch('settings')}
-          className={`px-4 py-2 text-sm font-medium -mb-px border-b-2 transition-colors ${
-            activeTab === 'settings'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          Settings
-        </button>
+      <div className="flex border-b border-navy-600 mb-6">
+        {TABS.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => handleTabSwitch(tab)}
+            className={`px-4 py-2 text-sm font-medium -mb-px border-b-2 transition-colors capitalize ${
+              activeTab === tab
+                ? 'border-navy-300 text-navy-300'
+                : 'border-transparent text-navy-200 hover:text-navy-50'
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
       </div>
 
       {activeTab === 'posts' && (
         <>
-          {postsLoading && <p className="text-gray-400">Loading...</p>}
-          {postsError && <p className="text-red-500">{postsError}</p>}
+          {postsLoading && <p className="text-navy-200">Loading...</p>}
+          {postsError && <p className="text-red-400">{postsError}</p>}
           {!postsLoading && !postsError && (
             posts.length === 0 ? (
-              <p className="text-gray-500">No posts yet. Create one!</p>
+              <p className="text-navy-200">No posts yet. Create one!</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b text-left text-gray-500 font-medium">
+                    <tr className="border-b border-navy-600 text-left text-navy-200 font-medium">
                       <th className="pb-3 pr-4">Title</th>
                       <th className="pb-3 pr-4">Status</th>
                       <th className="pb-3 pr-4">Date</th>
@@ -185,32 +150,26 @@ export default function Dashboard() {
                   </thead>
                   <tbody>
                     {posts.map((post) => (
-                      <tr key={post.id} className="border-b last:border-0">
+                      <tr key={post.id} className="border-b border-navy-700 last:border-0">
                         <td className="py-3 pr-4 font-medium">{post.title}</td>
                         <td className="py-3 pr-4">
                           <button
                             onClick={() => handleTogglePostPublish(post)}
-                            className={`px-2 py-0.5 rounded text-xs font-medium ${
+                            className={`px-2 py-0.5 rounded text-xs font-medium transition-colors ${
                               post.published
-                                ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
-                            } transition-colors`}
+                                ? 'bg-green-900 text-green-400 hover:bg-green-800'
+                                : 'bg-yellow-900 text-yellow-400 hover:bg-yellow-800'
+                            }`}
                           >
                             {post.published ? 'Published' : 'Draft'}
                           </button>
                         </td>
-                        <td className="py-3 pr-4 text-gray-500">{formatDate(post.created_at)}</td>
+                        <td className="py-3 pr-4 text-navy-200">{formatDate(post.created_at)}</td>
                         <td className="py-3 flex gap-3">
-                          <Link
-                            to={`/admin/posts/${post.id}/edit`}
-                            className="text-blue-600 hover:underline"
-                          >
+                          <Link to={`/admin/posts/${post.id}/edit`} className="text-navy-300 hover:text-navy-400 hover:underline">
                             Edit
                           </Link>
-                          <button
-                            onClick={() => handleDeletePost(post.id)}
-                            className="text-red-500 hover:underline"
-                          >
+                          <button onClick={() => handleDeletePost(post.id)} className="text-red-400 hover:text-red-300 hover:underline">
                             Delete
                           </button>
                         </td>
@@ -226,16 +185,16 @@ export default function Dashboard() {
 
       {activeTab === 'pages' && (
         <>
-          {pagesLoading && <p className="text-gray-400">Loading...</p>}
-          {pagesError && <p className="text-red-500">{pagesError}</p>}
+          {pagesLoading && <p className="text-navy-200">Loading...</p>}
+          {pagesError && <p className="text-red-400">{pagesError}</p>}
           {!pagesLoading && !pagesError && (
             pages.length === 0 ? (
-              <p className="text-gray-500">No pages yet. Create one!</p>
+              <p className="text-navy-200">No pages yet. Create one!</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b text-left text-gray-500 font-medium">
+                    <tr className="border-b border-navy-600 text-left text-navy-200 font-medium">
                       <th className="pb-3 pr-4">Title</th>
                       <th className="pb-3 pr-4">Status</th>
                       <th className="pb-3 pr-4">Date</th>
@@ -244,35 +203,29 @@ export default function Dashboard() {
                   </thead>
                   <tbody>
                     {pages.map((page) => (
-                      <tr key={page.id} className="border-b last:border-0">
+                      <tr key={page.id} className="border-b border-navy-700 last:border-0">
                         <td className="py-3 pr-4">
                           <span className="font-medium">{page.title}</span>
-                          <span className="block text-xs text-gray-400">/pages/{page.slug}</span>
+                          <span className="block text-xs text-navy-200">/pages/{page.slug}</span>
                         </td>
                         <td className="py-3 pr-4">
                           <button
                             onClick={() => handleTogglePagePublish(page)}
-                            className={`px-2 py-0.5 rounded text-xs font-medium ${
+                            className={`px-2 py-0.5 rounded text-xs font-medium transition-colors ${
                               page.published
-                                ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
-                            } transition-colors`}
+                                ? 'bg-green-900 text-green-400 hover:bg-green-800'
+                                : 'bg-yellow-900 text-yellow-400 hover:bg-yellow-800'
+                            }`}
                           >
                             {page.published ? 'Published' : 'Draft'}
                           </button>
                         </td>
-                        <td className="py-3 pr-4 text-gray-500">{formatDate(page.created_at)}</td>
+                        <td className="py-3 pr-4 text-navy-200">{formatDate(page.created_at)}</td>
                         <td className="py-3 flex gap-3">
-                          <Link
-                            to={`/admin/pages/${page.id}/edit`}
-                            className="text-blue-600 hover:underline"
-                          >
+                          <Link to={`/admin/pages/${page.id}/edit`} className="text-navy-300 hover:text-navy-400 hover:underline">
                             Edit
                           </Link>
-                          <button
-                            onClick={() => handleDeletePage(page.id)}
-                            className="text-red-500 hover:underline"
-                          >
+                          <button onClick={() => handleDeletePage(page.id)} className="text-red-400 hover:text-red-300 hover:underline">
                             Delete
                           </button>
                         </td>
@@ -285,18 +238,20 @@ export default function Dashboard() {
           )}
         </>
       )}
+
       {activeTab === 'settings' && (
         <div>
           <h2 className="text-lg font-semibold mb-4">Bio</h2>
           <BioSettings />
-          <hr className="my-8 border-gray-200" />
+          <hr className="my-8 border-navy-600" />
           <h2 className="text-lg font-semibold mb-4">Navigation</h2>
           <NavSettings />
-          <hr className="my-8 border-gray-200" />
+          <hr className="my-8 border-navy-600" />
           <h2 className="text-lg font-semibold mb-4">Social Links</h2>
           <SocialSettings />
         </div>
       )}
+
       {activeTab === 'travels' && (
         <div>
           <TravelSettings />

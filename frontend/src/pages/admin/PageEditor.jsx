@@ -84,14 +84,14 @@ export default function PageEditor() {
     }
   }
 
-  if (loading) return <p className="text-gray-400">Loading...</p>
+  if (loading) return <p className="text-navy-200">Loading...</p>
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">{isEdit ? 'Edit Page' : 'New Page'}</h1>
         <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+          <label className="flex items-center gap-2 text-sm text-navy-100 cursor-pointer">
             <input
               type="checkbox"
               checked={published}
@@ -102,7 +102,7 @@ export default function PageEditor() {
           </label>
           <button
             onClick={() => navigate('/admin')}
-            className="text-sm text-gray-500 hover:text-gray-900 px-3 py-1.5 border rounded"
+            className="text-sm text-navy-200 hover:text-navy-50 px-3 py-1.5 border border-navy-600 rounded transition-colors"
           >
             Cancel
           </button>
@@ -116,14 +116,10 @@ export default function PageEditor() {
         </div>
       </div>
 
-      {error && (
-        <p className="error-alert">
-          {error}
-        </p>
-      )}
+      {error && <p className="error-alert">{error}</p>}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+        <label className="block text-sm font-medium text-navy-100 mb-1">Title</label>
         <input
           type="text"
           value={title}
@@ -134,24 +130,24 @@ export default function PageEditor() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Slug</label>
+        <label className="block text-sm font-medium text-navy-100 mb-1">Slug</label>
         <input
           type="text"
           value={slug}
           onChange={handleSlugChange}
           placeholder="e.g. about or resume"
-          className={`w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            slugError ? 'border-red-400' : 'border-gray-300'
+          className={`w-full bg-navy-800 border rounded px-3 py-2 text-sm text-navy-50 focus:outline-none focus:ring-2 focus:ring-navy-300 ${
+            slugError ? 'border-red-500' : 'border-navy-600'
           }`}
         />
         {slugError && (
-          <p className="mt-1 text-xs text-red-600">{slugError}</p>
+          <p className="mt-1 text-xs text-red-400">{slugError}</p>
         )}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Content (Markdown)</label>
-        <div data-color-mode="light">
+        <label className="block text-sm font-medium text-navy-100 mb-2">Content (Markdown)</label>
+        <div data-color-mode="dark">
           <MDEditor
             value={content}
             onChange={(val) => setContent(val || '')}

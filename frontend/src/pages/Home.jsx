@@ -22,14 +22,14 @@ export default function Home() {
       .finally(() => setLoading(false))
   }, [page])
 
-  if (loading) return <p className="text-gray-400">Loading...</p>
-  if (error) return <p className="text-red-500">{error}</p>
+  if (loading) return <p className="text-navy-200">Loading...</p>
+  if (error) return <p className="text-red-400">{error}</p>
 
   return (
     <div className="flex gap-8">
       <div className="flex-1 min-w-0">
 {data.items.length === 0 ? (
-          <p className="text-gray-500">No posts yet.</p>
+          <p className="text-navy-200">No posts yet.</p>
         ) : (
           data.items.map((post) => <PostCard key={post.id} post={post} />)
         )}
@@ -38,17 +38,17 @@ export default function Home() {
             <button
               disabled={page <= 1}
               onClick={() => setSearchParams({ page: page - 1 })}
-              className="px-3 py-1 rounded border disabled:opacity-40 hover:bg-gray-100"
+              className="px-3 py-1 rounded border border-navy-600 text-navy-100 disabled:opacity-40 hover:bg-navy-700 transition-colors"
             >
               Previous
             </button>
-            <span className="text-gray-500">
+            <span className="text-navy-200">
               Page {data.page} of {data.pages}
             </span>
             <button
               disabled={page >= data.pages}
               onClick={() => setSearchParams({ page: page + 1 })}
-              className="px-3 py-1 rounded border disabled:opacity-40 hover:bg-gray-100"
+              className="px-3 py-1 rounded border border-navy-600 text-navy-100 disabled:opacity-40 hover:bg-navy-700 transition-colors"
             >
               Next
             </button>

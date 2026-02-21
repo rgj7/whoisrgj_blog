@@ -4,21 +4,80 @@
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-navy-900 text-navy-50;
+  }
+  .markdown-body {
+    background-color: transparent !important;
   }
 }
 
 @layer components {
   .content-card {
-    @apply bg-white rounded-xl p-8 shadow-sm;
+    @apply bg-navy-800 rounded-xl p-8 border border-navy-600;
   }
   .form-input {
-    @apply w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500;
+    @apply w-full bg-navy-800 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 placeholder-navy-200;
   }
   .btn-primary {
-    @apply bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700 transition-colors;
+    @apply bg-navy-300 text-white text-sm px-4 py-2 rounded hover:bg-navy-400 transition-colors;
   }
   .error-alert {
-    @apply text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2;
+    @apply text-sm text-red-400 bg-red-950 border border-red-800 rounded px-3 py-2;
+  }
+  .footer-icon {
+    @apply text-gray-500 transition-all duration-200;
+    transform: translateY(0);
+  }
+  .footer-icon:hover {
+    @apply text-white;
+    transform: translateY(-2px);
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.25));
+  }
+  .post-card {
+    @apply relative pl-5 py-6;
+  }
+  .post-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    border-radius: 1px;
+    background-color: #1a2f44; /* navy-700 */
+    transition: background-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .post-card:hover::before {
+    background-color: #78aed6; /* navy-400 */
+    box-shadow: 0 0 10px rgba(120, 174, 214, 0.35);
+  }
+  .post-card:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, #1e384f, transparent);
+  }
+  .nav-link {
+    @apply relative font-bold text-navy-200 hover:text-navy-50 uppercase transition-colors duration-200;
+    letter-spacing: 0.13em;
+    font-size: 0.7rem;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: theme('colors.navy.400');
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.25s ease;
+  }
+  .nav-link:hover::after {
+    transform: scaleX(1);
   }
 }
