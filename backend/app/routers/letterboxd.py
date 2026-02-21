@@ -32,13 +32,15 @@ def _parse_feed(xml_text: str) -> list[dict]:
             m = re.search(r'<img src="([^"]+)"', desc_el.text)
             if m:
                 poster_url = m.group(1)
-        results.append({
-            "title": title_el.text if title_el is not None else "",
-            "year": int(year_el.text) if year_el is not None else None,
-            "rating": float(rating_el.text),
-            "url": link_el.text if link_el is not None else "",
-            "poster_url": poster_url,
-        })
+        results.append(
+            {
+                "title": title_el.text if title_el is not None else "",
+                "year": int(year_el.text) if year_el is not None else None,
+                "rating": float(rating_el.text),
+                "url": link_el.text if link_el is not None else "",
+                "poster_url": poster_url,
+            }
+        )
         if len(results) == 5:
             break
     return results

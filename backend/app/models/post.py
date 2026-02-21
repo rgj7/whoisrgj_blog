@@ -1,6 +1,8 @@
-from datetime import datetime, timezone
-from sqlalchemy import String, Text, Boolean, DateTime, Table, Column, ForeignKey
+from datetime import UTC, datetime
+
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String, Table, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from app.database import Base
 
 post_tags = Table(
@@ -20,15 +22,13 @@ class Post(Base):
     content: Mapped[str] = mapped_column(Text, nullable=False)
     excerpt: Mapped[str | None] = mapped_column(Text, nullable=True)
     published: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
-    tags: Mapped[list["Tag"]] = relationship(  # noqa: F821
+    tags: Mapped[list[Tag]] = relationship(  # noqa: F821
         "Tag", secondary=post_tags, back_populates="posts", lazy="selectin"
     )

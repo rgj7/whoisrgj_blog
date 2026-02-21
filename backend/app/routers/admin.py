@@ -1,28 +1,30 @@
 from pathlib import Path
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from slugify import slugify
-from app.database import get_db
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.auth import get_current_user
 from app.config import settings
+from app.database import get_db
+from app.models.nav_link import NavLink
+from app.models.page import Page
 from app.models.post import Post
+from app.models.site_profile import SiteProfile
+from app.models.social_link import SocialLink
 from app.models.tag import Tag
 from app.models.user import User
-from app.models.page import Page
-from app.models.nav_link import NavLink
-from app.models.social_link import SocialLink
 from app.models.visited_country import VisitedCountry
 from app.models.wanted_country import WantedCountry
-from app.models.site_profile import SiteProfile
-from app.schemas.post import PostCreate, PostUpdate, PostOut, PostSummary
-from app.schemas.tag import TagCreate, TagOut
-from app.schemas.page import PageCreate, PageUpdate, PageOut, PageSummary
-from app.schemas.nav_link import NavLinkOut, NavLinkAdd, NavLinkReorder
-from app.schemas.social_link import SocialLinkOut, SocialLinkCreate, SocialLinkReorder
-from app.schemas.visited_country import VisitedCountryOut, VisitedCountryCreate
-from app.schemas.wanted_country import WantedCountryOut, WantedCountryCreate
+from app.schemas.nav_link import NavLinkAdd, NavLinkOut, NavLinkReorder
+from app.schemas.page import PageCreate, PageOut, PageSummary, PageUpdate
+from app.schemas.post import PostCreate, PostOut, PostSummary, PostUpdate
 from app.schemas.site_profile import SiteProfileOut, SiteProfileUpdate
-from app.auth import get_current_user
+from app.schemas.social_link import SocialLinkCreate, SocialLinkOut, SocialLinkReorder
+from app.schemas.tag import TagCreate, TagOut
+from app.schemas.visited_country import VisitedCountryCreate, VisitedCountryOut
+from app.schemas.wanted_country import WantedCountryCreate, WantedCountryOut
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -32,6 +34,7 @@ def require_auth(current_user: User = Depends(get_current_user)) -> User:
 
 
 # --- Posts ---
+
 
 @router.get("/posts", response_model=list[PostSummary])
 async def admin_list_posts(
@@ -117,6 +120,7 @@ async def admin_delete_post(
 
 # --- Tags ---
 
+
 @router.post("/tags", response_model=TagOut, status_code=201)
 async def admin_create_tag(
     payload: TagCreate,
@@ -148,6 +152,7 @@ async def admin_delete_tag(
 
 
 # --- Pages ---
+
 
 @router.get("/pages", response_model=list[PageSummary])
 async def admin_list_pages(
@@ -233,6 +238,7 @@ async def admin_delete_page(
 
 # --- Nav Links ---
 
+
 @router.get("/nav-links", response_model=list[NavLinkOut])
 async def admin_list_nav_links(
     db: AsyncSession = Depends(get_db),
@@ -304,6 +310,7 @@ async def admin_reorder_nav_links(
 
 # --- Social Links ---
 
+
 @router.get("/social-links", response_model=list[SocialLinkOut])
 async def admin_list_social_links(
     db: AsyncSession = Depends(get_db),
@@ -361,6 +368,7 @@ async def admin_reorder_social_links(
 
 # --- Travels ---
 
+
 @router.get("/travels", response_model=list[VisitedCountryOut])
 async def admin_list_visited_countries(
     db: AsyncSession = Depends(get_db),
@@ -375,10 +383,14 @@ async def admin_add_visited_country(
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
 ):
-    existing = (await db.execute(select(VisitedCountry).where(VisitedCountry.iso_numeric == payload.iso_numeric))).scalar_one_or_none()
+    existing = (
+        await db.execute(select(VisitedCountry).where(VisitedCountry.iso_numeric == payload.iso_numeric))
+    ).scalar_one_or_none()
     if existing:
         raise HTTPException(status_code=409, detail="Country already in visited list")
-    if (await db.execute(select(WantedCountry).where(WantedCountry.iso_numeric == payload.iso_numeric))).scalar_one_or_none():
+    if (
+        await db.execute(select(WantedCountry).where(WantedCountry.iso_numeric == payload.iso_numeric))
+    ).scalar_one_or_none():
         raise HTTPException(status_code=409, detail="Country is already in your wishlist")
     country = VisitedCountry(name=payload.name, iso_numeric=payload.iso_numeric)
     db.add(country)
@@ -402,6 +414,7 @@ async def admin_delete_visited_country(
 
 # --- Travels Wishlist ---
 
+
 @router.get("/travels/wishlist", response_model=list[WantedCountryOut])
 async def admin_list_wanted_countries(
     db: AsyncSession = Depends(get_db),
@@ -416,10 +429,14 @@ async def admin_add_wanted_country(
     db: AsyncSession = Depends(get_db),
     _: User = Depends(require_auth),
 ):
-    existing = (await db.execute(select(WantedCountry).where(WantedCountry.iso_numeric == payload.iso_numeric))).scalar_one_or_none()
+    existing = (
+        await db.execute(select(WantedCountry).where(WantedCountry.iso_numeric == payload.iso_numeric))
+    ).scalar_one_or_none()
     if existing:
         raise HTTPException(status_code=409, detail="Country already in wishlist")
-    if (await db.execute(select(VisitedCountry).where(VisitedCountry.iso_numeric == payload.iso_numeric))).scalar_one_or_none():
+    if (
+        await db.execute(select(VisitedCountry).where(VisitedCountry.iso_numeric == payload.iso_numeric))
+    ).scalar_one_or_none():
         raise HTTPException(status_code=409, detail="Country is already in your visited list")
     country = WantedCountry(name=payload.name, iso_numeric=payload.iso_numeric)
     db.add(country)
@@ -442,6 +459,7 @@ async def admin_delete_wanted_country(
 
 
 # --- Profile ---
+
 
 @router.get("/profile", response_model=SiteProfileOut)
 async def admin_get_profile(
@@ -499,6 +517,7 @@ async def admin_upload_profile_photo(
 
 
 # --- Helpers ---
+
 
 async def _unique_slug(db: AsyncSession, title: str) -> str:
     base = slugify(title)

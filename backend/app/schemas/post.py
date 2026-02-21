@@ -1,13 +1,14 @@
 from datetime import datetime
-from typing import Optional
+
 from pydantic import BaseModel
+
 from app.schemas.tag import TagOut
 
 
 class PostBase(BaseModel):
     title: str
     content: str
-    excerpt: Optional[str] = None
+    excerpt: str | None = None
     published: bool = False
     tag_ids: list[int] = []
 
@@ -17,11 +18,11 @@ class PostCreate(PostBase):
 
 
 class PostUpdate(BaseModel):
-    title: Optional[str] = None
-    content: Optional[str] = None
-    excerpt: Optional[str] = None
-    published: Optional[bool] = None
-    tag_ids: Optional[list[int]] = None
+    title: str | None = None
+    content: str | None = None
+    excerpt: str | None = None
+    published: bool | None = None
+    tag_ids: list[int] | None = None
 
 
 class PostOut(BaseModel):
@@ -29,7 +30,7 @@ class PostOut(BaseModel):
     title: str
     slug: str
     content: str
-    excerpt: Optional[str]
+    excerpt: str | None
     published: bool
     created_at: datetime
     updated_at: datetime
@@ -42,7 +43,7 @@ class PostSummary(BaseModel):
     id: int
     title: str
     slug: str
-    excerpt: Optional[str]
+    excerpt: str | None
     published: bool
     created_at: datetime
     updated_at: datetime

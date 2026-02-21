@@ -20,3 +20,13 @@ dependencies = [
 dev = [
     "ruff>=0.15.2",
 ]
+
+[tool.ruff]
+line-length = 120
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]  # pycodestyle, pyflakes, isort, pyupgrade
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]

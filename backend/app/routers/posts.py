@@ -1,11 +1,13 @@
 import math
+
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+
 from app.database import get_db
 from app.models.post import Post
 from app.models.tag import Tag
-from app.schemas.post import PostOut, PaginatedPosts
+from app.schemas.post import PaginatedPosts, PostOut
 from app.schemas.tag import TagOut
 
 router = APIRouter(tags=["public"])
@@ -23,8 +25,8 @@ async def list_posts(
         stmt = stmt.join(Post.tags).where(Tag.slug == tag)
     total = (await db.execute(select(func.count()).select_from(stmt.subquery()))).scalar()
     posts = (
-        await db.execute(stmt.order_by(Post.created_at.desc()).offset((page - 1) * size).limit(size))
-    ).scalars().all()
+        (await db.execute(stmt.order_by(Post.created_at.desc()).offset((page - 1) * size).limit(size))).scalars().all()
+    )
     return PaginatedPosts(
         items=posts,
         total=total,

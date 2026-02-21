@@ -1,12 +1,24 @@
 from pathlib import Path
-from fastapi import FastAPI, Depends
+
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
-from app.routers import posts, admin, auth, pages, nav, social, letterboxd, travels, profile
+
 from app.config import settings
 from app.database import get_db
+from app.routers import (
+    admin,
+    auth,
+    letterboxd,
+    nav,
+    pages,
+    posts,
+    profile,
+    social,
+    travels,
+)
 
 app = FastAPI(title="whoisrgj Blog API", version="1.0.0")
 

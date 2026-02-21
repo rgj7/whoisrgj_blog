@@ -5,15 +5,17 @@ Revises:
 Create Date: 2026-02-18 00:00:00.000000
 
 """
-from typing import Sequence, Union
 
-from alembic import op
+from collections.abc import Sequence
+
 import sqlalchemy as sa
 
+from alembic import op
+
 revision: str = "0001"
-down_revision: Union[str, None] = None
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = None
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -46,8 +48,18 @@ def upgrade() -> None:
 
     op.create_table(
         "post_tags",
-        sa.Column("post_id", sa.Integer(), sa.ForeignKey("posts.id", ondelete="CASCADE"), primary_key=True),
-        sa.Column("tag_id", sa.Integer(), sa.ForeignKey("tags.id", ondelete="CASCADE"), primary_key=True),
+        sa.Column(
+            "post_id",
+            sa.Integer(),
+            sa.ForeignKey("posts.id", ondelete="CASCADE"),
+            primary_key=True,
+        ),
+        sa.Column(
+            "tag_id",
+            sa.Integer(),
+            sa.ForeignKey("tags.id", ondelete="CASCADE"),
+            primary_key=True,
+        ),
     )
 
 

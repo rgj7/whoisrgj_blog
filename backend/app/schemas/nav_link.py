@@ -1,23 +1,23 @@
-from typing import Optional
 from pydantic import BaseModel, model_validator
+
 from app.schemas.page import PageSummary
 
 
 class NavLinkOut(BaseModel):
     id: int
-    page_id: Optional[int]
+    page_id: int | None
     position: int
-    page: Optional[PageSummary]
-    custom_label: Optional[str]
-    custom_url: Optional[str]
+    page: PageSummary | None
+    custom_label: str | None
+    custom_url: str | None
 
     model_config = {"from_attributes": True}
 
 
 class NavLinkAdd(BaseModel):
-    page_id: Optional[int] = None
-    custom_label: Optional[str] = None
-    custom_url: Optional[str] = None
+    page_id: int | None = None
+    custom_label: str | None = None
+    custom_url: str | None = None
 
     @model_validator(mode="after")
     def check_link_type(self):

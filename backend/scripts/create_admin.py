@@ -5,6 +5,7 @@ Create an initial admin user.
 Usage (from the backend/ directory with .venv activated):
     python scripts/create_admin.py
 """
+
 import asyncio
 import os
 import sys
@@ -12,9 +13,10 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from sqlalchemy import select
+
+from app.auth import get_password_hash
 from app.database import SessionLocal
 from app.models.user import User
-from app.auth import get_password_hash
 
 
 async def main():
