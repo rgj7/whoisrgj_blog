@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Stack
 
-- **Backend**: FastAPI + SQLAlchemy + PostgreSQL (Python 3.14+)
+- **Backend**: FastAPI + SQLAlchemy (async) + asyncpg + PostgreSQL (Python 3.14+)
 - **Frontend**: React 18 + Vite + Tailwind CSS
 - **Auth**: JWT tokens (stored in localStorage), bcrypt for password hashing
 - **Migrations**: Alembic
@@ -56,15 +56,18 @@ docker compose up
 - `database.py` — SQLAlchemy async session setup
 - `auth.py` — JWT creation/validation, bcrypt password check, `get_current_user` dependency
 - `models/` — SQLAlchemy ORM: `User`, `Post`, `Tag` (with `post_tags` many-to-many junction), `Page`, `NavLink`, `SocialLink`, `VisitedCountry`
+- `models/site_profile.py` — `SiteProfile` (singleton row: `id=1`, `photo_url`, `bio`)
 - `schemas/` — Pydantic input/output schemas for posts, tags, auth, pages, nav_link, social_link, visited_country
+- `schemas/site_profile.py` — `SiteProfileOut`, `SiteProfileUpdate`
 - `routers/posts.py` — Public endpoints (list/view posts, list tags)
 - `routers/pages.py` — Public endpoints (list/view published pages)
 - `routers/nav.py` — Public `GET /api/nav-links` (published pages only, ordered by position)
 - `routers/social.py` — Public `GET /api/social-links` (all social links ordered by position)
 - `routers/letterboxd.py` — Public `GET /api/letterboxd` (last 5 rated films from Letterboxd RSS; cached 1 hour in memory)
 - `routers/travels.py` — Public `GET /api/travels` (all visited countries sorted by name)
+- `routers/profile.py` — Public `GET /api/profile` (returns SiteProfile row or empty defaults)
 - `routers/auth.py` — `POST /api/auth/login` returns JWT
-- `routers/admin.py` — Protected CRUD for posts, tags, pages, nav links, social links, and visited countries (requires `get_current_user` dependency)
+- `routers/admin.py` — Protected CRUD for posts, tags, pages, nav links, social links, and visited countries; profile GET/PUT and photo upload POST (requires `get_current_user` dependency)
 
 Route protection pattern: admin routes use `Depends(get_current_user)` from `auth.py`.
 
@@ -81,6 +84,8 @@ Route protection pattern: admin routes use `Depends(get_current_user)` from `aut
 - `pages/Travels.jsx` — Interactive world map at `/travels`; uses `react-simple-maps` with zoom/pan, highlights visited countries, shows hover tooltip
 - `pages/admin/SocialSettings.jsx` — Manage social links (add, remove, reorder) within the Settings tab
 - `pages/admin/TravelSettings.jsx` — Manage visited countries (searchable combobox to add, remove) within the Travels tab
+- `components/BioWidget.jsx` — Sidebar widget; fetches `/api/profile` and renders photo + bio
+- `pages/admin/BioSettings.jsx` — Bio/photo settings in the Settings tab; supports URL paste or file upload; shows circular preview with remove button
 
 ### Database Migrations
 Add a new migration:
@@ -91,6 +96,8 @@ alembic upgrade head
 ```
 
 ## Key Conventions
+- **Async SQLAlchemy**: all DB calls use `select()` + `await db.execute()`; `SessionLocal` uses `expire_on_commit=False`; the Post↔Tag M2M relationship uses `lazy="selectin"` on both sides to avoid lazy-load errors in async context
+- `DATABASE_URL` must use the `postgresql+asyncpg://` driver prefix (not `postgresql://`)
 - Post slugs are auto-generated from titles via `python-slugify`
 - Page slugs are set manually and validated as lowercase alphanumeric + hyphens
 - Unpublished posts/pages are hidden from public routes; admin can toggle publish status
@@ -102,3 +109,5 @@ alembic upgrade head
 - `SocialLink.position` determines footer icon order; `PUT /api/admin/social-links/reorder` accepts the full ordered list of IDs
 - World-atlas country IDs are zero-padded 3-digit strings (e.g. `"076"` for Brazil); `VisitedCountry.iso_numeric` is padded on the frontend before comparing with `geo.id`
 - Letterboxd feed is cached in memory for 1 hour; stale cache is served on fetch failure
+- `UPLOAD_DIR` config field defaults to `"uploads"` locally, overridden to `/app/uploads` in Docker via `docker-compose.yml`; directory is created at startup and served as static files at `/api/uploads` via FastAPI `StaticFiles` mount in `main.py`
+- Uploaded profile photo is stored as `profile.<ext>` (previous file deleted on re-upload); `photo_url` saved as `/api/uploads/profile.<ext>`; BioSettings URL input is disabled when a locally-uploaded photo is active

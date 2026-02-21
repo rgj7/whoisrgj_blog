@@ -4,14 +4,14 @@ A personal blog built with FastAPI + React. Posts are written in Markdown.
 
 ## Stack
 
-- **Backend**: FastAPI, SQLAlchemy, Alembic, PostgreSQL, JWT auth
+- **Backend**: FastAPI, SQLAlchemy (async), asyncpg, Alembic, PostgreSQL, JWT auth
 - **Frontend**: React 18 + Vite, Tailwind CSS, react-markdown, @uiw/react-md-editor, react-simple-maps
 
 ## Local Development
 
 ### Prerequisites
 
-- Python 3.12+
+- Python 3.14+
 - Node.js 18+
 - PostgreSQL (or Docker)
 
@@ -31,9 +31,8 @@ docker run -d \
 
 ```bash
 cd backend
-python -m venv .venv
+uv sync                       # creates .venv and installs from uv.lock
 source .venv/bin/activate
-pip install -r requirements.txt
 
 cp .env.example .env
 # Edit .env — set DATABASE_URL, SECRET_KEY
@@ -134,9 +133,17 @@ docker compose down -v     # also delete the database volume
 | DELETE | `/api/admin/social-links/{id}` | Yes | Remove a social link |
 | PUT | `/api/admin/social-links/reorder` | Yes | Reorder social links (`{ ordered_ids: [...] }`) |
 | GET | `/api/travels` | No | All visited countries sorted by name |
+| GET | `/api/travels/wishlist` | No | Wishlist countries sorted by name |
 | GET | `/api/admin/travels` | Yes | All visited countries (admin) |
 | POST | `/api/admin/travels` | Yes | Add a visited country (409 on duplicate) |
 | DELETE | `/api/admin/travels/{country_id}` | Yes | Remove a visited country |
+| GET | `/api/admin/travels/wishlist` | Yes | All wishlist countries (admin) |
+| POST | `/api/admin/travels/wishlist` | Yes | Add a wishlist country (409 on duplicate) |
+| DELETE | `/api/admin/travels/wishlist/{country_id}` | Yes | Remove a wishlist country |
+| GET | `/api/profile` | No | Site profile (bio + photo URL) |
+| GET | `/api/admin/profile` | Yes | Get site profile (admin) |
+| PUT | `/api/admin/profile` | Yes | Update bio and/or photo URL |
+| POST | `/api/admin/profile/photo` | Yes | Upload profile photo (multipart) |
 
 ## Frontend Routes
 
