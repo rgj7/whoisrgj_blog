@@ -30,5 +30,5 @@ class Post(Base):
     )
 
     tags: Mapped[list["Tag"]] = relationship(  # noqa: F821
-        "Tag", secondary=post_tags, back_populates="posts"
+        "Tag", secondary=post_tags, back_populates="posts", lazy="selectin"
     )

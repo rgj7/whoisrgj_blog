@@ -7,11 +7,11 @@ dependencies = [
     "uvicorn[standard]",
     "sqlalchemy",
     "alembic",
-    "psycopg2-binary",
     "pydantic-settings",
     "python-jose[cryptography]",
     "bcrypt",
     "python-multipart",
     "python-slugify",
     "httpx",
+    "asyncpg>=0.31.0",
 ]

@@ -1,6 +1,7 @@
 import math
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func
 from app.database import get_db
 from app.models.post import Post
 from app.models.tag import Tag
@@ -11,17 +12,19 @@ router = APIRouter(tags=["public"])
 
 
 @router.get("/posts", response_model=PaginatedPosts)
-def list_posts(
+async def list_posts(
     page: int = Query(1, ge=1),
     size: int = Query(10, ge=1, le=100),
     tag: str | None = Query(None),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
-    query = db.query(Post).filter(Post.published == True)  # noqa: E712
+    stmt = select(Post).where(Post.published == True)  # noqa: E712
     if tag:
-        query = query.join(Post.tags).filter(Tag.slug == tag)
-    total = query.count()
-    posts = query.order_by(Post.created_at.desc()).offset((page - 1) * size).limit(size).all()
+        stmt = stmt.join(Post.tags).where(Tag.slug == tag)
+    total = (await db.execute(select(func.count()).select_from(stmt.subquery()))).scalar()
+    posts = (
+        await db.execute(stmt.order_by(Post.created_at.desc()).offset((page - 1) * size).limit(size))
+    ).scalars().all()
     return PaginatedPosts(
         items=posts,
         total=total,
@@ -32,13 +35,15 @@ def list_posts(
 
 
 @router.get("/posts/{slug}", response_model=PostOut)
-def get_post(slug: str, db: Session = Depends(get_db)):
-    post = db.query(Post).filter(Post.slug == slug, Post.published == True).first()  # noqa: E712
+async def get_post(slug: str, db: AsyncSession = Depends(get_db)):
+    post = (
+        await db.execute(select(Post).where(Post.slug == slug, Post.published == True))  # noqa: E712
+    ).scalar_one_or_none()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     return post
 
 
 @router.get("/tags", response_model=list[TagOut])
-def list_tags(db: Session = Depends(get_db)):
-    return db.query(Tag).order_by(Tag.name).all()
+async def list_tags(db: AsyncSession = Depends(get_db)):
+    return (await db.execute(select(Tag).order_by(Tag.name))).scalars().all()

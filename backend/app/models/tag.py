@@ -11,5 +11,5 @@ class Tag(Base):
     slug: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
 
     posts: Mapped[list["Post"]] = relationship(  # noqa: F821
-        "Post", secondary="post_tags", back_populates="tags"
+        "Post", secondary="post_tags", back_populates="tags", lazy="selectin"
     )

@@ -1,9 +1,12 @@
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy import text
 from app.routers import posts, admin, auth, pages, nav, social, letterboxd, travels, profile
 from app.config import settings
+from app.database import get_db
 
 app = FastAPI(title="whoisrgj Blog API", version="1.0.0")
 
@@ -27,6 +30,15 @@ app.include_router(travels.router, prefix="/api")
 app.include_router(profile.router, prefix="/api")
 app.include_router(admin.router, prefix="/api")
 app.include_router(auth.router, prefix="/api")
+
+
+@app.get("/api/health")
+async def health(db=Depends(get_db)):
+    try:
+        await db.execute(text("SELECT 1"))
+        return {"status": "ok"}
+    except Exception:
+        return JSONResponse(status_code=503, content={"status": "unavailable"})
 
 
 @app.get("/")

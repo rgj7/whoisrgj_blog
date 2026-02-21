@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, or_
 from app.database import get_db
 from app.models.nav_link import NavLink
 from app.models.page import Page
@@ -9,11 +10,11 @@ router = APIRouter(tags=["public"])
 
 
 @router.get("/nav-links", response_model=list[NavLinkOut])
-def list_nav_links(db: Session = Depends(get_db)):
-    return (
-        db.query(NavLink)
+async def list_nav_links(db: AsyncSession = Depends(get_db)):
+    stmt = (
+        select(NavLink)
         .outerjoin(NavLink.page)
-        .filter((Page.published == True) | (NavLink.page_id == None))
+        .where(or_(Page.published == True, NavLink.page_id == None))  # noqa: E711,E712
         .order_by(NavLink.position.asc())
-        .all()
     )
+    return (await db.execute(stmt)).scalars().all()
