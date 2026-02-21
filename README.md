@@ -75,6 +75,8 @@ pre-commit run --all-files
 | mypy | backend | Static type checking (`disallow_untyped_defs`) |
 | prettier | frontend | Format JS/JSX/CSS |
 | eslint | frontend | React + hooks rules |
+| check-json / check-yaml / check-toml | all | Validate config files |
+| detect-private-key | all | Prevent accidental secret commits |
 
 ## Docker (Full Stack)
 
