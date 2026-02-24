@@ -84,6 +84,7 @@ Hooks: `check-yaml`, `check-toml`, `check-json`, `detect-private-key`, `end-of-f
 - `routers/travels.py` — Public `GET /api/travels` (all visited countries sorted by name)
 - `routers/profile.py` — Public `GET /api/profile` (returns SiteProfile row or empty defaults)
 - `routers/auth.py` — `POST /api/auth/login` returns JWT
+- `routers/rawg.py` — Public `GET /api/rawg/search?q=` (search games via RAWG API) and `GET /api/rawg/games/{game_id}` (fetch game detail); game detail responses cached in memory for 1 hour; requires `RAWG_API_KEY` in config (defaults to empty string — endpoints return 503 if key is missing)
 - `routers/admin.py` — Protected CRUD for posts, tags, pages, nav links, social links, and visited countries; profile GET/PUT and photo upload POST (requires `get_current_user` dependency)
 
 Route protection pattern: admin routes use `Depends(get_current_user)` from `auth.py`.
@@ -128,5 +129,7 @@ alembic upgrade head
 - `SocialLink.position` determines footer icon order; `PUT /api/admin/social-links/reorder` accepts the full ordered list of IDs
 - World-atlas country IDs are zero-padded 3-digit strings (e.g. `"076"` for Brazil); `VisitedCountry.iso_numeric` is padded on the frontend before comparing with `geo.id`
 - Letterboxd feed is cached in memory for 1 hour; stale cache is served on fetch failure
+- RAWG game detail responses are cached in memory for 1 hour (`_game_cache` dict in `routers/rawg.py`); `RAWG_API_KEY` is optional — if empty, RAWG endpoints will fail at the API call level with a 503
+- `PostMedia` model (`models/post_media.py`) stores game metadata linked to a post; `external_id` holds the RAWG game ID
 - `UPLOAD_DIR` config field defaults to `"uploads"` locally, overridden to `/app/uploads` in Docker via `docker-compose.yml`; directory is created at startup and served as static files at `/api/uploads` via FastAPI `StaticFiles` mount in `main.py`
 - Uploaded profile photo is stored as `profile.<ext>` (previous file deleted on re-upload); `photo_url` saved as `/api/uploads/profile.<ext>`; BioSettings URL input is disabled when a locally-uploaded photo is active
