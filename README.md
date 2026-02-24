@@ -1,11 +1,13 @@
-# whoisrgj.com — Personal Blog
+# whoisrgj blog
 
 A personal blog built with FastAPI + React. Posts are written in Markdown.
 
 ## Stack
 
-- **Backend**: FastAPI, SQLAlchemy (async), asyncpg, Alembic, PostgreSQL, JWT auth
+- **Backend**: FastAPI, SQLAlchemy (async), asyncpg, Alembic, Neon (PostgreSQL), JWT auth
 - **Frontend**: React 18 + Vite, Tailwind CSS, react-markdown, @uiw/react-md-editor, react-simple-maps
+- **Reverse proxy**: Caddy (automatic HTTPS via Let's Encrypt)
+- **Database**: [Neon](https://neon.tech) — serverless Postgres
 
 ## Local Development
 
@@ -13,21 +15,8 @@ A personal blog built with FastAPI + React. Posts are written in Markdown.
 
 - Python 3.14+
 - Node.js 18+
-- PostgreSQL (or Docker)
 
-### 1. Start PostgreSQL
-
-```bash
-docker run -d \
-  --name blog-db \
-  -e POSTGRES_USER=blog \
-  -e POSTGRES_PASSWORD=blogpass \
-  -e POSTGRES_DB=whoisrgj_blog \
-  -p 5432:5432 \
-  postgres:16
-```
-
-### 2. Backend
+### 1. Backend
 
 ```bash
 cd backend
@@ -35,7 +24,7 @@ uv sync                       # creates .venv and installs from uv.lock
 source .venv/bin/activate
 
 cp .env.example .env
-# Edit .env — set DATABASE_URL, SECRET_KEY
+# Edit .env — set DATABASE_URL (Neon connection string) and SECRET_KEY
 
 alembic upgrade head
 uvicorn app.main:app --reload --port 8000
@@ -43,7 +32,7 @@ uvicorn app.main:app --reload --port 8000
 
 API docs available at `http://localhost:8000/docs`.
 
-### 3. Create admin user
+### 2. Create admin user
 
 ```bash
 cd backend
@@ -51,7 +40,7 @@ source .venv/bin/activate
 python scripts/create_admin.py
 ```
 
-### 4. Frontend
+### 3. Frontend
 
 ```bash
 cd frontend
@@ -90,22 +79,19 @@ pre-commit run --all-files
 cp .env.example .env
 ```
 
-Open `.env` and set `SECRET_KEY` to a random value:
+Open `.env` and fill in:
 
-```bash
-python -c "import secrets; print(secrets.token_hex(32))"
-```
-
-`DATABASE_URL` is already configured inside `docker-compose.yml` — no changes needed.
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | Neon connection string (`postgresql+asyncpg://...`) |
+| `SECRET_KEY` | Random secret — generate with `python -c "import secrets; print(secrets.token_hex(32))"` |
+| `RAWG_API_KEY` | Optional — enables game info on posts |
 
 ### 2. Build and start
 
 ```bash
 docker compose up --build
 ```
-
-- Frontend: http://localhost
-- API docs: http://localhost:8000/docs
 
 ### 3. Create admin user
 
@@ -117,5 +103,5 @@ docker compose exec backend python scripts/create_admin.py
 
 ```bash
 docker compose down        # stop and remove containers
-docker compose down -v     # also delete the database volume
+docker compose down -v     # also delete volumes
 ```
