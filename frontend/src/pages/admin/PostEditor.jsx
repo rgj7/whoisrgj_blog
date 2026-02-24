@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import MDEditor from '@uiw/react-md-editor'
 import client from '../../api/client'
+import GameSearch from './GameSearch'
 
 export default function PostEditor() {
   const { id } = useParams()
@@ -18,6 +19,7 @@ export default function PostEditor() {
   const [loading, setLoading] = useState(isEdit)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
+  const [selectedGame, setSelectedGame] = useState(null)
   const [mediaOpen, setMediaOpen] = useState(false)
   const [activeMediaTab, setActiveMediaTab] = useState('games')
 
@@ -36,6 +38,14 @@ export default function PostEditor() {
         setExcerpt(p.excerpt || '')
         setPublished(p.published)
         setSelectedTagIds(p.tags.map((t) => t.id))
+        const gameMedia = p.media?.find((m) => m.media_type === 'game')
+        if (gameMedia) {
+          setSelectedGame({
+            id: gameMedia.external_id,
+            name: gameMedia.title,
+            background_image: null,
+          })
+        }
       })
       .catch(() => setError('Failed to load post.'))
       .finally(() => setLoading(false))
@@ -77,6 +87,9 @@ export default function PostEditor() {
       excerpt: excerpt || null,
       published,
       tag_ids: selectedTagIds,
+      media: selectedGame
+        ? [{ media_type: 'game', external_id: selectedGame.id, title: selectedGame.name }]
+        : [],
     }
     try {
       if (isEdit) {
@@ -185,11 +198,11 @@ export default function PostEditor() {
       </div>
 
       {/* Collapsible Media section */}
-      <div className="border border-navy-600 rounded-lg overflow-hidden">
+      <div className="border border-navy-600 rounded-lg">
         <button
           type="button"
           onClick={() => setMediaOpen((prev) => !prev)}
-          className="flex items-center justify-between w-full px-4 py-2.5 bg-navy-700 hover:bg-navy-600 text-sm font-medium text-navy-100 hover:text-navy-50 transition-colors"
+          className={`flex items-center justify-between w-full px-4 py-2.5 bg-navy-700 hover:bg-navy-600 text-sm font-medium text-navy-100 hover:text-navy-50 transition-colors rounded-t-lg ${mediaOpen ? '' : 'rounded-b-lg'}`}
         >
           <span className="flex items-center gap-2">
             <span className="text-xs">{mediaOpen ? '▾' : '▸'}</span>
@@ -218,8 +231,10 @@ export default function PostEditor() {
             </div>
 
             {/* Tab content */}
-            <div className="p-4 bg-navy-800 text-navy-200 text-sm">
-              {activeMediaTab === 'games' && <p className="italic">Games — coming soon.</p>}
+            <div className="p-4 bg-navy-800 text-navy-200 text-sm rounded-b-lg">
+              {activeMediaTab === 'games' && (
+                <GameSearch selectedGame={selectedGame} onSelect={setSelectedGame} />
+              )}
               {activeMediaTab === 'movies' && <p className="italic">Movies — coming soon.</p>}
               {activeMediaTab === 'tv' && <p className="italic">TV Shows — coming soon.</p>}
             </div>

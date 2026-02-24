@@ -9,6 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 
 if TYPE_CHECKING:
+    from app.models.post_media import PostMedia
     from app.models.tag import Tag
 
 post_tags = Table(
@@ -36,3 +37,9 @@ class Post(Base):
     )
 
     tags: Mapped[list[Tag]] = relationship("Tag", secondary=post_tags, back_populates="posts", lazy="selectin")
+    media: Mapped[list[PostMedia]] = relationship(
+        "PostMedia",
+        back_populates="post",
+        cascade="all, delete-orphan",
+        lazy="selectin",
+    )

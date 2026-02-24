@@ -11,6 +11,7 @@ from app.database import get_db
 from app.models.nav_link import NavLink
 from app.models.page import Page
 from app.models.post import Post
+from app.models.post_media import PostMedia
 from app.models.site_profile import SiteProfile
 from app.models.social_link import SocialLink
 from app.models.tag import Tag
@@ -20,6 +21,7 @@ from app.models.wanted_country import WantedCountry
 from app.schemas.nav_link import NavLinkAdd, NavLinkOut, NavLinkReorder
 from app.schemas.page import PageCreate, PageOut, PageSummary, PageUpdate
 from app.schemas.post import PostCreate, PostOut, PostSummary, PostUpdate
+from app.schemas.post_media import PostMediaIn
 from app.schemas.site_profile import SiteProfileOut, SiteProfileUpdate
 from app.schemas.social_link import SocialLinkCreate, SocialLinkOut, SocialLinkReorder
 from app.schemas.tag import TagCreate, TagOut
@@ -71,6 +73,7 @@ async def admin_create_post(
         excerpt=payload.excerpt,
         published=payload.published,
         tags=tags,
+        media=_build_media(payload.media),
     )
     db.add(post)
     await db.commit()
@@ -99,6 +102,8 @@ async def admin_update_post(
         post.published = payload.published
     if payload.tag_ids is not None:
         post.tags = await _resolve_tags(db, payload.tag_ids)
+    if payload.media is not None:
+        post.media = _build_media(payload.media)
 
     await db.commit()
     await db.refresh(post)
@@ -536,3 +541,7 @@ async def _resolve_tags(db: AsyncSession, tag_ids: list[int]) -> list[Tag]:
     if len(tags) != len(tag_ids):
         raise HTTPException(status_code=400, detail="One or more tag IDs are invalid")
     return tags
+
+
+def _build_media(items: list[PostMediaIn]) -> list[PostMedia]:
+    return [PostMedia(media_type=m.media_type, external_id=m.external_id, title=m.title) for m in items]

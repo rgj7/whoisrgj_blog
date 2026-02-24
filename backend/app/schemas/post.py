@@ -2,6 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
+from app.schemas.post_media import PostMediaIn, PostMediaOut
 from app.schemas.tag import TagOut
 
 
@@ -11,6 +12,7 @@ class PostBase(BaseModel):
     excerpt: str | None = None
     published: bool = False
     tag_ids: list[int] = []
+    media: list[PostMediaIn] = []
 
 
 class PostCreate(PostBase):
@@ -23,6 +25,7 @@ class PostUpdate(BaseModel):
     excerpt: str | None = None
     published: bool | None = None
     tag_ids: list[int] | None = None
+    media: list[PostMediaIn] | None = None
 
 
 class PostOut(BaseModel):
@@ -35,6 +38,7 @@ class PostOut(BaseModel):
     created_at: datetime
     updated_at: datetime
     tags: list[TagOut] = []
+    media: list[PostMediaOut] = []
 
     model_config = {"from_attributes": True}
 

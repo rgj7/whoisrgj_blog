@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import app.models.nav_link  # noqa: F401
 import app.models.page  # noqa: F401
 import app.models.post  # noqa: F401
+import app.models.post_media  # noqa: F401
 import app.models.site_profile  # noqa: F401
 import app.models.social_link  # noqa: F401
 import app.models.tag  # noqa: F401

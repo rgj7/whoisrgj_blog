@@ -17,6 +17,7 @@ from app.routers import (
     pages,
     posts,
     profile,
+    rawg,
     social,
     travels,
 )
@@ -41,6 +42,7 @@ app.include_router(social.router, prefix="/api")
 app.include_router(letterboxd.router, prefix="/api")
 app.include_router(travels.router, prefix="/api")
 app.include_router(profile.router, prefix="/api")
+app.include_router(rawg.router, prefix="/api")
 app.include_router(admin.router, prefix="/api")
 app.include_router(auth.router, prefix="/api")
 
