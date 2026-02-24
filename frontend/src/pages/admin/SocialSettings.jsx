@@ -131,10 +131,10 @@ export default function SocialSettings() {
           <select
             value={adding.platform}
             onChange={(e) => setAdding((prev) => ({ ...prev, platform: e.target.value }))}
-            className="bg-navy-800 border border-navy-600 text-navy-50 rounded px-2 py-1.5 text-sm capitalize focus:outline-none focus:ring-2 focus:ring-navy-300"
+            className="bg-navy-950 border border-navy-600 text-navy-50 rounded px-2 py-1.5 text-sm capitalize focus:outline-none focus:ring-2 focus:ring-navy-300"
           >
             {PLATFORMS.map((p) => (
-              <option key={p} value={p} className="capitalize bg-navy-800">
+              <option key={p} value={p} className="capitalize bg-navy-950">
                 {p}
               </option>
             ))}
@@ -148,7 +148,7 @@ export default function SocialSettings() {
           />
           <button
             onClick={handleAdd}
-            className="text-navy-300 hover:text-navy-400 font-medium text-sm transition-colors"
+            className="text-sm px-3 py-1.5 bg-navy-700 hover:bg-navy-600 border border-navy-600 rounded text-navy-100 font-medium transition-colors"
           >
             Add
           </button>

@@ -248,7 +248,7 @@ function CountryCombobox({ onAdd, endpoint, addLabel }) {
           type="text"
           value={query}
           placeholder="Search countries…"
-          className="w-full bg-navy-800 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 placeholder-navy-200"
+          className="w-full bg-navy-950 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 placeholder-navy-400"
           onChange={(e) => {
             setQuery(e.target.value)
             setSelected(null)
@@ -257,7 +257,7 @@ function CountryCombobox({ onAdd, endpoint, addLabel }) {
           onFocus={() => setOpen(true)}
         />
         {open && filtered.length > 0 && (
-          <ul className="absolute z-10 mt-1 w-full bg-navy-800 border border-navy-600 rounded shadow-md max-h-60 overflow-y-auto text-sm">
+          <ul className="absolute z-10 mt-1 w-full bg-navy-700 border border-navy-600 rounded shadow-md max-h-60 overflow-y-auto text-sm">
             {filtered.map((c) => (
               <li
                 key={c.iso_numeric}
@@ -277,7 +277,7 @@ function CountryCombobox({ onAdd, endpoint, addLabel }) {
       <button
         onClick={handleAdd}
         disabled={!selected}
-        className="text-navy-300 hover:text-navy-400 font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="text-sm px-3 py-1.5 bg-navy-700 hover:bg-navy-600 border border-navy-600 rounded text-navy-100 font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         {addLabel}
       </button>

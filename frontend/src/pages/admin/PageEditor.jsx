@@ -104,7 +104,7 @@ export default function PageEditor() {
           </label>
           <button
             onClick={() => navigate('/admin')}
-            className="text-sm text-navy-200 hover:text-navy-50 px-3 py-1.5 border border-navy-600 rounded transition-colors"
+            className="text-sm bg-navy-700 hover:bg-navy-600 text-navy-100 hover:text-navy-50 px-3 py-1.5 border border-navy-600 rounded transition-colors"
           >
             Cancel
           </button>
@@ -138,7 +138,7 @@ export default function PageEditor() {
           value={slug}
           onChange={handleSlugChange}
           placeholder="e.g. about or resume"
-          className={`w-full bg-navy-800 border rounded px-3 py-2 text-sm text-navy-50 focus:outline-none focus:ring-2 focus:ring-navy-300 ${
+          className={`w-full bg-navy-950 border rounded px-3 py-2 text-sm text-navy-50 placeholder-navy-400 focus:outline-none focus:ring-2 focus:ring-navy-300 ${
             slugError ? 'border-red-500' : 'border-navy-600'
           }`}
         />

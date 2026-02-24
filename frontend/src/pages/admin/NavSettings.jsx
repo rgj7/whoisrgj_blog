@@ -152,12 +152,12 @@ export default function NavSettings() {
             {availablePages.map((page) => (
               <li
                 key={page.id}
-                className="flex items-center gap-3 bg-navy-800 border border-navy-600 rounded px-3 py-2 text-sm"
+                className="flex items-center gap-3 bg-navy-700 border border-navy-600 rounded px-3 py-2 text-sm"
               >
                 <span className="flex-1">{page.title}</span>
                 <button
                   onClick={() => handleAdd(page.id)}
-                  className="text-navy-300 hover:text-navy-400 font-medium transition-colors"
+                  className="text-sm px-3 py-1 bg-navy-700 hover:bg-navy-600 border border-navy-600 rounded text-navy-100 font-medium transition-colors"
                 >
                   Add
                 </button>
@@ -188,7 +188,7 @@ export default function NavSettings() {
           />
           <button
             onClick={handleAddCustom}
-            className="text-navy-300 hover:text-navy-400 font-medium text-sm whitespace-nowrap transition-colors"
+            className="text-sm px-3 py-1.5 bg-navy-700 hover:bg-navy-600 border border-navy-600 rounded text-navy-100 font-medium whitespace-nowrap transition-colors"
           >
             Add
           </button>

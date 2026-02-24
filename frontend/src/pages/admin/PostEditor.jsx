@@ -109,7 +109,7 @@ export default function PostEditor() {
           </label>
           <button
             onClick={() => navigate('/admin')}
-            className="text-sm text-navy-200 hover:text-navy-50 px-3 py-1.5 border border-navy-600 rounded transition-colors"
+            className="text-sm bg-navy-700 hover:bg-navy-600 text-navy-100 hover:text-navy-50 px-3 py-1.5 border border-navy-600 rounded transition-colors"
           >
             Cancel
           </button>
@@ -159,7 +159,7 @@ export default function PostEditor() {
               className={`px-2.5 py-0.5 rounded text-xs font-medium border transition-colors ${
                 selectedTagIds.includes(tag.id)
                   ? 'bg-navy-300 text-white border-navy-300'
-                  : 'bg-navy-800 text-navy-100 border-navy-600 hover:border-navy-400'
+                  : 'bg-navy-700 text-navy-100 border-navy-600 hover:border-navy-400'
               }`}
             >
               {tag.name}
@@ -177,7 +177,7 @@ export default function PostEditor() {
           />
           <button
             onClick={handleAddTag}
-            className="text-sm px-3 py-1.5 border border-navy-600 rounded hover:bg-navy-700 text-navy-100 transition-colors"
+            className="text-sm px-3 py-1.5 bg-navy-700 border border-navy-600 rounded hover:bg-navy-600 text-navy-100 transition-colors"
           >
             Add Tag
           </button>
@@ -189,7 +189,7 @@ export default function PostEditor() {
         <button
           type="button"
           onClick={() => setMediaOpen((prev) => !prev)}
-          className="flex items-center justify-between w-full px-4 py-2.5 bg-navy-800 hover:bg-navy-700 text-sm font-medium text-navy-100 hover:text-navy-50 transition-colors"
+          className="flex items-center justify-between w-full px-4 py-2.5 bg-navy-700 hover:bg-navy-600 text-sm font-medium text-navy-100 hover:text-navy-50 transition-colors"
         >
           <span className="flex items-center gap-2">
             <span className="text-xs">{mediaOpen ? '▾' : '▸'}</span>

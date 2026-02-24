@@ -16,7 +16,7 @@
     @apply bg-navy-800 rounded-xl p-8 border border-navy-600;
   }
   .form-input {
-    @apply w-full bg-navy-800 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 placeholder-navy-200;
+    @apply w-full bg-navy-950 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 placeholder-navy-400;
   }
   .btn-primary {
     @apply bg-navy-300 text-white text-sm px-4 py-2 rounded hover:bg-navy-400 transition-colors;

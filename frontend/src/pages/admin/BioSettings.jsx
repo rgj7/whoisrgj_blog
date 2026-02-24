@@ -78,7 +78,7 @@ export default function BioSettings() {
             onChange={(e) => setPhotoUrl(e.target.value)}
             placeholder="https://example.com/photo.jpg"
             disabled={isUploaded}
-            className="w-full bg-navy-800 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full bg-navy-950 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 placeholder-navy-400 disabled:opacity-40 disabled:cursor-not-allowed"
           />
           <div className="flex items-center gap-2 mt-1">
             <label className="text-sm text-navy-300 hover:text-navy-400 cursor-pointer font-medium transition-colors">
@@ -116,13 +116,13 @@ export default function BioSettings() {
           onChange={(e) => setBio(e.target.value)}
           rows={4}
           placeholder="A short bio..."
-          className="w-full bg-navy-800 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm resize-y focus:outline-none focus:ring-2 focus:ring-navy-300 placeholder-navy-200"
+          className="w-full bg-navy-950 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm resize-y focus:outline-none focus:ring-2 focus:ring-navy-300 placeholder-navy-400"
         />
       </div>
       <div className="flex items-center gap-4">
         <button
           onClick={handleSave}
-          className="text-navy-300 hover:text-navy-400 font-medium text-sm transition-colors"
+          className="text-sm px-3 py-1.5 bg-navy-700 hover:bg-navy-600 border border-navy-600 rounded text-navy-100 font-medium transition-colors"
         >
           Save
         </button>
