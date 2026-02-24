@@ -18,6 +18,8 @@ export default function PostEditor() {
   const [loading, setLoading] = useState(isEdit)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
+  const [mediaOpen, setMediaOpen] = useState(false)
+  const [activeMediaTab, setActiveMediaTab] = useState('games')
 
   useEffect(() => {
     client.get('/tags').then((res) => setAllTags(res.data))
@@ -92,7 +94,7 @@ export default function PostEditor() {
   if (loading) return <p className="text-navy-200">Loading...</p>
 
   return (
-    <div className="space-y-6">
+    <div className="content-card space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">{isEdit ? 'Edit Post' : 'New Post'}</h1>
         <div className="flex items-center gap-3">
@@ -180,6 +182,49 @@ export default function PostEditor() {
             Add Tag
           </button>
         </div>
+      </div>
+
+      {/* Collapsible Media section */}
+      <div className="border border-navy-600 rounded-lg overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setMediaOpen((prev) => !prev)}
+          className="flex items-center justify-between w-full px-4 py-2.5 bg-navy-800 hover:bg-navy-700 text-sm font-medium text-navy-100 hover:text-navy-50 transition-colors"
+        >
+          <span className="flex items-center gap-2">
+            <span className="text-xs">{mediaOpen ? '▾' : '▸'}</span>
+            Media
+          </span>
+        </button>
+
+        {mediaOpen && (
+          <div className="border-t border-navy-600">
+            {/* Tab bar — mirrors Dashboard tab pattern */}
+            <div className="flex border-b border-navy-600 bg-navy-900 px-2 pt-2">
+              {['games', 'movies', 'tv'].map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setActiveMediaTab(tab)}
+                  className={`px-4 py-2 text-sm font-medium -mb-px border-b-2 transition-colors ${
+                    activeMediaTab === tab
+                      ? 'border-navy-300 text-navy-300'
+                      : 'border-transparent text-navy-200 hover:text-navy-50'
+                  }`}
+                >
+                  {tab === 'tv' ? 'TV Shows' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
+            </div>
+
+            {/* Tab content */}
+            <div className="p-4 bg-navy-800 text-navy-200 text-sm">
+              {activeMediaTab === 'games' && <p className="italic">Games — coming soon.</p>}
+              {activeMediaTab === 'movies' && <p className="italic">Movies — coming soon.</p>}
+              {activeMediaTab === 'tv' && <p className="italic">TV Shows — coming soon.</p>}
+            </div>
+          </div>
+        )}
       </div>
 
       <div>

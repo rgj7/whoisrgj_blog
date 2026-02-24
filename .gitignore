@@ -23,6 +23,7 @@ frontend/dist/
 *.log
 .claude/
 .ruff_cache/
+.mypy_cache/
 
 # Uploads
 backend/uploads/

@@ -89,7 +89,7 @@ export default function PageEditor() {
   if (loading) return <p className="text-navy-200">Loading...</p>
 
   return (
-    <div className="space-y-6">
+    <div className="content-card space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">{isEdit ? 'Edit Page' : 'New Page'}</h1>
         <div className="flex items-center gap-3">
