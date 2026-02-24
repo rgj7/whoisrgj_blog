@@ -43,7 +43,7 @@ export default function PostEditor() {
           setSelectedGame({
             id: gameMedia.external_id,
             name: gameMedia.title,
-            background_image: null,
+            background_image: gameMedia.background_image_url ?? null,
           })
         }
       })
@@ -88,7 +88,14 @@ export default function PostEditor() {
       published,
       tag_ids: selectedTagIds,
       media: selectedGame
-        ? [{ media_type: 'game', external_id: selectedGame.id, title: selectedGame.name }]
+        ? [
+            {
+              media_type: 'game',
+              external_id: selectedGame.id,
+              title: selectedGame.name,
+              background_image_url: selectedGame.background_image ?? null,
+            },
+          ]
         : [],
     }
     try {

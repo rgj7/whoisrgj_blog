@@ -9,6 +9,7 @@ class PostMediaIn(BaseModel):
     media_type: MediaType
     external_id: str
     title: str
+    background_image_url: str | None = None
 
 
 class PostMediaOut(BaseModel):
@@ -16,5 +17,6 @@ class PostMediaOut(BaseModel):
     media_type: str
     external_id: str
     title: str
+    background_image_url: str | None = None
 
     model_config = {"from_attributes": True}

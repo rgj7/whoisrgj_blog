@@ -544,4 +544,12 @@ async def _resolve_tags(db: AsyncSession, tag_ids: list[int]) -> list[Tag]:
 
 
 def _build_media(items: list[PostMediaIn]) -> list[PostMedia]:
-    return [PostMedia(media_type=m.media_type, external_id=m.external_id, title=m.title) for m in items]
+    return [
+        PostMedia(
+            media_type=m.media_type,
+            external_id=m.external_id,
+            title=m.title,
+            background_image_url=m.background_image_url,
+        )
+        for m in items
+    ]

@@ -53,7 +53,7 @@ export default function GameSearch({ selectedGame, onSelect }) {
           <img
             src={selectedGame.background_image}
             alt={selectedGame.name}
-            className="w-12 h-8 object-cover rounded border border-navy-600"
+            className="w-24 h-16 object-cover rounded border border-navy-600"
           />
         )}
         <span className="text-navy-50 text-sm font-medium">{selectedGame.name}</span>

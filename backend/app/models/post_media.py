@@ -19,5 +19,6 @@ class PostMedia(Base):
     media_type: Mapped[str] = mapped_column(String(50), nullable=False)  # 'game' | 'movie' | 'tv'
     external_id: Mapped[str] = mapped_column(String(255), nullable=False)  # RAWG id, TMDB id, etc.
     title: Mapped[str] = mapped_column(String(500), nullable=False)  # denormalized display name
+    background_image_url: Mapped[str | None] = mapped_column(String(2048), nullable=True)
 
     post: Mapped[Post] = relationship("Post", back_populates="media")
