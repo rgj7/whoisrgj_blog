@@ -2,11 +2,13 @@ import time
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import get_current_user
 from app.config import settings
 from app.database import get_db
+from app.models.post_media import PostMedia
 
 router = APIRouter()
 
@@ -47,7 +49,15 @@ async def rawg_search(
 
 
 @router.get("/rawg/games/{game_id}")
-async def rawg_game_detail(game_id: str) -> dict[str, object]:
+async def rawg_game_detail(game_id: str, db: AsyncSession = Depends(get_db)) -> dict[str, object]:
+    exists = (
+        await db.execute(
+            select(PostMedia.id).where(PostMedia.external_id == game_id, PostMedia.media_type == "game").limit(1)
+        )
+    ).scalar_one_or_none()
+    if exists is None:
+        raise HTTPException(status_code=404, detail="Game not found")
+
     now = time.time()
     cached = _game_cache.get(game_id)
     if cached is not None and cached[1] > now:
