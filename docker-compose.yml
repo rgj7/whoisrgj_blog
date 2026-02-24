@@ -1,4 +1,18 @@
 services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+    depends_on:
+      frontend:
+        condition: service_healthy
+
   backend:
     build: ./backend
     restart: unless-stopped
@@ -8,8 +22,7 @@ services:
       ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 480
       UPLOAD_DIR: /app/uploads
-    ports:
-      - "8000:8000"
+      RAWG_API_KEY: ${RAWG_API_KEY:-}
     volumes:
       - uploads:/app/uploads
     healthcheck:
@@ -25,8 +38,6 @@ services:
     depends_on:
       backend:
         condition: service_healthy
-    ports:
-      - "80:80"
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost/health || exit 1"]
       interval: 10s
@@ -36,3 +47,4 @@ services:
 
 volumes:
   uploads:
+  caddy_data:
