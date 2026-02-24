@@ -52,6 +52,7 @@ class PostSummary(BaseModel):
     created_at: datetime
     updated_at: datetime
     tags: list[TagOut] = []
+    media: list[PostMediaOut] = []
 
     model_config = {"from_attributes": True}
 
