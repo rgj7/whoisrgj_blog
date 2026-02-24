@@ -1,9 +1,12 @@
 import time
 
 import httpx
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.auth import get_current_user
 from app.config import settings
+from app.database import get_db
 
 router = APIRouter()
 
@@ -14,7 +17,11 @@ _game_cache: dict[str, tuple[dict[str, object], float]] = {}
 
 
 @router.get("/rawg/search")
-async def rawg_search(q: str = Query(..., min_length=1)) -> list[dict[str, str | None]]:
+async def rawg_search(
+    q: str = Query(..., min_length=1),
+    db: AsyncSession = Depends(get_db),
+    _: object = Depends(get_current_user),
+) -> list[dict[str, str | None]]:
     if not q.strip():
         return []
     try:
