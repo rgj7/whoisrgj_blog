@@ -131,5 +131,6 @@ alembic upgrade head
 - Letterboxd feed is cached in memory for 1 hour; stale cache is served on fetch failure
 - RAWG game detail responses are cached in memory for 1 hour (`_game_cache` dict in `routers/rawg.py`); `RAWG_API_KEY` is optional — if empty, RAWG endpoints will fail at the API call level with a 503
 - `PostMedia` model (`models/post_media.py`) stores game metadata linked to a post; `external_id` holds the RAWG game ID
+- **Third-party API proxy security**: search/lookup endpoints used only in the admin editor require `Depends(get_current_user)`; public-facing detail endpoints (e.g. `GET /rawg/games/{game_id}`) must validate the requested ID exists in `post_media` before proxying to the external API — this prevents arbitrary enumeration of third-party IDs using the site's API key. Apply this pattern to all future third-party API integrations.
 - `UPLOAD_DIR` config field defaults to `"uploads"` locally, overridden to `/app/uploads` in Docker via `docker-compose.yml`; directory is created at startup and served as static files at `/api/uploads` via FastAPI `StaticFiles` mount in `main.py`
 - Uploaded profile photo is stored as `profile.<ext>` (previous file deleted on re-upload); `photo_url` saved as `/api/uploads/profile.<ext>`; BioSettings URL input is disabled when a locally-uploaded photo is active
