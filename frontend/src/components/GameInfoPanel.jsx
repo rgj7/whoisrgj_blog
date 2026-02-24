@@ -1,6 +1,17 @@
 import { useState, useEffect } from 'react'
 import client from '../api/client'
 
+function MetaField({ label, children }) {
+  return (
+    <div>
+      <dt className="text-xs font-semibold text-navy-400 uppercase tracking-widest mb-0.5">
+        {label}
+      </dt>
+      <dd className="text-sm text-navy-100">{children}</dd>
+    </div>
+  )
+}
+
 function MetacriticScore({ score, url }) {
   const colour = score >= 75 ? 'text-green-400' : score >= 50 ? 'text-yellow-400' : 'text-red-400'
   const inner = <span className={`text-2xl font-bold tabular-nums ${colour}`}>{score}</span>
@@ -57,77 +68,35 @@ export default function GameInfoPanel({ gameId }) {
 
         {/* Right — compact stats sidebar */}
         <div className="shrink-0 md:w-40 pt-4 md:pt-0 md:pl-5 flex flex-col gap-2.5">
-          {game.released && (
-            <div>
-              <dt className="text-xs font-semibold text-navy-400 uppercase tracking-widest mb-0.5">
-                Released
-              </dt>
-              <dd className="text-sm text-navy-100">{game.released}</dd>
-            </div>
-          )}
+          {game.released && <MetaField label="Released">{game.released}</MetaField>}
 
           {game.metacritic != null && (
-            <div>
-              <dt className="text-xs font-semibold text-navy-400 uppercase tracking-widest mb-0.5">
-                Metacritic
-              </dt>
-              <dd>
-                <MetacriticScore score={game.metacritic} url={game.metacritic_url} />
-              </dd>
-            </div>
+            <MetaField label="Metacritic">
+              <MetacriticScore score={game.metacritic} url={game.metacritic_url} />
+            </MetaField>
           )}
 
           {game.esrb_rating && (
-            <div>
-              <dt className="text-xs font-semibold text-navy-400 uppercase tracking-widest mb-0.5">
-                ESRB
-              </dt>
-              <dd>
-                <span className="font-mono text-xs bg-navy-800 border border-navy-600 text-navy-100 px-2 py-0.5 rounded">
-                  {game.esrb_rating}
-                </span>
-              </dd>
-            </div>
+            <MetaField label="ESRB">
+              <span className="font-mono text-xs bg-navy-800 border border-navy-600 text-navy-100 px-2 py-0.5 rounded">
+                {game.esrb_rating}
+              </span>
+            </MetaField>
           )}
         </div>
       </div>
 
       {/* Bottom strip — genre, developer, publisher, platforms */}
       <div className="border-t border-navy-700/50 px-8 py-4 flex flex-wrap items-start gap-x-8 gap-y-3">
-        {game.genres && game.genres.length > 0 && (
-          <div>
-            <dt className="text-xs font-semibold text-navy-400 uppercase tracking-widest mb-0.5">
-              Genre
-            </dt>
-            <dd className="text-sm text-navy-100">{game.genres.join(', ')}</dd>
-          </div>
+        {game.genres?.length > 0 && <MetaField label="Genre">{game.genres.join(', ')}</MetaField>}
+        {game.developers?.length > 0 && (
+          <MetaField label="Developer">{game.developers.join(', ')}</MetaField>
         )}
-
-        {game.developers && game.developers.length > 0 && (
-          <div>
-            <dt className="text-xs font-semibold text-navy-400 uppercase tracking-widest mb-0.5">
-              Developer
-            </dt>
-            <dd className="text-sm text-navy-100">{game.developers.join(', ')}</dd>
-          </div>
+        {game.publishers?.length > 0 && (
+          <MetaField label="Publisher">{game.publishers.join(', ')}</MetaField>
         )}
-
-        {game.publishers && game.publishers.length > 0 && (
-          <div>
-            <dt className="text-xs font-semibold text-navy-400 uppercase tracking-widest mb-0.5">
-              Publisher
-            </dt>
-            <dd className="text-sm text-navy-100">{game.publishers.join(', ')}</dd>
-          </div>
-        )}
-
-        {game.platforms && game.platforms.length > 0 && (
-          <div>
-            <dt className="text-xs font-semibold text-navy-400 uppercase tracking-widest mb-0.5">
-              Platforms
-            </dt>
-            <dd className="text-sm text-navy-100">{game.platforms.join(', ')}</dd>
-          </div>
+        {game.platforms?.length > 0 && (
+          <MetaField label="Platforms">{game.platforms.join(', ')}</MetaField>
         )}
 
         {/* RAWG attribution — required by API terms */}
