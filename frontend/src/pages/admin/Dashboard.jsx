@@ -5,14 +5,7 @@ import NavSettings from './NavSettings'
 import SocialSettings from './SocialSettings'
 import TravelSettings from './TravelSettings'
 import BioSettings from './BioSettings'
-
-function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
-}
+import { formatDate } from '../../utils/date'
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('posts')

@@ -8,14 +8,7 @@ import 'github-markdown-css/github-markdown-dark.css'
 import client from '../api/client'
 import TagBadge from '../components/TagBadge'
 import GameInfoPanel from '../components/GameInfoPanel'
-
-function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
+import { formatDate } from '../utils/date'
 
 export default function Post() {
   const { slug } = useParams()
@@ -115,7 +108,7 @@ export default function Post() {
               }}
             >
               <h1 className="text-4xl font-bold text-navy-50 mb-1.5">{post.title}</h1>
-              <p className="text-sm text-navy-200 mb-2.5">{formatDate(post.created_at)}</p>
+              <p className="text-sm text-navy-200 mb-2.5">{formatDate(post.created_at, 'long')}</p>
               {post.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {post.tags.map((tag) => (
@@ -150,7 +143,7 @@ export default function Post() {
             &larr; Back to posts
           </Link>
           <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
-          <p className="text-sm text-navy-200 mb-3">{formatDate(post.created_at)}</p>
+          <p className="text-sm text-navy-200 mb-3">{formatDate(post.created_at, 'long')}</p>
           {post.tags.length > 0 && (
             <div className={`flex flex-wrap gap-1.5 ${gameMedia ? 'mb-3' : 'mb-8'}`}>
               {post.tags.map((tag) => (

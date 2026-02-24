@@ -1,13 +1,6 @@
 import { Link } from 'react-router-dom'
 import TagBadge from './TagBadge'
-
-function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
-}
+import { formatDate } from '../utils/date'
 
 export default function PostCard({ post }) {
   const bgUrl = post.media?.find((m) => m.background_image_url)?.background_image_url
