@@ -26,7 +26,7 @@ app = FastAPI(title="whoisrgj Blog API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost", "http://localhost:5173", "https://whoisrgj.com"],
+    allow_origins=["http://localhost", "http://localhost:5173", "https://blog.whoisrgj.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
