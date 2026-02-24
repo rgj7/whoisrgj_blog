@@ -4,11 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Stack
 
-- **Backend**: FastAPI + SQLAlchemy (async) + asyncpg + PostgreSQL (Python 3.14+)
+- **Backend**: FastAPI + SQLAlchemy (async) + asyncpg + Neon (PostgreSQL) (Python 3.14+)
 - **Frontend**: React 18 + Vite + Tailwind CSS
 - **Auth**: JWT tokens (stored in localStorage), bcrypt for password hashing
 - **Migrations**: Alembic
-- **Deployment**: Docker Compose
+- **Deployment**: Docker Compose + Caddy (reverse proxy / automatic HTTPS)
+- **CI/CD**: GitHub Actions (SSH deploy on push to `main`)
 
 ## Development Commands
 
@@ -51,7 +52,7 @@ npx eslint src/ --fix       # lint and auto-fix
 
 ### Docker (full stack)
 ```bash
-cp .env.example .env  # set SECRET_KEY
+cp .env.example .env  # set DATABASE_URL, SECRET_KEY, RAWG_API_KEY
 docker compose up
 ```
 
@@ -115,7 +116,7 @@ alembic upgrade head
 - **Backend type annotations**: all functions have return type annotations; `disallow_untyped_defs = true` is enforced by mypy. FastAPI route functions that return ORM objects directly use `# type: ignore[return-value]` on the return line — FastAPI handles ORM→Pydantic coercion via `from_attributes = True`; mypy cannot see this.
 - **Frontend code style**: Prettier enforces single quotes, no semicolons, `printWidth: 100`, ES5 trailing commas. ESLint uses `eslint-plugin-react` + `eslint-plugin-react-hooks` recommended rules, with `react/react-in-jsx-scope`, `react/prop-types`, and `react-hooks/set-state-in-effect` disabled.
 - **Async SQLAlchemy**: all DB calls use `select()` + `await db.execute()`; `SessionLocal` uses `expire_on_commit=False`; the Post↔Tag M2M relationship uses `lazy="selectin"` on both sides to avoid lazy-load errors in async context
-- `DATABASE_URL` must use the `postgresql+asyncpg://` driver prefix (not `postgresql://`)
+- `DATABASE_URL` must use the `postgresql+asyncpg://` driver prefix (not `postgresql://`); the engine is configured with `connect_args={"ssl": True}` for Neon's required SSL
 - Post slugs are auto-generated from titles via `python-slugify`
 - Page slugs are set manually and validated as lowercase alphanumeric + hyphens
 - Unpublished posts/pages are hidden from public routes; admin can toggle publish status
@@ -123,7 +124,7 @@ alembic upgrade head
 - `NavLink.position` determines navbar order; `PUT /api/admin/nav-links/reorder` accepts the full ordered list of IDs
 - Deleting a Page cascades to remove its `NavLink` row automatically (`ondelete="CASCADE"`)
 - JWT tokens expire in 480 minutes; token stored as `token` key in localStorage
-- CORS origins: `localhost`, `localhost:5173`, `whoisrgj.com`
+- CORS origins: `localhost`, `localhost:5173`, `blog.whoisrgj.com`
 - `SocialLink.position` determines footer icon order; `PUT /api/admin/social-links/reorder` accepts the full ordered list of IDs
 - World-atlas country IDs are zero-padded 3-digit strings (e.g. `"076"` for Brazil); `VisitedCountry.iso_numeric` is padded on the frontend before comparing with `geo.id`
 - Letterboxd feed is cached in memory for 1 hour; stale cache is served on fetch failure
