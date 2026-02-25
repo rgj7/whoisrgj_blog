@@ -1,6 +1,10 @@
 # whoisrgj blog
 
-A personal blog built with FastAPI + React. Posts are written in Markdown.
+A web application utilizing FastAPI + React, serving as my personal blog over at [blog.whoisrgj.com](https://blog.whoisrgj.com). It is replacing a WordPress blog (which I've had for 20+ years!), allowing for more customization and less bloat. This project also serves as an opportunity to practice:
+- Using Claude Code and Cursor in real workflows
+- Deploying to GCP (Google Cloud Platform)
+- Managing a VPS/VM as a web server
+
 
 ## Stack
 
