@@ -2,10 +2,10 @@ from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from slugify import slugify
-from sqlalchemy import func, select
+from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth import get_current_user
+from app.auth import get_current_user, get_password_hash, verify_password
 from app.config import settings
 from app.database import get_db
 from app.models.nav_link import NavLink
@@ -18,6 +18,7 @@ from app.models.tag import Tag
 from app.models.user import User
 from app.models.visited_country import VisitedCountry
 from app.models.wanted_country import WantedCountry
+from app.schemas.auth import PasswordChangeRequest
 from app.schemas.nav_link import NavLinkAdd, NavLinkOut, NavLinkReorder
 from app.schemas.page import PageCreate, PageOut, PageSummary, PageUpdate
 from app.schemas.post import PostCreate, PostOut, PostSummary, PostUpdate
@@ -519,6 +520,25 @@ async def admin_upload_profile_photo(
     await db.commit()
     await db.refresh(profile)
     return profile  # type: ignore[return-value]
+
+
+# --- Account ---
+
+
+@router.put("/password")
+async def admin_change_password(
+    req: PasswordChangeRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_auth),
+) -> dict[str, str]:
+    if not verify_password(req.current_password, current_user.hashed_password):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    if len(req.new_password) < 8:
+        raise HTTPException(status_code=400, detail="New password must be at least 8 characters")
+    hashed = get_password_hash(req.new_password)
+    await db.execute(update(User).where(User.id == current_user.id).values(hashed_password=hashed))
+    await db.commit()
+    return {"message": "Password updated successfully"}
 
 
 # --- Helpers ---

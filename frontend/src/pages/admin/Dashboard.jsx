@@ -5,6 +5,7 @@ import NavSettings from './NavSettings'
 import SocialSettings from './SocialSettings'
 import TravelSettings from './TravelSettings'
 import BioSettings from './BioSettings'
+import PasswordSettings from './PasswordSettings'
 import { formatDate } from '../../utils/date'
 
 export default function Dashboard() {
@@ -258,6 +259,9 @@ export default function Dashboard() {
           <hr className="my-8 border-navy-600" />
           <h2 className="text-lg font-semibold mb-4">Social Links</h2>
           <SocialSettings />
+          <hr className="my-8 border-navy-600" />
+          <h2 className="text-lg font-semibold mb-4">Change Password</h2>
+          <PasswordSettings />
         </div>
       )}
 
