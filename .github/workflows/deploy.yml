@@ -47,6 +47,17 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy config files to VM
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          source: "docker-compose.yml,Caddyfile"
+          target: ~/whoisrgj_blog/
+
       - name: Deploy to Compute Engine
         uses: appleboy/ssh-action@v1
         with:
@@ -55,6 +66,5 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
             cd ~/whoisrgj_blog
-            git pull
             docker compose pull
             docker compose up -d
