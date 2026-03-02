@@ -72,38 +72,50 @@ Hooks: `check-yaml`, `check-toml`, `check-json`, `detect-private-key`, `end-of-f
 - `config.py` — Settings via pydantic-settings (reads `.env`)
 - `database.py` — SQLAlchemy async session setup
 - `auth.py` — JWT creation/validation, bcrypt password check, `get_current_user` dependency
-- `models/` — SQLAlchemy ORM: `User`, `Post`, `Tag` (with `post_tags` many-to-many junction), `Page`, `NavLink`, `SocialLink`, `VisitedCountry`
+- `models/` — SQLAlchemy ORM: `User`, `Post`, `Tag` (with `post_tags` many-to-many junction), `Page`, `NavLink`, `SocialLink`, `VisitedCountry`, `WantedCountry`
 - `models/site_profile.py` — `SiteProfile` (singleton row: `id=1`, `photo_url`, `bio`)
-- `schemas/` — Pydantic input/output schemas for posts, tags, auth, pages, nav_link, social_link, visited_country
+- `schemas/` — Pydantic input/output schemas for posts, tags, auth, pages, nav_link, social_link, visited_country, wanted_country
 - `schemas/site_profile.py` — `SiteProfileOut`, `SiteProfileUpdate`
+- `limiter.py` — `slowapi` `Limiter` instance; 60 req/min default; key function extracts real client IP from `X-Real-IP` / `X-Forwarded-For` headers (set by Caddy); applied globally via `SlowAPIMiddleware`; use `@limiter.exempt` to exclude health/static routes
 - `routers/posts.py` — Public endpoints (list/view posts, list tags)
 - `routers/pages.py` — Public endpoints (list/view published pages)
 - `routers/nav.py` — Public `GET /api/nav-links` (published pages only, ordered by position)
 - `routers/social.py` — Public `GET /api/social-links` (all social links ordered by position)
 - `routers/letterboxd.py` — Public `GET /api/letterboxd` (last 5 rated films from Letterboxd RSS; cached 1 hour in memory)
-- `routers/travels.py` — Public `GET /api/travels` (all visited countries sorted by name)
+- `routers/travels.py` — Public `GET /api/travels` (all visited countries sorted by name); `GET /api/travels/wishlist` (all wanted countries sorted by name)
 - `routers/profile.py` — Public `GET /api/profile` (returns SiteProfile row or empty defaults)
 - `routers/auth.py` — `POST /api/auth/login` returns JWT
 - `routers/rawg.py` — Public `GET /api/rawg/search?q=` (search games via RAWG API) and `GET /api/rawg/games/{game_id}` (fetch game detail); game detail responses cached in memory for 1 hour; requires `RAWG_API_KEY` in config (defaults to empty string — endpoints return 503 if key is missing)
-- `routers/admin.py` — Protected CRUD for posts, tags, pages, nav links, social links, and visited countries; profile GET/PUT and photo upload POST (requires `get_current_user` dependency)
+- `routers/admin.py` — Protected CRUD for posts, tags, pages, nav links, social links, visited countries, and wanted countries (wishlist); profile GET/PUT and photo upload POST; `PUT /api/admin/password` to change admin password (requires `get_current_user` dependency)
 
 Route protection pattern: admin routes use `Depends(get_current_user)` from `auth.py`.
 
 ### Frontend (`frontend/src/`)
 - `api/client.js` — Axios instance: request interceptor adds `Authorization: Bearer <token>`, response interceptor redirects to `/login` on 401
 - `App.jsx` — React Router v6 routes; admin routes wrapped in `<ProtectedRoute>`
-- `pages/admin/PostEditor.jsx` — Uses `@uiw/react-md-editor` for markdown editing
+- `pages/Home.jsx` — Home page listing all published posts using `<PostCard>`
+- `pages/Post.jsx` — Renders a single post's markdown with `react-markdown` + `remark-gfm`; shows `<GameInfoPanel>` in sidebar if post has attached game media
+- `pages/Page.jsx` — Renders a published page by slug
+- `pages/TagFeed.jsx` — Filtered post listing at `/tags/:slug`
+- `pages/Travels.jsx` — Interactive world map at `/travels`; uses `react-simple-maps` with zoom/pan, highlights visited/wanted countries, shows hover tooltip
+- `pages/admin/Dashboard.jsx` — Admin dashboard with tabs for Posts, Pages, Settings, Travels
+- `pages/admin/PostEditor.jsx` — Uses `@uiw/react-md-editor` for markdown editing; embeds `<GameSearch>` for attaching RAWG game metadata
 - `pages/admin/PageEditor.jsx` — Markdown editor for Pages (same pattern as PostEditor)
-- `pages/admin/NavSettings.jsx` — Self-contained component for managing navbar links (add, remove, reorder)
-- `pages/Post.jsx` — Renders markdown with `react-markdown` + `remark-gfm`
+- `pages/admin/GameSearch.jsx` — RAWG game search UI embedded in PostEditor; calls `GET /api/rawg/search?q=`
+- `pages/admin/NavSettings.jsx` — Manage navbar links (add, remove, reorder) within Settings tab
+- `pages/admin/SocialSettings.jsx` — Manage social links (add, remove, reorder) within Settings tab
+- `pages/admin/TravelSettings.jsx` — Manage visited countries and wishlist (wanted countries) within Travels tab
+- `pages/admin/BioSettings.jsx` — Bio/photo settings in Settings tab; supports URL paste or file upload; shows circular preview with remove button
+- `pages/admin/PasswordSettings.jsx` — Admin password change form within Settings tab; calls `PUT /api/admin/password`
+- `components/ProtectedRoute.jsx` — Auth guard; redirects to `/login` if no JWT token in localStorage
 - `components/Navbar.jsx` — Fetches `/api/nav-links` on mount and renders center nav links between logo and auth section
 - `components/Footer.jsx` — Sticky footer; fetches `/api/social-links` and renders brand icons (Font Awesome) + copyright + back-to-top
+- `components/Sidebar.jsx` — Sidebar layout wrapper used on Home, Post, TagFeed pages
+- `components/PostCard.jsx` — Post summary card with title, date, excerpt, and tag badges
+- `components/TagBadge.jsx` — Clickable tag chip linking to `/tags/:slug`
 - `components/LetterboxdWidget.jsx` — Sidebar widget; fetches `/api/letterboxd` and renders last 5 rated films
-- `pages/Travels.jsx` — Interactive world map at `/travels`; uses `react-simple-maps` with zoom/pan, highlights visited countries, shows hover tooltip
-- `pages/admin/SocialSettings.jsx` — Manage social links (add, remove, reorder) within the Settings tab
-- `pages/admin/TravelSettings.jsx` — Manage visited countries (searchable combobox to add, remove) within the Travels tab
 - `components/BioWidget.jsx` — Sidebar widget; fetches `/api/profile` and renders photo + bio
-- `pages/admin/BioSettings.jsx` — Bio/photo settings in the Settings tab; supports URL paste or file upload; shows circular preview with remove button
+- `components/GameInfoPanel.jsx` — Sidebar panel; fetches `/api/rawg/games/{id}` and renders game metadata (cover, platforms, genres, rating)
 
 ### Database Migrations
 Add a new migration:
@@ -127,7 +139,7 @@ alembic upgrade head
 - JWT tokens expire in 480 minutes; token stored as `token` key in localStorage
 - CORS origins: `localhost`, `localhost:5173`, `blog.whoisrgj.com`
 - `SocialLink.position` determines footer icon order; `PUT /api/admin/social-links/reorder` accepts the full ordered list of IDs
-- World-atlas country IDs are zero-padded 3-digit strings (e.g. `"076"` for Brazil); `VisitedCountry.iso_numeric` is padded on the frontend before comparing with `geo.id`
+- World-atlas country IDs are zero-padded 3-digit strings (e.g. `"076"` for Brazil); both `VisitedCountry.iso_numeric` and `WantedCountry.iso_numeric` are padded on the frontend before comparing with `geo.id`
 - Letterboxd feed is cached in memory for 1 hour; stale cache is served on fetch failure
 - RAWG game detail responses are cached in memory for 1 hour (`_game_cache` dict in `routers/rawg.py`); `RAWG_API_KEY` is optional — if empty, RAWG endpoints will fail at the API call level with a 503
 - `PostMedia` model (`models/post_media.py`) stores game metadata linked to a post; `external_id` holds the RAWG game ID
