@@ -3,7 +3,9 @@ import time
 import xml.etree.ElementTree as ET
 
 import httpx
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
+
+from app.limiter import limiter
 
 router = APIRouter()
 
@@ -47,7 +49,8 @@ def _parse_feed(xml_text: str) -> list[dict]:
 
 
 @router.get("/letterboxd")
-async def get_recently_watched() -> list[dict]:
+@limiter.limit("10/minute")
+async def get_recently_watched(request: Request) -> list[dict]:
     now = time.time()
     if _cache.get("expires", 0) > now:
         return _cache["data"]

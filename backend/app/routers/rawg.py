@@ -1,13 +1,14 @@
 import time
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import get_current_user
 from app.config import settings
 from app.database import get_db
+from app.limiter import limiter
 from app.models.post_media import PostMedia
 
 router = APIRouter()
@@ -49,7 +50,8 @@ async def rawg_search(
 
 
 @router.get("/rawg/games/{game_id}")
-async def rawg_game_detail(game_id: str, db: AsyncSession = Depends(get_db)) -> dict[str, object]:
+@limiter.limit("20/minute")
+async def rawg_game_detail(request: Request, game_id: str, db: AsyncSession = Depends(get_db)) -> dict[str, object]:
     exists = (
         await db.execute(
             select(PostMedia.id).where(PostMedia.external_id == game_id, PostMedia.media_type == "game").limit(1)

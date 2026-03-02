@@ -1,14 +1,18 @@
 from pathlib import Path
 
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.database import get_db
+from app.limiter import limiter
 from app.routers import (
     admin,
     auth,
@@ -24,6 +28,9 @@ from app.routers import (
 
 app = FastAPI(title="whoisrgj Blog API", version="1.0.0")
 
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore[arg-type]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost", "http://localhost:5173", "https://blog.whoisrgj.com"],
@@ -31,6 +38,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(SlowAPIMiddleware)
 
 Path(settings.UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
 app.mount("/api/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
@@ -48,7 +56,8 @@ app.include_router(auth.router, prefix="/api")
 
 
 @app.get("/api/health", response_model=None)
-async def health(db: AsyncSession = Depends(get_db)) -> dict[str, str] | JSONResponse:
+@limiter.exempt
+async def health(request: Request, db: AsyncSession = Depends(get_db)) -> dict[str, str] | JSONResponse:
     try:
         await db.execute(text("SELECT 1"))
         return {"status": "ok"}
