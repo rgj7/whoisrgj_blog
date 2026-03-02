@@ -45,14 +45,15 @@ export default function LetterboxdWidget() {
                 style={{ backgroundImage: `url(${film.poster_url})` }}
               />
             )}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300" />
-            <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black via-black/70 to-black/10">
-              <p className="text-xs font-bold text-white leading-tight line-clamp-2">
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-colors duration-300" />
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <p className="text-sm font-bold text-white text-center px-2 leading-tight line-clamp-3">
                 {film.title}
               </p>
-              <div className="flex items-center gap-1 mt-1 text-xs text-gray-300">
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black via-black/70 to-black/10">
+              <div className="flex items-center justify-between text-xs text-gray-300">
                 {film.year && <span>{film.year}</span>}
-                {film.year && <span>/</span>}
                 <StarRating rating={film.rating} />
               </div>
             </div>

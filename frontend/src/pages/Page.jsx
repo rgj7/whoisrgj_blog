@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import rehypeHighlight from 'rehype-highlight'
+import 'highlight.js/styles/atom-one-dark.css'
+import 'github-markdown-css/github-markdown-dark.css'
 import client from '../api/client'
 
 export default function Page() {
@@ -30,8 +33,10 @@ export default function Page() {
   return (
     <article className="max-w-none content-card">
       <h1 className="text-3xl font-bold mb-6">{page.title}</h1>
-      <div className="prose prose-gray max-w-none">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{page.content}</ReactMarkdown>
+      <div className="markdown-body">
+        <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+          {page.content}
+        </ReactMarkdown>
       </div>
     </article>
   )
