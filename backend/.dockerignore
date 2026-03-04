@@ -4,3 +4,9 @@ __pycache__
 *.pyo
 .env
 uploads/
+tests/
+scripts/
+.coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/

@@ -27,3 +27,8 @@ frontend/dist/
 
 # Uploads
 backend/uploads/
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
