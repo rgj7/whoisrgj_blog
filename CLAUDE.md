@@ -50,6 +50,18 @@ npx prettier --write src/   # format all source files
 npx eslint src/ --fix       # lint and auto-fix
 ```
 
+### Backend tests
+```bash
+cd backend
+source .venv/bin/activate
+pytest                                          # all tests
+pytest --cov=app --cov-report=term-missing      # with coverage
+pytest tests/test_auth.py -v                    # single file
+pytest -k "test_login"                          # by name
+```
+
+Uses SQLite + aiosqlite in-memory (no running Postgres needed). Test database is isolated per test via a function-scoped engine fixture.
+
 ### Docker (full stack)
 ```bash
 cp .env.example .env  # set DATABASE_URL, SECRET_KEY, RAWG_API_KEY
@@ -64,6 +76,21 @@ pre-commit run --all-files   # run all hooks manually
 ```
 
 Hooks: `check-yaml`, `check-toml`, `check-json`, `detect-private-key`, `end-of-file-fixer`, `trailing-whitespace`, `ruff` (lint + fix), `ruff-format`, `mypy`, `prettier`, `eslint`.
+
+## Environment
+
+Two `.env` files — copy from the matching `.env.example`:
+- `backend/.env` — read by FastAPI (local dev)
+- `.env` (root) — read by Docker Compose
+
+| Variable | Required | Default | Notes |
+|----------|----------|---------|-------|
+| `DATABASE_URL` | Yes | — | Must use `postgresql+asyncpg://` prefix; SSL required for Neon |
+| `SECRET_KEY` | Yes | — | Generate: `python -c "import secrets; print(secrets.token_hex(32))"` |
+| `RAWG_API_KEY` | No | `""` | If empty, `/api/rawg/*` endpoints return 503 |
+| `ALGORITHM` | No | `HS256` | JWT signing algorithm |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | No | `480` | |
+| `UPLOAD_DIR` | No | `uploads` | Overridden to `/app/uploads` in Docker via `docker-compose.yml` |
 
 ## Architecture
 
@@ -85,7 +112,7 @@ Hooks: `check-yaml`, `check-toml`, `check-json`, `detect-private-key`, `end-of-f
 - `routers/travels.py` — Public `GET /api/travels` (all visited countries sorted by name); `GET /api/travels/wishlist` (all wanted countries sorted by name)
 - `routers/profile.py` — Public `GET /api/profile` (returns SiteProfile row or empty defaults)
 - `routers/auth.py` — `POST /api/auth/login` returns JWT
-- `routers/rawg.py` — Public `GET /api/rawg/search?q=` (search games via RAWG API) and `GET /api/rawg/games/{game_id}` (fetch game detail); game detail responses cached in memory for 1 hour; requires `RAWG_API_KEY` in config (defaults to empty string — endpoints return 503 if key is missing)
+- `routers/rawg.py` — Public `GET /api/rawg/search?q=` (search games via RAWG API) and `GET /api/rawg/games/{game_id}` (fetch game detail); game detail responses cached in memory for 1 hour
 - `routers/admin.py` — Protected CRUD for posts, tags, pages, nav links, social links, visited countries, and wanted countries (wishlist); profile GET/PUT and photo upload POST; `PUT /api/admin/password` to change admin password (requires `get_current_user` dependency)
 
 Route protection pattern: admin routes use `Depends(get_current_user)` from `auth.py`.
@@ -126,23 +153,36 @@ alembic upgrade head
 ```
 
 ## Key Conventions
-- **Backend type annotations**: all functions have return type annotations; `disallow_untyped_defs = true` is enforced by mypy. FastAPI route functions that return ORM objects directly use `# type: ignore[return-value]` on the return line — FastAPI handles ORM→Pydantic coercion via `from_attributes = True`; mypy cannot see this.
-- **Frontend code style**: Prettier enforces single quotes, no semicolons, `printWidth: 100`, ES5 trailing commas. ESLint uses `eslint-plugin-react` + `eslint-plugin-react-hooks` recommended rules, with `react/react-in-jsx-scope`, `react/prop-types`, and `react-hooks/set-state-in-effect` disabled.
+
+### Type Annotations & Code Style
+- **Backend**: all functions have return type annotations; `disallow_untyped_defs = true` enforced by mypy. FastAPI route functions that return ORM objects directly use `# type: ignore[return-value]` — FastAPI handles ORM→Pydantic coercion via `from_attributes = True`; mypy cannot see this.
+- **Frontend**: Prettier enforces single quotes, no semicolons, `printWidth: 100`, ES5 trailing commas. ESLint uses `eslint-plugin-react` + `eslint-plugin-react-hooks` recommended rules, with `react/react-in-jsx-scope`, `react/prop-types`, and `react-hooks/set-state-in-effect` disabled.
+
+### Database & ORM
 - **Async SQLAlchemy**: all DB calls use `select()` + `await db.execute()`; `SessionLocal` uses `expire_on_commit=False`; the Post↔Tag M2M relationship uses `lazy="selectin"` on both sides to avoid lazy-load errors in async context
-- `DATABASE_URL` must use the `postgresql+asyncpg://` driver prefix (not `postgresql://`); the engine is configured with `connect_args={"ssl": True}` for Neon's required SSL
+
+### Content: Posts, Pages, Nav & Social
 - Post slugs are auto-generated from titles via `python-slugify`
 - Page slugs are set manually and validated as lowercase alphanumeric + hyphens
 - Unpublished posts/pages are hidden from public routes; admin can toggle publish status
 - Nav links reference published Pages; unpublished pages are hidden from the public nav endpoint but remain in the admin list with a "Draft — hidden from nav" badge
 - `NavLink.position` determines navbar order; `PUT /api/admin/nav-links/reorder` accepts the full ordered list of IDs
 - Deleting a Page cascades to remove its `NavLink` row automatically (`ondelete="CASCADE"`)
-- JWT tokens expire in 480 minutes; token stored as `token` key in localStorage
-- CORS origins: `localhost`, `localhost:5173`, `blog.whoisrgj.com`
 - `SocialLink.position` determines footer icon order; `PUT /api/admin/social-links/reorder` accepts the full ordered list of IDs
 - World-atlas country IDs are zero-padded 3-digit strings (e.g. `"076"` for Brazil); both `VisitedCountry.iso_numeric` and `WantedCountry.iso_numeric` are padded on the frontend before comparing with `geo.id`
+
+### Auth & CORS
+- JWT tokens expire in 480 minutes; token stored as `token` key in localStorage
+- CORS origins: `localhost`, `localhost:5173`, `blog.whoisrgj.com`
+
+### Caching
 - Letterboxd feed is cached in memory for 1 hour; stale cache is served on fetch failure
-- RAWG game detail responses are cached in memory for 1 hour (`_game_cache` dict in `routers/rawg.py`); `RAWG_API_KEY` is optional — if empty, RAWG endpoints will fail at the API call level with a 503
+- RAWG game detail responses are cached in memory for 1 hour (`_game_cache` dict in `routers/rawg.py`)
+
+### Media & Uploads
 - `PostMedia` model (`models/post_media.py`) stores game metadata linked to a post; `external_id` holds the RAWG game ID
-- **Third-party API proxy security**: search/lookup endpoints used only in the admin editor require `Depends(get_current_user)`; public-facing detail endpoints (e.g. `GET /rawg/games/{game_id}`) must validate the requested ID exists in `post_media` before proxying to the external API — this prevents arbitrary enumeration of third-party IDs using the site's API key. Apply this pattern to all future third-party API integrations.
-- `UPLOAD_DIR` config field defaults to `"uploads"` locally, overridden to `/app/uploads` in Docker via `docker-compose.yml`; directory is created at startup and served as static files at `/api/uploads` via FastAPI `StaticFiles` mount in `main.py`
+- `UPLOAD_DIR` directory is created at startup and served as static files at `/api/uploads` via `StaticFiles` mount in `main.py`
 - Uploaded profile photo is stored as `profile.<ext>` (previous file deleted on re-upload); `photo_url` saved as `/api/uploads/profile.<ext>`; BioSettings URL input is disabled when a locally-uploaded photo is active
+
+### Security
+- **Third-party API proxy**: search/lookup endpoints used only in the admin editor require `Depends(get_current_user)`; public-facing detail endpoints (e.g. `GET /rawg/games/{game_id}`) must validate the requested ID exists in `post_media` before proxying to the external API — this prevents arbitrary enumeration of third-party IDs using the site's API key. Apply this pattern to all future third-party API integrations.
