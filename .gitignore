@@ -18,6 +18,10 @@ backend/alembic/versions/*.pyc
 node_modules/
 frontend/dist/
 
+# Local dev overrides
+Caddyfile.local
+docker-compose.override.yml
+
 # Misc
 .DS_Store
 *.log
