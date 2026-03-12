@@ -28,9 +28,10 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')\" || exit 1"]
       interval: 600s
-      timeout: 15s
-      retries: 4
-      start_period: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
 
   frontend:
     image: ghcr.io/rgj7/whoisrgj_blog-frontend:latest
@@ -41,9 +42,10 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "test -f /var/run/nginx.pid"]
       interval: 600s
-      timeout: 15s
-      retries: 4
-      start_period: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+      start_interval: 5s
 
 volumes:
   uploads:
