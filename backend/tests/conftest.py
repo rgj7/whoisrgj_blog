@@ -70,8 +70,8 @@ def admin_token(admin_user):
 
 
 @pytest.fixture
-def auth_headers(admin_token):
-    return {"Authorization": f"Bearer {admin_token}"}
+def auth_cookies(admin_token):
+    return {"access_token": admin_token}
 
 
 @pytest.fixture(autouse=True)

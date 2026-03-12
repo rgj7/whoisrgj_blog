@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 480
     UPLOAD_DIR: str = "uploads"
     RAWG_API_KEY: str = ""
+    ENVIRONMENT: str = "production"
 
     class Config:
         env_file = ".env"

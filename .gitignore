@@ -22,6 +22,9 @@ frontend/dist/
 Caddyfile.local
 docker-compose.override.yml
 
+# IDE
+.vscode/
+
 # Misc
 .DS_Store
 *.log

@@ -156,10 +156,13 @@ alembic upgrade head
 
 ### Type Annotations & Code Style
 - **Backend**: all functions have return type annotations; `disallow_untyped_defs = true` enforced by mypy. FastAPI route functions that return ORM objects directly use `# type: ignore[return-value]` — FastAPI handles ORM→Pydantic coercion via `from_attributes = True`; mypy cannot see this.
+- Do not use `from __future__ import annotations` — it can break FastAPI's `response_model` inference and Pydantic schema generation. Import types directly or use `TYPE_CHECKING` guards for forward references.
 - **Frontend**: Prettier enforces single quotes, no semicolons, `printWidth: 100`, ES5 trailing commas. ESLint uses `eslint-plugin-react` + `eslint-plugin-react-hooks` recommended rules, with `react/react-in-jsx-scope`, `react/prop-types`, and `react-hooks/set-state-in-effect` disabled.
+- **Tailwind CSS**: verify that utility classes exist before using them (e.g., `h-42` is not valid). Use only standard Tailwind classes or check `tailwind.config.js` for custom values.
 
 ### Database & ORM
 - **Async SQLAlchemy**: all DB calls use `select()` + `await db.execute()`; `SessionLocal` uses `expire_on_commit=False`; the Post↔Tag M2M relationship uses `lazy="selectin"` on both sides to avoid lazy-load errors in async context
+- This project uses async SQLAlchemy throughout the backend. Never mix sync and async database sessions — all routes and health checks must use async sessions with the async engine.
 
 ### Content: Posts, Pages, Nav & Social
 - Post slugs are auto-generated from titles via `python-slugify`
@@ -170,6 +173,12 @@ alembic upgrade head
 - Deleting a Page cascades to remove its `NavLink` row automatically (`ondelete="CASCADE"`)
 - `SocialLink.position` determines footer icon order; `PUT /api/admin/social-links/reorder` accepts the full ordered list of IDs
 - World-atlas country IDs are zero-padded 3-digit strings (e.g. `"076"` for Brazil); both `VisitedCountry.iso_numeric` and `WantedCountry.iso_numeric` are padded on the frontend before comparing with `geo.id`
+
+### CI/CD
+- GitHub Actions workflows must include feature branch triggers (e.g., `on: push: branches: [main, 'feature/**']`) when testing CI on feature branches.
+
+### Git Workflow
+- Always commit all modified files including dependency/lock files (`package-lock.json`, `uv.lock`, etc.) when making dependency changes. Run `git status` before committing to verify nothing is missed.
 
 ### Auth & CORS
 - JWT tokens expire in 480 minutes; token stored as `token` key in localStorage

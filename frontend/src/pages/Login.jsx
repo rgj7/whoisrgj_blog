@@ -14,8 +14,8 @@ export default function Login() {
     setError(null)
     setLoading(true)
     try {
-      const res = await client.post('/auth/login', { username, password })
-      localStorage.setItem('token', res.data.access_token)
+      await client.post('/auth/login', { username, password })
+      localStorage.setItem('logged_in', 'true')
       navigate('/admin')
     } catch {
       setError('Invalid username or password.')

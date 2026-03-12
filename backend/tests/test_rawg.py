@@ -10,7 +10,7 @@ async def test_rawg_game_detail_no_post_media_is_404(client):
     assert response.status_code == 404
 
 
-async def test_rawg_game_detail_with_post_media(client, auth_headers, db_session):
+async def test_rawg_game_detail_with_post_media(client, auth_cookies, db_session):
     rawg_module._game_cache.clear()
 
     from app.models.post import Post

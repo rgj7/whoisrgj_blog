@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import client from '../api/client'
 
 const publicAxios = axios.create()
 
 export default function Navbar() {
   const navigate = useNavigate()
-  const token = localStorage.getItem('token')
+  const loggedIn = localStorage.getItem('logged_in')
   const [navLinks, setNavLinks] = useState([])
 
   useEffect(() => {
@@ -16,8 +17,13 @@ export default function Navbar() {
       .catch(() => {})
   }, [])
 
-  function handleLogout() {
-    localStorage.removeItem('token')
+  async function handleLogout() {
+    try {
+      await client.post('/auth/logout')
+    } catch {
+      // proceed regardless
+    }
+    localStorage.removeItem('logged_in')
     navigate('/')
   }
 
@@ -68,7 +74,7 @@ export default function Navbar() {
         </div>
 
         <div className="justify-self-end flex items-center gap-4">
-          {token ? (
+          {loggedIn ? (
             <>
               <Link
                 to="/admin"
