@@ -1,13 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import rehypeHighlight from 'rehype-highlight'
-import 'highlight.js/styles/atom-one-dark.css'
-import 'github-markdown-css/github-markdown-dark.css'
 import client from '../api/client'
 import TagBadge from '../components/TagBadge'
 import GameInfoPanel from '../components/GameInfoPanel'
+import MarkdownRenderer from '../components/MarkdownRenderer'
 import { formatDate } from '../utils/date'
 
 export default function Post() {
@@ -127,11 +123,7 @@ export default function Post() {
                 · · ·
               </p>
             )}
-            <div className="markdown-body">
-              <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
-                {post.content}
-              </ReactMarkdown>
-            </div>
+            <MarkdownRenderer content={post.content} />
           </div>
         </>
       ) : (
@@ -155,11 +147,7 @@ export default function Post() {
           {gameMedia && (
             <p className="text-navy-500 text-center tracking-[0.4em] mb-6 select-none">· · ·</p>
           )}
-          <div className="markdown-body">
-            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
-              {post.content}
-            </ReactMarkdown>
-          </div>
+          <MarkdownRenderer content={post.content} />
         </>
       )}
     </article>
