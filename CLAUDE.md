@@ -98,7 +98,7 @@ Two `.env` files — copy from the matching `.env.example`:
 - `main.py` — FastAPI app, CORS config, router registration
 - `config.py` — Settings via pydantic-settings (reads `.env`)
 - `database.py` — SQLAlchemy async session setup
-- `auth.py` — JWT creation/validation, bcrypt password check, `get_current_user` dependency
+- `auth.py` — JWT creation/validation, bcrypt password check, `get_current_user` dependency (reads JWT from `access_token` httpOnly cookie via `Cookie()`)
 - `models/` — SQLAlchemy ORM: `User`, `Post`, `Tag` (with `post_tags` many-to-many junction), `Page`, `NavLink`, `SocialLink`, `VisitedCountry`, `WantedCountry`
 - `models/site_profile.py` — `SiteProfile` (singleton row: `id=1`, `photo_url`, `bio`)
 - `schemas/` — Pydantic input/output schemas for posts, tags, auth, pages, nav_link, social_link, visited_country, wanted_country
@@ -118,7 +118,7 @@ Two `.env` files — copy from the matching `.env.example`:
 Route protection pattern: admin routes use `Depends(get_current_user)` from `auth.py`.
 
 ### Frontend (`frontend/src/`)
-- `api/client.js` — Axios instance: request interceptor adds `Authorization: Bearer <token>`, response interceptor redirects to `/login` on 401
+- `api/client.js` — Axios instance with `withCredentials: true`; response interceptor clears `logged_in` localStorage flag and redirects to `/login` on 401 (no token in headers — JWT sent automatically via httpOnly cookie)
 - `App.jsx` — React Router v6 routes; admin routes wrapped in `<ProtectedRoute>`
 - `pages/Home.jsx` — Home page listing all published posts using `<PostCard>`
 - `pages/Post.jsx` — Renders a single post's markdown with `react-markdown` + `remark-gfm`; shows `<GameInfoPanel>` in sidebar if post has attached game media
@@ -134,7 +134,7 @@ Route protection pattern: admin routes use `Depends(get_current_user)` from `aut
 - `pages/admin/TravelSettings.jsx` — Manage visited countries and wishlist (wanted countries) within Travels tab
 - `pages/admin/BioSettings.jsx` — Bio/photo settings in Settings tab; supports URL paste or file upload; shows circular preview with remove button
 - `pages/admin/PasswordSettings.jsx` — Admin password change form within Settings tab; calls `PUT /api/admin/password`
-- `components/ProtectedRoute.jsx` — Auth guard; redirects to `/login` if no JWT token in localStorage
+- `components/ProtectedRoute.jsx` — Auth guard; redirects to `/login` if no `logged_in` flag in localStorage (flag is set on login, cleared on 401)
 - `components/Navbar.jsx` — Fetches `/api/nav-links` on mount and renders center nav links between logo and auth section
 - `components/Footer.jsx` — Sticky footer; fetches `/api/social-links` and renders brand icons (Font Awesome) + copyright + back-to-top
 - `components/Sidebar.jsx` — Sidebar layout wrapper used on Home, Post, TagFeed pages
@@ -176,13 +176,17 @@ alembic upgrade head
 
 ### CI/CD
 - GitHub Actions workflows must include feature branch triggers (e.g., `on: push: branches: [main, 'feature/**']`) when testing CI on feature branches.
+- Auto-merge is not enabled on this repo — use `gh pr merge <N> --squash` (no `--auto` flag).
+- Every push to `main` triggers a deploy; when merging multiple PRs, batch them into a single intermediate branch first to avoid N deploys.
 
 ### Git Workflow
 - Always commit all modified files including dependency/lock files (`package-lock.json`, `uv.lock`, etc.) when making dependency changes. Run `git status` before committing to verify nothing is missed.
+- Dependabot `docker` ecosystem entries in `.github/dependabot.yml` must specify the exact directory containing each Dockerfile (e.g. `/backend`, `/frontend`) — a single `directory: "/"` will not find Dockerfiles in subdirectories.
 
 ### Auth & CORS
-- JWT tokens expire in 480 minutes; token stored as `token` key in localStorage
-- CORS origins: `localhost`, `localhost:5173`, `blog.whoisrgj.com`
+- JWT stored as `access_token` httpOnly cookie (not localStorage); expires in 480 minutes; set on `POST /api/auth/login`, deleted on `POST /api/auth/logout`
+- Frontend uses a `logged_in` localStorage flag (no token value) purely to gate `<ProtectedRoute>` — cleared on 401
+- CORS origins: `localhost`, `localhost:5173`, `blog.whoisrgj.com`; `withCredentials: true` required on all requests for cookie to be sent
 
 ### Caching
 - Letterboxd feed is cached in memory for 1 hour; stale cache is served on fetch failure
