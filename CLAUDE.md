@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **Backend**: FastAPI + SQLAlchemy (async) + asyncpg + Neon (PostgreSQL) (Python 3.14+)
 - **Frontend**: React 18 + Vite + Tailwind CSS
-- **Auth**: JWT tokens (stored in localStorage), bcrypt for password hashing
+- **Auth**: JWT tokens (httpOnly cookie), bcrypt for password hashing
 - **Migrations**: Alembic
 - **Deployment**: Docker Compose + Caddy (reverse proxy / automatic HTTPS)
 - **CI/CD**: GitHub Actions (SSH deploy on push to `main`)
@@ -119,7 +119,7 @@ Route protection pattern: admin routes use `Depends(get_current_user)` from `aut
 
 ### Frontend (`frontend/src/`)
 - `api/client.js` — Axios instance with `withCredentials: true`; response interceptor clears `logged_in` localStorage flag and redirects to `/login` on 401 (no token in headers — JWT sent automatically via httpOnly cookie)
-- `App.jsx` — React Router v6 routes; admin routes wrapped in `<ProtectedRoute>`
+- `App.jsx` — React Router v7 routes; admin routes wrapped in `<ProtectedRoute>`
 - `pages/Home.jsx` — Home page listing all published posts using `<PostCard>`
 - `pages/Post.jsx` — Renders a single post's markdown with `react-markdown` + `remark-gfm`; shows `<GameInfoPanel>` in sidebar if post has attached game media
 - `pages/Page.jsx` — Renders a published page by slug
@@ -177,7 +177,7 @@ alembic upgrade head
 ### CI/CD
 - GitHub Actions workflows must include feature branch triggers (e.g., `on: push: branches: [main, 'feature/**']`) when testing CI on feature branches.
 - Auto-merge is not enabled on this repo — use `gh pr merge <N> --squash` (no `--auto` flag).
-- Every push to `main` triggers a deploy; when merging multiple PRs, batch them into a single intermediate branch first to avoid N deploys.
+- Every push to `main` triggers a deploy (except doc-only changes — `paths-ignore: ['**.md']` skips the workflow); when merging multiple PRs, batch them into a single intermediate branch first to avoid N deploys.
 
 ### Git Workflow
 - Always commit all modified files including dependency/lock files (`package-lock.json`, `uv.lock`, etc.) when making dependency changes. Run `git status` before committing to verify nothing is missed.
