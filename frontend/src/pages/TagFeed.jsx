@@ -18,22 +18,22 @@ export default function TagFeed() {
       .finally(() => setLoading(false))
   }, [slug])
 
-  if (loading) return <p className="text-navy-200">Loading...</p>
+  if (loading) return <p className="text-stone-600 dark:text-navy-200">Loading...</p>
   if (error) return <p className="text-red-400">{error}</p>
 
   return (
     <div>
       <Link
         to="/"
-        className="text-sm text-navy-300 hover:text-navy-400 hover:underline mb-6 inline-block transition-colors"
+        className="text-sm text-navy-600 dark:text-navy-300 hover:text-stone-700 dark:hover:text-navy-400 hover:underline mb-6 inline-block transition-colors"
       >
         &larr; All posts
       </Link>
       <h1 className="text-2xl font-bold mb-8">
-        Posts tagged <span className="text-navy-300">#{slug}</span>
+        Posts tagged <span className="text-navy-600 dark:text-navy-300">#{slug}</span>
       </h1>
       {data.items.length === 0 ? (
-        <p className="text-navy-200">No posts with this tag.</p>
+        <p className="text-stone-600 dark:text-navy-200">No posts with this tag.</p>
       ) : (
         data.items.map((post) => <PostCard key={post.id} post={post} />)
       )}

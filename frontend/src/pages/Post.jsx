@@ -5,12 +5,14 @@ import TagBadge from '../components/TagBadge'
 import GameInfoPanel from '../components/GameInfoPanel'
 import MarkdownRenderer from '../components/MarkdownRenderer'
 import { formatDate } from '../utils/date'
+import { useTheme } from '../hooks/useTheme'
 
 export default function Post() {
   const { slug } = useParams()
   const [post, setPost] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const { isDark } = useTheme()
 
   useEffect(() => {
     client
@@ -26,7 +28,7 @@ export default function Post() {
       .finally(() => setLoading(false))
   }, [slug])
 
-  if (loading) return <p className="text-navy-200">Loading...</p>
+  if (loading) return <p className="text-stone-600 dark:text-navy-200">Loading...</p>
   if (error) return <p className="text-red-400">{error}</p>
 
   const bgUrl = post.media?.find((m) => m.background_image_url)?.background_image_url
@@ -73,20 +75,21 @@ export default function Post() {
                 right: 0,
                 bottom: 0,
                 left: 0,
-                background:
-                  'linear-gradient(to bottom, rgba(13,27,42,0.1) 0%, rgba(13,27,42,0.7) 55%, rgba(13,27,42,0.97) 100%)',
+                background: isDark
+                  ? 'linear-gradient(to bottom, rgba(13,27,42,0.1) 0%, rgba(13,27,42,0.7) 55%, rgba(13,27,42,0.97) 100%)'
+                  : 'linear-gradient(to bottom, rgba(245,245,244,0.1) 0%, rgba(245,245,244,0.7) 55%, rgba(245,245,244,0.97) 100%)',
               }}
             />
             {/* Back link — floats top-left over the banner */}
             <Link
               to="/"
-              className="text-sm text-navy-100 hover:text-navy-50 hover:underline transition-colors"
+              className="text-sm text-stone-800 dark:text-navy-100 hover:text-stone-900 dark:hover:text-navy-50 hover:underline transition-colors"
               style={{
                 position: 'absolute',
                 top: '1.25rem',
                 left: '1.5rem',
                 zIndex: 10,
-                background: 'rgba(13,27,42,0.55)',
+                background: isDark ? 'rgba(13,27,42,0.55)' : 'rgba(245,245,244,0.75)',
                 padding: '0.25rem 0.6rem',
                 borderRadius: '0.375rem',
               }}
@@ -103,8 +106,12 @@ export default function Post() {
                 zIndex: 10,
               }}
             >
-              <h1 className="text-4xl font-bold text-navy-50 mb-1.5">{post.title}</h1>
-              <p className="text-sm text-navy-200 mb-2.5">{formatDate(post.created_at, 'long')}</p>
+              <h1 className="text-4xl font-bold text-stone-900 dark:text-navy-50 mb-1.5">
+                {post.title}
+              </h1>
+              <p className="text-sm text-stone-600 dark:text-navy-200 mb-2.5">
+                {formatDate(post.created_at, 'long')}
+              </p>
               {post.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {post.tags.map((tag) => (
@@ -119,7 +126,7 @@ export default function Post() {
           {/* Markdown content — restored horizontal padding */}
           <div className="px-8 pb-8">
             {gameMedia && (
-              <p className="text-navy-500 text-center tracking-[0.4em] mt-6 mb-6 select-none">
+              <p className="text-stone-400 dark:text-navy-500 text-center tracking-[0.4em] mt-6 mb-6 select-none">
                 · · ·
               </p>
             )}
@@ -130,12 +137,14 @@ export default function Post() {
         <>
           <Link
             to="/"
-            className="text-sm text-navy-300 hover:text-navy-400 hover:underline mb-6 inline-block transition-colors"
+            className="text-sm text-navy-600 dark:text-navy-300 hover:text-stone-700 dark:hover:text-navy-400 hover:underline mb-6 inline-block transition-colors"
           >
             &larr; Back to posts
           </Link>
           <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
-          <p className="text-sm text-navy-200 mb-3">{formatDate(post.created_at, 'long')}</p>
+          <p className="text-sm text-stone-600 dark:text-navy-200 mb-3">
+            {formatDate(post.created_at, 'long')}
+          </p>
           {post.tags.length > 0 && (
             <div className={`flex flex-wrap gap-1.5 ${gameMedia ? 'mb-3' : 'mb-8'}`}>
               {post.tags.map((tag) => (
@@ -145,7 +154,9 @@ export default function Post() {
           )}
           {gameMedia && <GameInfoPanel gameId={gameMedia.external_id} />}
           {gameMedia && (
-            <p className="text-navy-500 text-center tracking-[0.4em] mb-6 select-none">· · ·</p>
+            <p className="text-stone-400 dark:text-navy-500 text-center tracking-[0.4em] mb-6 select-none">
+              · · ·
+            </p>
           )}
           <MarkdownRenderer content={post.content} />
         </>

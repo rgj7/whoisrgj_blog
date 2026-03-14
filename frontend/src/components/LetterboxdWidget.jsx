@@ -28,7 +28,9 @@ export default function LetterboxdWidget() {
     <div>
       <div className="flex items-center gap-2 mb-3">
         <FontAwesomeIcon icon={faLetterboxd} style={{ color: '#00e054' }} className="text-2xl" />
-        <span className="text-base font-semibold text-navy-50">Recently Watched</span>
+        <span className="text-base font-semibold text-stone-900 dark:text-navy-50">
+          Recently Watched
+        </span>
       </div>
       <div className="flex gap-3">
         {films.map((film, i) => (
@@ -37,7 +39,7 @@ export default function LetterboxdWidget() {
             href={film.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative flex-1 rounded-xl overflow-hidden h-44 bg-navy-700"
+            className="group relative flex-1 rounded-xl overflow-hidden h-44 bg-stone-100 dark:bg-navy-700"
           >
             {film.poster_url && (
               <div

@@ -22,20 +22,20 @@ export default function Home() {
       .finally(() => setLoading(false))
   }, [page])
 
-  if (loading) return <p className="text-navy-200">Loading...</p>
+  if (loading) return <p className="text-stone-600 dark:text-navy-200">Loading...</p>
   if (error) return <p className="text-red-400">{error}</p>
 
   return (
     <div className="flex gap-8">
       <div className="flex-1 min-w-0">
-        <div className="bg-navy-950 rounded-xl p-4 border border-navy-800 mb-6">
+        <div className="bg-stone-100 dark:bg-navy-950 rounded-xl p-4 border border-navy-800 mb-6">
           <LetterboxdWidget />
         </div>
-        <h2 className="text-lg font-semibold text-navy-50 mb-4 pl-3 border-l-4 border-green-500">
+        <h2 className="text-lg font-semibold text-stone-900 dark:text-navy-50 mb-4 pl-3 border-l-4 border-green-500">
           Recent Posts
         </h2>
         {data.items.length === 0 ? (
-          <p className="text-navy-200">No posts yet.</p>
+          <p className="text-stone-600 dark:text-navy-200">No posts yet.</p>
         ) : (
           data.items.map((post) => <PostCard key={post.id} post={post} />)
         )}
@@ -44,17 +44,17 @@ export default function Home() {
             <button
               disabled={page <= 1}
               onClick={() => setSearchParams({ page: page - 1 })}
-              className="px-3 py-1 rounded border border-navy-600 text-navy-100 disabled:opacity-40 hover:bg-navy-700 transition-colors"
+              className="px-3 py-1 rounded border border-stone-200 dark:border-navy-600 text-stone-800 dark:text-navy-100 disabled:opacity-40 hover:bg-stone-100 dark:hover:bg-navy-700 transition-colors"
             >
               Previous
             </button>
-            <span className="text-navy-200">
+            <span className="text-stone-600 dark:text-navy-200">
               Page {data.page} of {data.pages}
             </span>
             <button
               disabled={page >= data.pages}
               onClick={() => setSearchParams({ page: page + 1 })}
-              className="px-3 py-1 rounded border border-navy-600 text-navy-100 disabled:opacity-40 hover:bg-navy-700 transition-colors"
+              className="px-3 py-1 rounded border border-stone-200 dark:border-navy-600 text-stone-800 dark:text-navy-100 disabled:opacity-40 hover:bg-stone-100 dark:hover:bg-navy-700 transition-colors"
             >
               Next
             </button>

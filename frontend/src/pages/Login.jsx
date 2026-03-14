@@ -30,7 +30,9 @@ export default function Login() {
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <p className="error-alert">{error}</p>}
         <div>
-          <label className="block text-sm font-medium text-navy-100 mb-1">Username</label>
+          <label className="block text-sm font-medium text-stone-800 dark:text-navy-100 mb-1">
+            Username
+          </label>
           <input
             type="text"
             value={username}
@@ -40,7 +42,9 @@ export default function Login() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-navy-100 mb-1">Password</label>
+          <label className="block text-sm font-medium text-stone-800 dark:text-navy-100 mb-1">
+            Password
+          </label>
           <input
             type="password"
             value={password}
