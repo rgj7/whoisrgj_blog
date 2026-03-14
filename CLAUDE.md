@@ -1,7 +1,5 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 ## Stack
 
 - **Backend**: FastAPI + SQLAlchemy (async) + asyncpg + Neon (PostgreSQL) (Python 3.14+)
@@ -143,6 +141,10 @@ Route protection pattern: admin routes use `Depends(get_current_user)` from `aut
 - `components/LetterboxdWidget.jsx` — Sidebar widget; fetches `/api/letterboxd` and renders last 5 rated films
 - `components/BioWidget.jsx` — Sidebar widget; fetches `/api/profile` and renders photo + bio
 - `components/GameInfoPanel.jsx` — Sidebar panel; fetches `/api/rawg/games/{id}` and renders game metadata (cover, platforms, genres, rating)
+- `components/ThemeToggle.jsx` — Fixed floating button (bottom-right) that calls `toggle()` from `useTheme`; sun icon in dark mode, moon in light mode
+- `components/TerminalBlock.jsx` — Custom markdown code block renderer for ` ```terminal ``` ` fenced blocks; prompt + command + output lines
+- `context/ThemeContext.jsx` — React Context providing `{ isDark, toggle }`; `ThemeProvider` wraps the entire app in `App.jsx`
+- `hooks/useTheme.js` — Re-export shim for `useTheme()` from `ThemeContext`; import from here in all components
 
 ### Database Migrations
 Add a new migration:
@@ -159,6 +161,13 @@ alembic upgrade head
 - Do not use `from __future__ import annotations` — it can break FastAPI's `response_model` inference and Pydantic schema generation. Import types directly or use `TYPE_CHECKING` guards for forward references.
 - **Frontend**: Prettier enforces single quotes, no semicolons, `printWidth: 100`, ES5 trailing commas. ESLint uses `eslint-plugin-react` + `eslint-plugin-react-hooks` recommended rules, with `react/react-in-jsx-scope`, `react/prop-types`, and `react-hooks/set-state-in-effect` disabled.
 - **Tailwind CSS**: verify that utility classes exist before using them (e.g., `h-42` is not valid). Use only standard Tailwind classes or check `tailwind.config.js` for custom values.
+
+### Dark / Light Mode
+- `darkMode: 'class'` is enabled — light (stone palette) is the base; dark (navy palette) uses `dark:` prefixes.
+- Color mapping: `bg-white dark:bg-navy-800` (card), `bg-stone-50 dark:bg-navy-900` (page), `text-stone-900 dark:text-navy-50` (primary text). See `tailwind.config.js` for navy hex values.
+- FOUC prevention: a blocking inline `<script>` in `index.html` sets the `dark` class before React loads — do not remove it.
+- `github-markdown-css` uses `data-theme="dark"` (not `data-color-mode`) and `@media (prefers-color-scheme)`. `MarkdownRenderer` sets `data-theme` on the wrapper div and overrides the media query via `index.css` so manual theme choice always wins.
+- Two logos: `whoisrgj_logo.png` (dark mode), `whoisrgj_logo_invert.png` (light mode) — swapped in `Navbar.jsx` via `isDark`.
 
 ### Database & ORM
 - **Async SQLAlchemy**: all DB calls use `select()` + `await db.execute()`; `SessionLocal` uses `expire_on_commit=False`; the Post↔Tag M2M relationship uses `lazy="selectin"` on both sides to avoid lazy-load errors in async context
