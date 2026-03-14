@@ -126,7 +126,7 @@ export default function BioSettings() {
       <div className="flex items-center gap-4">
         <button
           onClick={handleSave}
-          className="text-sm px-3 py-1.5 bg-navy-700 hover:bg-navy-600 border border-navy-600 rounded text-navy-100 font-medium transition-colors"
+          className="text-sm px-3 py-1.5 bg-stone-200 hover:bg-stone-300 border border-stone-300 rounded text-stone-800 dark:bg-navy-700 dark:hover:bg-navy-600 dark:border-navy-600 dark:text-navy-100 font-medium transition-colors"
         >
           Save
         </button>

@@ -277,7 +277,7 @@ function CountryCombobox({ onAdd, endpoint, addLabel }) {
       <button
         onClick={handleAdd}
         disabled={!selected}
-        className="text-sm px-3 py-1.5 bg-navy-700 hover:bg-navy-600 border border-navy-600 rounded text-navy-100 font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="text-sm px-3 py-1.5 bg-stone-200 hover:bg-stone-300 border border-stone-300 rounded text-stone-800 dark:bg-navy-700 dark:hover:bg-navy-600 dark:border-navy-600 dark:text-navy-100 font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         {addLabel}
       </button>
