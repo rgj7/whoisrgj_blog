@@ -34,6 +34,9 @@ export default function MarkdownRenderer({ content }) {
       document.head.appendChild(el)
     }
     el.href = isDark ? darkHljsUrl : lightHljsUrl
+    return () => {
+      document.getElementById('hljs-theme')?.remove()
+    }
   }, [isDark])
 
   return (

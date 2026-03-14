@@ -185,7 +185,7 @@ export default function PostEditor() {
               className={`px-2.5 py-0.5 rounded text-xs font-medium border transition-colors ${
                 selectedTagIds.includes(tag.id)
                   ? 'bg-navy-300 text-white border-navy-300'
-                  : 'bg-navy-700 text-navy-100 border-navy-600 hover:border-navy-400'
+                  : 'bg-stone-100 text-stone-700 border-stone-300 hover:border-stone-400 dark:bg-navy-700 dark:text-navy-100 dark:border-navy-600 dark:hover:border-navy-400'
               }`}
             >
               {tag.name}
