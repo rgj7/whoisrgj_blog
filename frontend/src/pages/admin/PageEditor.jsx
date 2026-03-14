@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import MDEditor from '@uiw/react-md-editor'
 import client from '../../api/client'
+import { useTheme } from '../../hooks/useTheme'
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
@@ -9,6 +10,7 @@ export default function PageEditor() {
   const { id } = useParams()
   const navigate = useNavigate()
   const isEdit = Boolean(id)
+  const { isDark } = useTheme()
 
   const [title, setTitle] = useState('')
   const [slug, setSlug] = useState('')
@@ -86,14 +88,14 @@ export default function PageEditor() {
     }
   }
 
-  if (loading) return <p className="text-navy-200">Loading...</p>
+  if (loading) return <p className="text-stone-600 dark:text-navy-200">Loading...</p>
 
   return (
     <div className="content-card space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">{isEdit ? 'Edit Page' : 'New Page'}</h1>
         <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 text-sm text-navy-100 cursor-pointer">
+          <label className="flex items-center gap-2 text-sm text-stone-800 dark:text-navy-100 cursor-pointer">
             <input
               type="checkbox"
               checked={published}
@@ -104,7 +106,7 @@ export default function PageEditor() {
           </label>
           <button
             onClick={() => navigate('/admin')}
-            className="text-sm bg-navy-700 hover:bg-navy-600 text-navy-100 hover:text-navy-50 px-3 py-1.5 border border-navy-600 rounded transition-colors"
+            className="text-sm bg-stone-100 dark:bg-navy-700 hover:bg-stone-50 dark:hover:bg-navy-600 text-stone-800 dark:text-navy-100 hover:text-stone-900 dark:hover:text-navy-50 px-3 py-1.5 border border-stone-200 dark:border-navy-600 rounded transition-colors"
           >
             Cancel
           </button>
@@ -121,7 +123,9 @@ export default function PageEditor() {
       {error && <p className="error-alert">{error}</p>}
 
       <div>
-        <label className="block text-sm font-medium text-navy-100 mb-1">Title</label>
+        <label className="block text-sm font-medium text-stone-800 dark:text-navy-100 mb-1">
+          Title
+        </label>
         <input
           type="text"
           value={title}
@@ -132,22 +136,26 @@ export default function PageEditor() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-navy-100 mb-1">Slug</label>
+        <label className="block text-sm font-medium text-stone-800 dark:text-navy-100 mb-1">
+          Slug
+        </label>
         <input
           type="text"
           value={slug}
           onChange={handleSlugChange}
           placeholder="e.g. about or resume"
-          className={`w-full bg-navy-950 border rounded px-3 py-2 text-sm text-navy-50 placeholder-navy-400 focus:outline-none focus:ring-2 focus:ring-navy-300 ${
-            slugError ? 'border-red-500' : 'border-navy-600'
+          className={`w-full bg-stone-100 dark:bg-navy-950 border rounded px-3 py-2 text-sm text-stone-900 dark:text-navy-50 placeholder-stone-500 dark:placeholder-navy-400 focus:outline-none focus:ring-2 focus:ring-navy-300 ${
+            slugError ? 'border-red-500' : 'border-stone-200 dark:border-navy-600'
           }`}
         />
         {slugError && <p className="mt-1 text-xs text-red-400">{slugError}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-navy-100 mb-2">Content (Markdown)</label>
-        <div data-color-mode="dark">
+        <label className="block text-sm font-medium text-stone-800 dark:text-navy-100 mb-2">
+          Content (Markdown)
+        </label>
+        <div data-color-mode={isDark ? 'dark' : 'light'}>
           <MDEditor
             value={content}
             onChange={(val) => setContent(val || '')}

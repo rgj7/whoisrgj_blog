@@ -65,23 +65,25 @@ export default function BioSettings() {
 
   const isUploaded = photoUrl.startsWith('/api/uploads/')
 
-  if (loading) return <p className="text-navy-200">Loading...</p>
+  if (loading) return <p className="text-stone-600 dark:text-navy-200">Loading...</p>
 
   return (
     <div className="space-y-4 max-w-lg">
       <div className="flex gap-4 items-start">
         <div className="flex-1">
-          <label className="block text-sm font-medium text-navy-100 mb-1">Photo URL</label>
+          <label className="block text-sm font-medium text-stone-800 dark:text-navy-100 mb-1">
+            Photo URL
+          </label>
           <input
             type="url"
             value={photoUrl}
             onChange={(e) => setPhotoUrl(e.target.value)}
             placeholder="https://example.com/photo.jpg"
             disabled={isUploaded}
-            className="w-full bg-navy-950 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 placeholder-navy-400 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full bg-stone-100 dark:bg-navy-950 border border-stone-200 dark:border-navy-600 text-stone-900 dark:text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300 placeholder-stone-500 dark:placeholder-navy-400 disabled:opacity-40 disabled:cursor-not-allowed"
           />
           <div className="flex items-center gap-2 mt-1">
-            <label className="text-sm text-navy-300 hover:text-navy-400 cursor-pointer font-medium transition-colors">
+            <label className="text-sm text-navy-600 dark:text-navy-300 hover:text-navy-600 dark:hover:text-navy-400 cursor-pointer font-medium transition-colors">
               {uploading ? 'Uploading…' : 'Upload a photo'}
               <input
                 type="file"
@@ -98,7 +100,7 @@ export default function BioSettings() {
             <img
               src={photoKey ? `${photoUrl}?t=${photoKey}` : photoUrl}
               alt="Profile preview"
-              className="w-20 h-20 rounded-full object-cover border border-navy-600"
+              className="w-20 h-20 rounded-full object-cover border border-stone-200 dark:border-navy-600"
             />
             <button
               onClick={handleRemovePhoto}
@@ -110,13 +112,15 @@ export default function BioSettings() {
         )}
       </div>
       <div>
-        <label className="block text-sm font-medium text-navy-100 mb-1">Bio</label>
+        <label className="block text-sm font-medium text-stone-800 dark:text-navy-100 mb-1">
+          Bio
+        </label>
         <textarea
           value={bio}
           onChange={(e) => setBio(e.target.value)}
           rows={4}
           placeholder="A short bio..."
-          className="w-full bg-navy-950 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm resize-y focus:outline-none focus:ring-2 focus:ring-navy-300 placeholder-navy-400"
+          className="w-full bg-stone-100 dark:bg-navy-950 border border-stone-200 dark:border-navy-600 text-stone-900 dark:text-navy-50 rounded px-3 py-2 text-sm resize-y focus:outline-none focus:ring-2 focus:ring-navy-300 placeholder-stone-500 dark:placeholder-navy-400"
         />
       </div>
       <div className="flex items-center gap-4">

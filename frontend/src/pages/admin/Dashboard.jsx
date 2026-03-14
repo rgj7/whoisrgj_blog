@@ -112,7 +112,7 @@ export default function Dashboard() {
         )}
       </div>
 
-      <div className="flex border-b border-navy-600 mb-6">
+      <div className="flex border-b border-stone-200 dark:border-navy-600 mb-6">
         {TABS.map((tab) => (
           <button
             key={tab}
@@ -120,7 +120,7 @@ export default function Dashboard() {
             className={`px-4 py-2 text-sm font-medium -mb-px border-b-2 transition-colors capitalize ${
               activeTab === tab
                 ? 'border-navy-300 text-navy-300'
-                : 'border-transparent text-navy-200 hover:text-navy-50'
+                : 'border-transparent text-stone-600 dark:text-navy-200 hover:text-stone-900 dark:hover:text-navy-50'
             }`}
           >
             {tab}
@@ -130,17 +130,17 @@ export default function Dashboard() {
 
       {activeTab === 'posts' && (
         <>
-          {postsLoading && <p className="text-navy-200">Loading...</p>}
+          {postsLoading && <p className="text-stone-600 dark:text-navy-200">Loading...</p>}
           {postsError && <p className="text-red-400">{postsError}</p>}
           {!postsLoading &&
             !postsError &&
             (posts.length === 0 ? (
-              <p className="text-navy-200">No posts yet. Create one!</p>
+              <p className="text-stone-600 dark:text-navy-200">No posts yet. Create one!</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-navy-600 text-left text-navy-200 font-medium">
+                    <tr className="border-b border-stone-200 dark:border-navy-600 text-left text-stone-600 dark:text-navy-200 font-medium">
                       <th className="pb-3 pr-4">Title</th>
                       <th className="pb-3 pr-4">Status</th>
                       <th className="pb-3 pr-4">Date</th>
@@ -149,25 +149,30 @@ export default function Dashboard() {
                   </thead>
                   <tbody>
                     {posts.map((post) => (
-                      <tr key={post.id} className="border-b border-navy-700 last:border-0">
+                      <tr
+                        key={post.id}
+                        className="border-b border-stone-300 dark:border-navy-700 last:border-0"
+                      >
                         <td className="py-3 pr-4 font-medium">{post.title}</td>
                         <td className="py-3 pr-4">
                           <button
                             onClick={() => handleTogglePostPublish(post)}
                             className={`px-2 py-0.5 rounded text-xs font-medium transition-colors ${
                               post.published
-                                ? 'bg-green-900 text-green-400 hover:bg-green-800'
-                                : 'bg-yellow-900 text-yellow-400 hover:bg-yellow-800'
+                                ? 'bg-green-50 text-green-700 dark:bg-green-900 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-800'
+                                : 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-800'
                             }`}
                           >
                             {post.published ? 'Published' : 'Draft'}
                           </button>
                         </td>
-                        <td className="py-3 pr-4 text-navy-200">{formatDate(post.created_at)}</td>
+                        <td className="py-3 pr-4 text-stone-600 dark:text-navy-200">
+                          {formatDate(post.created_at)}
+                        </td>
                         <td className="py-3 flex gap-3">
                           <Link
                             to={`/admin/posts/${post.id}/edit`}
-                            className="text-navy-300 hover:text-navy-400 hover:underline"
+                            className="text-navy-600 dark:text-navy-300 hover:text-navy-600 dark:hover:text-navy-400 hover:underline"
                           >
                             Edit
                           </Link>
@@ -189,17 +194,17 @@ export default function Dashboard() {
 
       {activeTab === 'pages' && (
         <>
-          {pagesLoading && <p className="text-navy-200">Loading...</p>}
+          {pagesLoading && <p className="text-stone-600 dark:text-navy-200">Loading...</p>}
           {pagesError && <p className="text-red-400">{pagesError}</p>}
           {!pagesLoading &&
             !pagesError &&
             (pages.length === 0 ? (
-              <p className="text-navy-200">No pages yet. Create one!</p>
+              <p className="text-stone-600 dark:text-navy-200">No pages yet. Create one!</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-navy-600 text-left text-navy-200 font-medium">
+                    <tr className="border-b border-stone-200 dark:border-navy-600 text-left text-stone-600 dark:text-navy-200 font-medium">
                       <th className="pb-3 pr-4">Title</th>
                       <th className="pb-3 pr-4">Status</th>
                       <th className="pb-3 pr-4">Date</th>
@@ -208,28 +213,35 @@ export default function Dashboard() {
                   </thead>
                   <tbody>
                     {pages.map((page) => (
-                      <tr key={page.id} className="border-b border-navy-700 last:border-0">
+                      <tr
+                        key={page.id}
+                        className="border-b border-stone-300 dark:border-navy-700 last:border-0"
+                      >
                         <td className="py-3 pr-4">
                           <span className="font-medium">{page.title}</span>
-                          <span className="block text-xs text-navy-200">/pages/{page.slug}</span>
+                          <span className="block text-xs text-stone-600 dark:text-navy-200">
+                            /pages/{page.slug}
+                          </span>
                         </td>
                         <td className="py-3 pr-4">
                           <button
                             onClick={() => handleTogglePagePublish(page)}
                             className={`px-2 py-0.5 rounded text-xs font-medium transition-colors ${
                               page.published
-                                ? 'bg-green-900 text-green-400 hover:bg-green-800'
-                                : 'bg-yellow-900 text-yellow-400 hover:bg-yellow-800'
+                                ? 'bg-green-50 text-green-700 dark:bg-green-900 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-800'
+                                : 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-800'
                             }`}
                           >
                             {page.published ? 'Published' : 'Draft'}
                           </button>
                         </td>
-                        <td className="py-3 pr-4 text-navy-200">{formatDate(page.created_at)}</td>
+                        <td className="py-3 pr-4 text-stone-600 dark:text-navy-200">
+                          {formatDate(page.created_at)}
+                        </td>
                         <td className="py-3 flex gap-3">
                           <Link
                             to={`/admin/pages/${page.id}/edit`}
-                            className="text-navy-300 hover:text-navy-400 hover:underline"
+                            className="text-navy-600 dark:text-navy-300 hover:text-navy-600 dark:hover:text-navy-400 hover:underline"
                           >
                             Edit
                           </Link>
@@ -253,13 +265,13 @@ export default function Dashboard() {
         <div>
           <h2 className="text-lg font-semibold mb-4">Bio</h2>
           <BioSettings />
-          <hr className="my-8 border-navy-600" />
+          <hr className="my-8 border-stone-200 dark:border-navy-600" />
           <h2 className="text-lg font-semibold mb-4">Navigation</h2>
           <NavSettings />
-          <hr className="my-8 border-navy-600" />
+          <hr className="my-8 border-stone-200 dark:border-navy-600" />
           <h2 className="text-lg font-semibold mb-4">Social Links</h2>
           <SocialSettings />
-          <hr className="my-8 border-navy-600" />
+          <hr className="my-8 border-stone-200 dark:border-navy-600" />
           <h2 className="text-lg font-semibold mb-4">Change Password</h2>
           <PasswordSettings />
         </div>

@@ -46,33 +46,39 @@ export default function PasswordSettings() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
       <div>
-        <label className="block text-sm font-medium text-navy-100 mb-1">Current password</label>
+        <label className="block text-sm font-medium text-stone-800 dark:text-navy-100 mb-1">
+          Current password
+        </label>
         <input
           type="password"
           value={currentPassword}
           onChange={(e) => setCurrentPassword(e.target.value)}
           autoComplete="current-password"
-          className="w-full bg-navy-950 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300"
+          className="w-full bg-stone-100 dark:bg-navy-950 border border-stone-200 dark:border-navy-600 text-stone-900 dark:text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-navy-100 mb-1">New password</label>
+        <label className="block text-sm font-medium text-stone-800 dark:text-navy-100 mb-1">
+          New password
+        </label>
         <input
           type="password"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           autoComplete="new-password"
-          className="w-full bg-navy-950 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300"
+          className="w-full bg-stone-100 dark:bg-navy-950 border border-stone-200 dark:border-navy-600 text-stone-900 dark:text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-navy-100 mb-1">Confirm new password</label>
+        <label className="block text-sm font-medium text-stone-800 dark:text-navy-100 mb-1">
+          Confirm new password
+        </label>
         <input
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           autoComplete="new-password"
-          className="w-full bg-navy-950 border border-navy-600 text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300"
+          className="w-full bg-stone-100 dark:bg-navy-950 border border-stone-200 dark:border-navy-600 text-stone-900 dark:text-navy-50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-300"
         />
       </div>
       <div className="flex items-center gap-4">

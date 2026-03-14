@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps'
 import axios from 'axios'
 import { COUNTRY_META } from '../data/countryMeta'
+import { useTheme } from '../hooks/useTheme'
 
 const CONTINENT_ORDER = ['Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America']
 
@@ -21,6 +22,7 @@ const MIN_ZOOM = 1
 const MAX_ZOOM = 8
 
 export default function Travels() {
+  const { isDark } = useTheme()
   const [visitedCodes, setVisitedCodes] = useState(new Set())
   const [visitedNames, setVisitedNames] = useState({})
   const [wishlistCodes, setWishlistCodes] = useState(new Set())
@@ -81,15 +83,15 @@ export default function Travels() {
   }, [])
 
   function getGeoFill(geoId) {
-    if (visitedCodes.has(geoId)) return '#4a82b5'
-    if (wishlistCodes.has(geoId)) return '#3d9c65'
-    return '#1a2f44'
+    if (visitedCodes.has(geoId)) return isDark ? '#4a82b5' : '#93c5fd'
+    if (wishlistCodes.has(geoId)) return isDark ? '#3d9c65' : '#86efac'
+    return isDark ? '#1a2f44' : '#e7e5e4'
   }
 
   function getGeoHoverFill(geoId) {
-    if (visitedCodes.has(geoId)) return '#5a9ad0'
-    if (wishlistCodes.has(geoId)) return '#4db57a'
-    return '#1e384f'
+    if (visitedCodes.has(geoId)) return isDark ? '#78aed6' : '#bfdbfe'
+    if (wishlistCodes.has(geoId)) return isDark ? '#4db57a' : '#bbf7d0'
+    return isDark ? '#1e384f' : '#d6d3d1'
   }
 
   function handleGeoMouseEnter(geo, evt) {
@@ -133,22 +135,25 @@ export default function Travels() {
   return (
     <div className="content-card">
       <h1 className="text-2xl font-bold mb-1">Travels</h1>
-      <p className="text-navy-200 text-sm mb-4">
+      <p className="text-stone-600 dark:text-navy-200 text-sm mb-4">
         {loading ? 'Loading...' : `${count} ${count === 1 ? 'country' : 'countries'} visited`}
       </p>
-      <div className="flex gap-3 items-start bg-navy-700 border border-navy-500 rounded-lg px-4 py-3 mb-6 text-sm text-navy-100">
+      <div className="flex gap-3 items-start bg-stone-100 dark:bg-navy-700 border border-stone-300 dark:border-navy-500 rounded-lg px-4 py-3 mb-6 text-sm text-stone-800 dark:text-navy-100">
         <span className="mt-0.5 text-base leading-none">🚧</span>
         <p>
           This page is still under construction. I&apos;m planning to add a photo gallery of my
           travels here soon.
         </p>
       </div>
-      <div ref={containerRef} className="bg-navy-900 rounded-lg overflow-hidden relative">
+      <div
+        ref={containerRef}
+        className="bg-stone-50 dark:bg-navy-900 rounded-lg overflow-hidden relative"
+      >
         <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
           <button
             onClick={handleZoomIn}
             disabled={position.zoom >= MAX_ZOOM}
-            className="w-7 h-7 bg-navy-700 border border-navy-500 rounded shadow text-navy-100 hover:bg-navy-600 disabled:opacity-40 disabled:cursor-not-allowed text-lg leading-none transition-colors"
+            className="w-7 h-7 bg-stone-100 dark:bg-navy-700 border border-stone-300 dark:border-navy-500 rounded shadow text-stone-800 dark:text-navy-100 hover:bg-stone-200 dark:hover:bg-navy-600 disabled:opacity-40 disabled:cursor-not-allowed text-lg leading-none transition-colors"
             aria-label="Zoom in"
           >
             +
@@ -156,7 +161,7 @@ export default function Travels() {
           <button
             onClick={handleZoomOut}
             disabled={position.zoom <= MIN_ZOOM}
-            className="w-7 h-7 bg-navy-700 border border-navy-500 rounded shadow text-navy-100 hover:bg-navy-600 disabled:opacity-40 disabled:cursor-not-allowed text-lg leading-none transition-colors"
+            className="w-7 h-7 bg-stone-100 dark:bg-navy-700 border border-stone-300 dark:border-navy-500 rounded shadow text-stone-800 dark:text-navy-100 hover:bg-stone-200 dark:hover:bg-navy-600 disabled:opacity-40 disabled:cursor-not-allowed text-lg leading-none transition-colors"
             aria-label="Zoom out"
           >
             −
@@ -166,7 +171,7 @@ export default function Travels() {
             disabled={
               position.zoom === 1 && position.coordinates[0] === 0 && position.coordinates[1] === 0
             }
-            className="w-7 h-7 bg-navy-700 border border-navy-500 rounded shadow text-navy-200 hover:bg-navy-600 disabled:opacity-40 disabled:cursor-not-allowed text-xs leading-none transition-colors"
+            className="w-7 h-7 bg-stone-100 dark:bg-navy-700 border border-stone-300 dark:border-navy-500 rounded shadow text-stone-600 dark:text-navy-200 hover:bg-stone-200 dark:hover:bg-navy-600 disabled:opacity-40 disabled:cursor-not-allowed text-xs leading-none transition-colors"
             aria-label="Reset view"
           >
             ⊙
@@ -191,7 +196,7 @@ export default function Travels() {
                     key={geo.rsmKey}
                     geography={geo}
                     fill={getGeoFill(geo.id)}
-                    stroke="#0d1b2a"
+                    stroke={isDark ? '#0d1b2a' : '#d6d3d1'}
                     strokeWidth={0.5}
                     style={{
                       default: { outline: 'none' },
@@ -209,7 +214,7 @@ export default function Travels() {
         </ComposableMap>
         {tooltip && (
           <div
-            className="absolute pointer-events-none bg-navy-600 text-navy-50 text-xs rounded px-2 py-1 whitespace-nowrap border border-navy-500"
+            className="absolute pointer-events-none bg-stone-200 dark:bg-navy-600 text-stone-900 dark:text-navy-50 text-xs rounded px-2 py-1 whitespace-nowrap border border-stone-300 dark:border-navy-500"
             style={{ left: tooltip.x + 12, top: tooltip.y - 28 }}
           >
             {tooltip.name} <span className="opacity-70">{tooltip.label}</span>
@@ -223,14 +228,14 @@ export default function Travels() {
           <div className="space-y-5">
             {CONTINENT_ORDER.filter((c) => grouped[c]).map((continent) => (
               <div key={continent}>
-                <h3 className="font-bold text-sm uppercase tracking-wide text-navy-200 mb-2">
+                <h3 className="font-bold text-sm uppercase tracking-wide text-stone-600 dark:text-navy-200 mb-2">
                   {continent}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {grouped[continent].map(({ name, alpha2 }) => (
                     <span
                       key={name}
-                      className="flex items-center gap-1.5 bg-navy-700 text-navy-50 rounded-full px-3 py-1 text-sm border border-navy-600"
+                      className="flex items-center gap-1.5 bg-stone-100 dark:bg-navy-700 text-stone-900 dark:text-navy-50 rounded-full px-3 py-1 text-sm border border-stone-200 dark:border-navy-600"
                     >
                       <FlagImg alpha2={alpha2} name={name} />
                       {name}
@@ -249,14 +254,14 @@ export default function Travels() {
           <div className="space-y-5">
             {CONTINENT_ORDER.filter((c) => wishlistGrouped[c]).map((continent) => (
               <div key={continent}>
-                <h3 className="font-bold text-sm uppercase tracking-wide text-navy-200 mb-2">
+                <h3 className="font-bold text-sm uppercase tracking-wide text-stone-600 dark:text-navy-200 mb-2">
                   {continent}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {wishlistGrouped[continent].map(({ name, alpha2 }) => (
                     <span
                       key={name}
-                      className="flex items-center gap-1.5 bg-navy-700 text-navy-50 rounded-full px-3 py-1 text-sm border border-navy-600"
+                      className="flex items-center gap-1.5 bg-stone-100 dark:bg-navy-700 text-stone-900 dark:text-navy-50 rounded-full px-3 py-1 text-sm border border-stone-200 dark:border-navy-600"
                     >
                       <FlagImg alpha2={alpha2} name={name} />
                       {name}

@@ -75,30 +75,30 @@ export default function SocialSettings() {
     }
   }
 
-  if (loading) return <p className="text-navy-200">Loading...</p>
+  if (loading) return <p className="text-stone-600 dark:text-navy-200">Loading...</p>
   if (error) return <p className="text-red-400">{error}</p>
 
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-sm font-semibold text-navy-200 uppercase tracking-wide mb-3">
+        <h3 className="text-sm font-semibold text-stone-600 dark:text-navy-200 uppercase tracking-wide mb-3">
           Current Social Links
         </h3>
         {socialLinks.length === 0 ? (
-          <p className="text-navy-200 text-sm">No social links yet.</p>
+          <p className="text-stone-600 dark:text-navy-200 text-sm">No social links yet.</p>
         ) : (
           <ul className="space-y-2">
             {socialLinks.map((sl, index) => (
               <li
                 key={sl.id}
-                className="flex items-center gap-3 bg-navy-700 border border-navy-600 rounded px-3 py-2 text-sm"
+                className="flex items-center gap-3 bg-stone-100 dark:bg-navy-700 border border-stone-200 dark:border-navy-600 rounded px-3 py-2 text-sm"
               >
                 <span className="capitalize font-medium w-24 shrink-0">{sl.platform}</span>
-                <span className="flex-1 text-navy-200 truncate">{sl.url}</span>
+                <span className="flex-1 text-stone-600 dark:text-navy-200 truncate">{sl.url}</span>
                 <button
                   onClick={() => handleMove(index, -1)}
                   disabled={index === 0 || saving}
-                  className="text-navy-200 hover:text-navy-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="text-stone-600 dark:text-navy-200 hover:text-stone-900 dark:hover:text-navy-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   title="Move up"
                 >
                   ↑
@@ -106,7 +106,7 @@ export default function SocialSettings() {
                 <button
                   onClick={() => handleMove(index, 1)}
                   disabled={index === socialLinks.length - 1 || saving}
-                  className="text-navy-200 hover:text-navy-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="text-stone-600 dark:text-navy-200 hover:text-stone-900 dark:hover:text-navy-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   title="Move down"
                 >
                   ↓
@@ -124,17 +124,17 @@ export default function SocialSettings() {
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-navy-200 uppercase tracking-wide mb-3">
+        <h3 className="text-sm font-semibold text-stone-600 dark:text-navy-200 uppercase tracking-wide mb-3">
           Add a Social Link
         </h3>
         <div className="flex items-center gap-3">
           <select
             value={adding.platform}
             onChange={(e) => setAdding((prev) => ({ ...prev, platform: e.target.value }))}
-            className="bg-navy-950 border border-navy-600 text-navy-50 rounded px-2 py-1.5 text-sm capitalize focus:outline-none focus:ring-2 focus:ring-navy-300"
+            className="bg-stone-100 dark:bg-navy-950 border border-stone-200 dark:border-navy-600 text-stone-900 dark:text-navy-50 rounded px-2 py-1.5 text-sm capitalize focus:outline-none focus:ring-2 focus:ring-navy-300"
           >
             {PLATFORMS.map((p) => (
-              <option key={p} value={p} className="capitalize bg-navy-950">
+              <option key={p} value={p} className="capitalize bg-stone-100 dark:bg-navy-950">
                 {p}
               </option>
             ))}
@@ -148,7 +148,7 @@ export default function SocialSettings() {
           />
           <button
             onClick={handleAdd}
-            className="text-sm px-3 py-1.5 bg-navy-700 hover:bg-navy-600 border border-navy-600 rounded text-navy-100 font-medium transition-colors"
+            className="text-sm px-3 py-1.5 bg-stone-100 dark:bg-navy-700 hover:bg-stone-200 dark:hover:bg-navy-600 border border-stone-200 dark:border-navy-600 rounded text-stone-800 dark:text-navy-100 font-medium transition-colors"
           >
             Add
           </button>

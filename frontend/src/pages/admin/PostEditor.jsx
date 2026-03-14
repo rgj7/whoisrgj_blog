@@ -3,11 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom'
 import MDEditor from '@uiw/react-md-editor'
 import client from '../../api/client'
 import GameSearch from './GameSearch'
+import { useTheme } from '../../hooks/useTheme'
 
 export default function PostEditor() {
   const { id } = useParams()
   const navigate = useNavigate()
   const isEdit = Boolean(id)
+  const { isDark } = useTheme()
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -111,14 +113,14 @@ export default function PostEditor() {
     }
   }
 
-  if (loading) return <p className="text-navy-200">Loading...</p>
+  if (loading) return <p className="text-stone-600 dark:text-navy-200">Loading...</p>
 
   return (
     <div className="content-card space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">{isEdit ? 'Edit Post' : 'New Post'}</h1>
         <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 text-sm text-navy-100 cursor-pointer">
+          <label className="flex items-center gap-2 text-sm text-stone-800 dark:text-navy-100 cursor-pointer">
             <input
               type="checkbox"
               checked={published}
@@ -129,7 +131,7 @@ export default function PostEditor() {
           </label>
           <button
             onClick={() => navigate('/admin')}
-            className="text-sm bg-navy-700 hover:bg-navy-600 text-navy-100 hover:text-navy-50 px-3 py-1.5 border border-navy-600 rounded transition-colors"
+            className="text-sm bg-stone-100 dark:bg-navy-700 hover:bg-stone-50 dark:hover:bg-navy-600 text-stone-800 dark:text-navy-100 hover:text-stone-900 dark:hover:text-navy-50 px-3 py-1.5 border border-stone-200 dark:border-navy-600 rounded transition-colors"
           >
             Cancel
           </button>
@@ -146,7 +148,9 @@ export default function PostEditor() {
       {error && <p className="error-alert">{error}</p>}
 
       <div>
-        <label className="block text-sm font-medium text-navy-100 mb-1">Title</label>
+        <label className="block text-sm font-medium text-stone-800 dark:text-navy-100 mb-1">
+          Title
+        </label>
         <input
           type="text"
           value={title}
@@ -157,8 +161,8 @@ export default function PostEditor() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-navy-100 mb-1">
-          Excerpt <span className="text-navy-200">(optional)</span>
+        <label className="block text-sm font-medium text-stone-800 dark:text-navy-100 mb-1">
+          Excerpt <span className="text-stone-600 dark:text-navy-200">(optional)</span>
         </label>
         <input
           type="text"
@@ -170,7 +174,9 @@ export default function PostEditor() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-navy-100 mb-2">Tags</label>
+        <label className="block text-sm font-medium text-stone-800 dark:text-navy-100 mb-2">
+          Tags
+        </label>
         <div className="flex flex-wrap gap-2 mb-3">
           {allTags.map((tag) => (
             <button
@@ -197,19 +203,18 @@ export default function PostEditor() {
           />
           <button
             onClick={handleAddTag}
-            className="text-sm px-3 py-1.5 bg-navy-700 border border-navy-600 rounded hover:bg-navy-600 text-navy-100 transition-colors"
+            className="text-sm px-3 py-1.5 bg-stone-100 dark:bg-navy-700 border border-stone-200 dark:border-navy-600 rounded hover:bg-stone-200 dark:hover:bg-navy-600 text-stone-800 dark:text-navy-100 transition-colors"
           >
             Add Tag
           </button>
         </div>
       </div>
 
-      {/* Collapsible Media section */}
-      <div className="border border-navy-600 rounded-lg">
+      <div className="border border-stone-200 dark:border-navy-600 rounded-lg">
         <button
           type="button"
           onClick={() => setMediaOpen((prev) => !prev)}
-          className={`flex items-center justify-between w-full px-4 py-2.5 bg-navy-700 hover:bg-navy-600 text-sm font-medium text-navy-100 hover:text-navy-50 transition-colors rounded-t-lg ${mediaOpen ? '' : 'rounded-b-lg'}`}
+          className={`flex items-center justify-between w-full px-4 py-2.5 bg-stone-100 dark:bg-navy-700 hover:bg-stone-200 dark:hover:bg-navy-600 text-sm font-medium text-stone-800 dark:text-navy-100 hover:text-stone-900 dark:hover:text-navy-50 transition-colors rounded-t-lg ${mediaOpen ? '' : 'rounded-b-lg'}`}
         >
           <span className="flex items-center gap-2">
             <span className="text-xs">{mediaOpen ? '▾' : '▸'}</span>
@@ -218,9 +223,8 @@ export default function PostEditor() {
         </button>
 
         {mediaOpen && (
-          <div className="border-t border-navy-600">
-            {/* Tab bar — mirrors Dashboard tab pattern */}
-            <div className="flex border-b border-navy-600 bg-navy-900 px-2 pt-2">
+          <div className="border-t border-stone-200 dark:border-navy-600">
+            <div className="flex border-b border-stone-200 dark:border-navy-600 bg-stone-50 dark:bg-navy-900 px-2 pt-2">
               {['games', 'movies', 'tv'].map((tab) => (
                 <button
                   key={tab}
@@ -229,7 +233,7 @@ export default function PostEditor() {
                   className={`px-4 py-2 text-sm font-medium -mb-px border-b-2 transition-colors ${
                     activeMediaTab === tab
                       ? 'border-navy-300 text-navy-300'
-                      : 'border-transparent text-navy-200 hover:text-navy-50'
+                      : 'border-transparent text-stone-600 dark:text-navy-200 hover:text-stone-900 dark:hover:text-navy-50'
                   }`}
                 >
                   {tab === 'tv' ? 'TV Shows' : tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -237,8 +241,7 @@ export default function PostEditor() {
               ))}
             </div>
 
-            {/* Tab content */}
-            <div className="p-4 bg-navy-800 text-navy-200 text-sm rounded-b-lg">
+            <div className="p-4 bg-white dark:bg-navy-800 text-stone-600 dark:text-navy-200 text-sm rounded-b-lg">
               {activeMediaTab === 'games' && (
                 <GameSearch selectedGame={selectedGame} onSelect={setSelectedGame} />
               )}
@@ -250,8 +253,10 @@ export default function PostEditor() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-navy-100 mb-2">Content (Markdown)</label>
-        <div data-color-mode="dark">
+        <label className="block text-sm font-medium text-stone-800 dark:text-navy-100 mb-2">
+          Content (Markdown)
+        </label>
+        <div data-color-mode={isDark ? 'dark' : 'light'}>
           <MDEditor
             value={content}
             onChange={(val) => setContent(val || '')}

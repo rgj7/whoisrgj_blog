@@ -73,7 +73,7 @@ export default function NavSettings() {
     }
   }
 
-  if (loading) return <p className="text-navy-200">Loading...</p>
+  if (loading) return <p className="text-stone-600 dark:text-navy-200">Loading...</p>
   if (error) return <p className="text-red-400">{error}</p>
 
   const navPageIds = new Set(navLinks.map((nl) => nl.page_id))
@@ -82,24 +82,24 @@ export default function NavSettings() {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-sm font-semibold text-navy-200 uppercase tracking-wide mb-3">
+        <h3 className="text-sm font-semibold text-stone-600 dark:text-navy-200 uppercase tracking-wide mb-3">
           Current Navigation Links
         </h3>
         {navLinks.length === 0 ? (
-          <p className="text-navy-200 text-sm">No navigation links yet.</p>
+          <p className="text-stone-600 dark:text-navy-200 text-sm">No navigation links yet.</p>
         ) : (
           <ul className="space-y-2">
             {navLinks.map((nl, index) => (
               <li
                 key={nl.id}
-                className="flex items-center gap-3 bg-navy-700 border border-navy-600 rounded px-3 py-2 text-sm"
+                className="flex items-center gap-3 bg-stone-100 dark:bg-navy-700 border border-stone-200 dark:border-navy-600 rounded px-3 py-2 text-sm"
               >
                 <span className="flex-1 font-medium">
                   {nl.page ? (
                     <>
                       {nl.page.title}
                       {!nl.page.published && (
-                        <span className="ml-2 px-1.5 py-0.5 bg-yellow-900 text-yellow-400 rounded text-xs font-normal">
+                        <span className="ml-2 px-1.5 py-0.5 bg-yellow-50 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-400 rounded text-xs font-normal">
                           Draft — hidden from nav
                         </span>
                       )}
@@ -107,7 +107,7 @@ export default function NavSettings() {
                   ) : (
                     <>
                       {nl.custom_label}
-                      <span className="ml-2 text-xs text-navy-200 font-normal">
+                      <span className="ml-2 text-xs text-stone-600 dark:text-navy-200 font-normal">
                         {nl.custom_url}
                       </span>
                     </>
@@ -116,7 +116,7 @@ export default function NavSettings() {
                 <button
                   onClick={() => handleMove(index, -1)}
                   disabled={index === 0 || saving}
-                  className="text-navy-200 hover:text-navy-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="text-stone-600 dark:text-navy-200 hover:text-stone-900 dark:hover:text-navy-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   title="Move up"
                 >
                   ↑
@@ -124,7 +124,7 @@ export default function NavSettings() {
                 <button
                   onClick={() => handleMove(index, 1)}
                   disabled={index === navLinks.length - 1 || saving}
-                  className="text-navy-200 hover:text-navy-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="text-stone-600 dark:text-navy-200 hover:text-stone-900 dark:hover:text-navy-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   title="Move down"
                 >
                   ↓
@@ -142,22 +142,24 @@ export default function NavSettings() {
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-navy-200 uppercase tracking-wide mb-3">
+        <h3 className="text-sm font-semibold text-stone-600 dark:text-navy-200 uppercase tracking-wide mb-3">
           Add a Published Page
         </h3>
         {availablePages.length === 0 ? (
-          <p className="text-navy-200 text-sm">No published pages available to add.</p>
+          <p className="text-stone-600 dark:text-navy-200 text-sm">
+            No published pages available to add.
+          </p>
         ) : (
           <ul className="space-y-2">
             {availablePages.map((page) => (
               <li
                 key={page.id}
-                className="flex items-center gap-3 bg-navy-700 border border-navy-600 rounded px-3 py-2 text-sm"
+                className="flex items-center gap-3 bg-stone-100 dark:bg-navy-700 border border-stone-200 dark:border-navy-600 rounded px-3 py-2 text-sm"
               >
                 <span className="flex-1">{page.title}</span>
                 <button
                   onClick={() => handleAdd(page.id)}
-                  className="text-sm px-3 py-1 bg-navy-700 hover:bg-navy-600 border border-navy-600 rounded text-navy-100 font-medium transition-colors"
+                  className="text-sm px-3 py-1 bg-stone-100 dark:bg-navy-700 hover:bg-stone-200 dark:hover:bg-navy-600 border border-stone-200 dark:border-navy-600 rounded text-stone-800 dark:text-navy-100 font-medium transition-colors"
                 >
                   Add
                 </button>
@@ -168,7 +170,7 @@ export default function NavSettings() {
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-navy-200 uppercase tracking-wide mb-3">
+        <h3 className="text-sm font-semibold text-stone-600 dark:text-navy-200 uppercase tracking-wide mb-3">
           Add a Custom Link
         </h3>
         <div className="flex gap-2 items-center">
@@ -188,7 +190,7 @@ export default function NavSettings() {
           />
           <button
             onClick={handleAddCustom}
-            className="text-sm px-3 py-1.5 bg-navy-700 hover:bg-navy-600 border border-navy-600 rounded text-navy-100 font-medium whitespace-nowrap transition-colors"
+            className="text-sm px-3 py-1.5 bg-stone-100 dark:bg-navy-700 hover:bg-stone-200 dark:hover:bg-navy-600 border border-stone-200 dark:border-navy-600 rounded text-stone-800 dark:text-navy-100 font-medium whitespace-nowrap transition-colors"
           >
             Add
           </button>

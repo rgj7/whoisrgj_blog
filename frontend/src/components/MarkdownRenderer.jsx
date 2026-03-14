@@ -1,8 +1,11 @@
+import { useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
-import 'highlight.js/styles/atom-one-dark.css'
-import 'github-markdown-css/github-markdown-dark.css'
+import { useTheme } from '../hooks/useTheme'
+import 'github-markdown-css/github-markdown.css'
+import darkHljsUrl from 'highlight.js/styles/atom-one-dark.css?url'
+import lightHljsUrl from 'highlight.js/styles/github.css?url'
 import TerminalBlock from './TerminalBlock'
 
 const mdComponents = {
@@ -20,8 +23,21 @@ const mdComponents = {
 }
 
 export default function MarkdownRenderer({ content }) {
+  const { isDark } = useTheme()
+
+  useEffect(() => {
+    let el = document.getElementById('hljs-theme')
+    if (!el) {
+      el = document.createElement('link')
+      el.id = 'hljs-theme'
+      el.rel = 'stylesheet'
+      document.head.appendChild(el)
+    }
+    el.href = isDark ? darkHljsUrl : lightHljsUrl
+  }, [isDark])
+
   return (
-    <div className="markdown-body">
+    <div className="markdown-body" data-color-mode={isDark ? 'dark' : 'light'}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
