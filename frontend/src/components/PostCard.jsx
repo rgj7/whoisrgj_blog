@@ -7,7 +7,7 @@ export default function PostCard({ post }) {
   const bgUrl = post.media?.find((m) => m.background_image_url)?.background_image_url
   const { isDark } = useTheme()
 
-  const cardBg = isDark ? '#0d1b2a' : '#f5f5f4'
+  const cardBg = isDark ? '#152535' : '#ffffff'
 
   return (
     <article className="post-card" style={bgUrl ? { overflow: 'hidden', minHeight: '7.5rem' } : {}}>
@@ -38,7 +38,7 @@ export default function PostCard({ post }) {
               right: 0,
               bottom: 0,
               width: '52%',
-              background: `linear-gradient(to right, ${cardBg} 25%, ${isDark ? 'rgba(13,27,42,0.6)' : 'rgba(245,245,244,0.6)'} 65%, ${isDark ? 'rgba(13,27,42,0.1)' : 'rgba(245,245,244,0.1)'} 100%)`,
+              background: `linear-gradient(to right, ${cardBg} 10%, ${isDark ? 'rgba(21,37,53,0.3)' : 'rgba(255,255,255,0.3)'} 50%, transparent 100%)`,
             }}
           />
         </>

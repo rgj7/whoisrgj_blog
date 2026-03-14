@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import client from '../api/client'
+import { useTheme } from '../hooks/useTheme'
 
 const publicAxios = axios.create()
 
 export default function Navbar() {
   const navigate = useNavigate()
+  const { isDark } = useTheme()
   const loggedIn = localStorage.getItem('logged_in')
   const [navLinks, setNavLinks] = useState([])
 
@@ -36,7 +38,7 @@ export default function Navbar() {
         <div className="justify-self-start">
           <Link to="/">
             <img
-              src="/whoisrgj_logo.png"
+              src={isDark ? '/whoisrgj_logo.png' : '/whoisrgj_logo_invert.png'}
               alt="whoisrgj"
               className="h-12 w-auto opacity-85 hover:opacity-100 transition-opacity duration-300"
             />

@@ -9,6 +9,16 @@
   .markdown-body {
     background-color: transparent !important;
   }
+  /* Suppress github-markdown-css dark media query when app is in light mode */
+  .markdown-body[data-theme='light'] {
+    color-scheme: light;
+    --fgColor-default: #1f2328;
+    --fgColor-muted: #636e7b;
+    --bgColor-default: transparent;
+    --bgColor-muted: #f6f8fa;
+    --borderColor-default: #d1d9e0;
+    color: #1f2328;
+  }
 }
 
 @layer components {
@@ -53,7 +63,7 @@
     background-color: theme('colors.navy.500');
   }
   .nav-link {
-    @apply text-stone-600 text-sm font-medium transition-colors relative pb-0.5;
+    @apply text-stone-600 text-sm font-bold transition-colors relative pb-0.5 uppercase;
     @apply hover:text-navy-600;
     @apply dark:text-navy-200 dark:hover:text-navy-300;
   }

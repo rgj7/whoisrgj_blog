@@ -17,7 +17,7 @@ export default function TerminalBlock({ content }) {
           return (
             <div key={i}>
               <span className="text-green-400 select-none">{prompt} </span>
-              <span className="text-white">{command}</span>
+              <span className="text-stone-900 dark:text-white">{command}</span>
             </div>
           )
         }

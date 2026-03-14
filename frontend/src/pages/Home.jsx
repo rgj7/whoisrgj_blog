@@ -28,7 +28,7 @@ export default function Home() {
   return (
     <div className="flex gap-8">
       <div className="flex-1 min-w-0">
-        <div className="bg-stone-100 dark:bg-navy-950 rounded-xl p-4 border border-navy-800 mb-6">
+        <div className="bg-black dark:bg-navy-950 rounded-xl p-4 border border-gray-800 dark:border-navy-800 mb-6">
           <LetterboxdWidget />
         </div>
         <h2 className="text-lg font-semibold text-stone-900 dark:text-navy-50 mb-4 pl-3 border-l-4 border-green-500">
@@ -37,7 +37,11 @@ export default function Home() {
         {data.items.length === 0 ? (
           <p className="text-stone-600 dark:text-navy-200">No posts yet.</p>
         ) : (
-          data.items.map((post) => <PostCard key={post.id} post={post} />)
+          <div className="flex flex-col gap-4">
+            {data.items.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
         )}
         {data.pages > 1 && (
           <div className="flex justify-between mt-8 text-sm">

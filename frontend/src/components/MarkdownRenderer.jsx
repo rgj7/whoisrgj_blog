@@ -40,7 +40,7 @@ export default function MarkdownRenderer({ content }) {
   }, [isDark])
 
   return (
-    <div className="markdown-body" data-color-mode={isDark ? 'dark' : 'light'}>
+    <div className="markdown-body" data-theme={isDark ? 'dark' : 'light'}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
