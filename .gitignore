@@ -24,6 +24,7 @@ docker-compose.override.yml
 
 # IDE
 .vscode/
+.superpowers/
 
 # Misc
 .DS_Store
@@ -39,3 +40,4 @@ backend/uploads/
 .coverage
 htmlcov/
 .pytest_cache/
+.worktrees/
