@@ -41,7 +41,7 @@ export default function Footer() {
   }, [])
 
   return (
-    <footer className="sticky bottom-0 bg-gradient-to-b from-gray-900 to-black relative text-gray-400 py-5">
+    <footer className="sticky bottom-0 bg-gradient-to-b from-stone-100 to-stone-200 dark:from-gray-900 dark:to-black relative text-stone-500 dark:text-gray-400 py-5">
       {/* Gradient accent line at top */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-600/60 to-transparent" />
 
@@ -69,7 +69,7 @@ export default function Footer() {
         <div className="flex justify-end">
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="border border-gray-700 text-gray-500 hover:border-gray-400 hover:text-white rounded px-3 py-1.5 transition-colors duration-200"
+            className="bg-stone-200 text-stone-700 hover:bg-stone-300 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 rounded px-3 py-1.5 transition-colors duration-200"
             style={{ fontSize: '0.68rem', letterSpacing: '0.13em', textTransform: 'uppercase' }}
           >
             ↑ Top

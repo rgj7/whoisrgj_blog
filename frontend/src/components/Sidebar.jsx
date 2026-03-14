@@ -43,8 +43,8 @@ export default function Sidebar() {
   if (links.length === 0) return null
 
   return (
-    <aside className="w-60 shrink-0 bg-navy-700 rounded-xl p-6 border border-navy-600 self-start">
-      <h2 className="text-sm font-semibold text-navy-200 uppercase tracking-wide mb-3">
+    <aside className="w-60 shrink-0 bg-stone-100 dark:bg-navy-700 rounded-xl p-6 border border-stone-200 dark:border-navy-600 self-start">
+      <h2 className="text-sm font-semibold text-stone-600 dark:text-navy-200 uppercase tracking-wide mb-3">
         Find me on
       </h2>
       <ul className="space-y-2">
@@ -56,7 +56,7 @@ export default function Sidebar() {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-navy-50 hover:text-navy-400 transition-colors"
+                className="flex items-center gap-2 text-sm text-stone-900 dark:text-navy-50 hover:text-stone-500 dark:hover:text-navy-400 transition-colors"
               >
                 <FontAwesomeIcon icon={icon} style={{ width: 20, height: 20 }} />
                 <span className="capitalize">{link.platform}</span>
